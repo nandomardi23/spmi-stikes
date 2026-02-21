@@ -12,6 +12,13 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UnitKerjaSeeder::class,
             AdminUserSeeder::class,
+            StandarMutuSeeder::class,
+            SiklusAuditSeeder::class,
+            AuditSeeder::class,
+            TemuanSeeder::class,
+            DokumenSeeder::class,
+            BeritaSeeder::class,
+            GaleriSeeder::class,
         ]);
     }
 }
