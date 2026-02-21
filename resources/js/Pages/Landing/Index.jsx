@@ -28,7 +28,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-export default function Index({ standarMutu, dokumenPublik, berita }) {
+export default function Index({ standarMutu, dokumenPublik, berita, galeri }) {
     return (
         <LandingLayout>
             <Head title="Beranda" />
@@ -72,8 +72,8 @@ export default function Index({ standarMutu, dokumenPublik, berita }) {
                         {[
                             { label: 'Standar Mutu', value: standarMutu.length },
                             { label: 'Dokumen Publik', value: dokumenPublik.length },
+                            { label: 'Galeri', value: galeri?.length || 0 },
                             { label: 'Berita', value: berita.length },
-                            { label: 'Siklus PPPEP', value: '5', suffix: 'Tahap' },
                         ].map((stat, i) => (
                             <div key={i} className="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
                                 <p className="text-3xl font-bold text-white">{stat.value}{stat.suffix && <span className="text-lg ml-1">{stat.suffix}</span>}</p>
@@ -235,6 +235,41 @@ export default function Index({ standarMutu, dokumenPublik, berita }) {
                     ) : (
                         <div className="text-center py-12 bg-white rounded-2xl">
                             <p className="text-gray-400">Belum ada dokumen publik yang tersedia.</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* Galeri */}
+            <section id="galeri" className="py-24 bg-gray-50 border-t border-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Dokumentasi</span>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Galeri Kegiatan</h2>
+                        <p className="text-gray-500 mt-3">Dokumentasi kegiatan terkait penjaminan mutu</p>
+                    </div>
+
+                    {galeri && galeri.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                            {galeri.map((g) => (
+                                <div key={g.id} className="group cursor-pointer">
+                                    <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200 border border-gray-100 shadow-sm">
+                                        <img 
+                                            src={`/storage/${g.file_path}`} 
+                                            alt={g.judul} 
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                                        />
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                            <h3 className="text-white font-medium text-sm line-clamp-2 leading-tight">{g.judul}</h3>
+                                            {g.deskripsi && <p className="text-white/80 text-xs mt-1 line-clamp-1">{g.deskripsi}</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 bg-white rounded-2xl">
+                            <p className="text-gray-400">Belum ada dokumentasi kegiatan.</p>
                         </div>
                     )}
                 </div>

@@ -55,6 +55,9 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     // Unit Kerja
     Route::resource('unit-kerja', UnitKerjaController::class)->except('show');
 
+    // Galeri
+    Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except('show');
+
     // Berita
     Route::resource('berita', BeritaController::class)->except('show');
 
