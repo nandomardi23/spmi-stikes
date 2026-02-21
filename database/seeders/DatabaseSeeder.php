@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             DokumenSeeder::class,
             BeritaSeeder::class,
             GaleriSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }

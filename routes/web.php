@@ -63,6 +63,10 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
 
     // Users
     Route::resource('users', UserController::class)->except(['show', 'create']);
+
+    // Settings
+    Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
+    Route::post('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
 });
 
 // ==========================================

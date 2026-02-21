@@ -28,7 +28,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-export default function Index({ standarMutu, dokumenPublik, berita, galeri }) {
+export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi }) {
     return (
         <LandingLayout>
             <Head title="Beranda" />
@@ -98,8 +98,8 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri }) {
                                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                             </div>
                             <h3 className="text-xl font-bold mb-4">VISI</h3>
-                            <p className="text-primary-100 leading-relaxed">
-                                Menjadi Sekolah Tinggi Ilmu Kesehatan yang unggul, berkarakter, dan berdaya saing di tingkat nasional dalam menghasilkan tenaga kesehatan profesional yang beretika dan bermutu.
+                            <p className="text-primary-100 leading-relaxed whitespace-pre-wrap">
+                                {visi}
                             </p>
                         </div>
 
@@ -109,16 +109,10 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri }) {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-4">MISI</h3>
                             <ul className="space-y-3">
-                                {[
-                                    'Menyelenggarakan pendidikan tinggi kesehatan yang bermutu',
-                                    'Melaksanakan penelitian untuk pengembangan ilmu kesehatan',
-                                    'Melaksanakan pengabdian kepada masyarakat bidang kesehatan',
-                                    'Mengembangkan tata kelola institusi yang transparan dan akuntabel',
-                                    'Menjalin kerjasama strategis dengan stakeholder',
-                                ].map((misi, i) => (
+                                {misi.map((item, i) => (
                                     <li key={i} className="flex items-start gap-3 text-gray-600">
                                         <span className="w-6 h-6 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
-                                        <span className="text-sm leading-relaxed">{misi}</span>
+                                        <span className="text-sm leading-relaxed">{item}</span>
                                     </li>
                                 ))}
                             </ul>
