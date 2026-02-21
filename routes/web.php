@@ -37,32 +37,32 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 
     // Standar Mutu
-    Route::resource('standar-mutu', StandarMutuController::class)->except(['show', 'create']);
+    Route::resource('standar-mutu', StandarMutuController::class)->except(['show', 'create', 'edit']);
 
     // Siklus Audit
-    Route::resource('siklus-audit', SiklusAuditController::class)->except(['show', 'create']);
+    Route::resource('siklus-audit', SiklusAuditController::class)->except(['show', 'create', 'edit']);
 
     // Audit
-    Route::resource('audit', AuditController::class)->except(['create']);
+    Route::resource('audit', AuditController::class)->except(['create', 'edit']);
 
     // Temuan
-    Route::resource('temuan', TemuanController::class)->except(['show', 'create']);
+    Route::resource('temuan', TemuanController::class)->except(['show', 'create', 'edit']);
 
     // Dokumen
-    Route::resource('dokumen', DokumenController::class)->except(['show', 'create']);
+    Route::resource('dokumen', DokumenController::class)->except(['show', 'create', 'edit']);
     Route::get('dokumen/{dokumen}/download', [DokumenController::class, 'download'])->name('dokumen.download');
 
     // Unit Kerja
-    Route::resource('unit-kerja', UnitKerjaController::class)->except(['show', 'create']);
+    Route::resource('unit-kerja', UnitKerjaController::class)->except(['show', 'create', 'edit']);
 
     // Galeri
-    Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except(['show', 'create']);
+    Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except(['show', 'create', 'edit']);
 
     // Berita
-    Route::resource('berita', BeritaController::class)->except(['show', 'create']);
+    Route::resource('berita', BeritaController::class)->parameters(['berita' => 'berita'])->except(['show', 'create', 'edit']);
 
     // Users
-    Route::resource('users', UserController::class)->except(['show', 'create']);
+    Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
 
     // Settings
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');

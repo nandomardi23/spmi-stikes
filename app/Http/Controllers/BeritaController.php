@@ -22,7 +22,7 @@ class BeritaController extends Controller
         }
 
         return Inertia::render('Dashboard/Berita/Index', [
-            'beritas' => $query->latest()->paginate(10)->withQueryString(),
+            'berita' => $query->latest()->paginate(10)->withQueryString(),
             'filters' => $request->only(['search', 'status']),
         ]);
     }
@@ -57,14 +57,9 @@ class BeritaController extends Controller
             ->with('success', 'Berita berhasil dibuat.');
     }
 
-    public function edit(Berita $beritum)
-    {
-        return Inertia::render('Dashboard/Berita/Edit', [
-            'berita' => $beritum,
-        ]);
-    }
+    // Method 'edit' is not needed when using modals in the Index page
 
-    public function update(Request $request, Berita $beritum)
+    public function update(Request $request, Berita $berita)
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
@@ -74,35 +69,35 @@ class BeritaController extends Controller
             'status' => 'required|in:draft,published',
         ]);
 
-        $beritum->judul = $validated['judul'];
-        $beritum->slug = Str::slug($validated['judul']);
-        $beritum->ringkasan = $validated['ringkasan'] ?? null;
-        $beritum->konten = $validated['konten'];
-        $beritum->status = $validated['status'];
+        $berita->judul = $validated['judul'];
+        $berita->slug = Str::slug($validated['judul']);
+        $berita->ringkasan = $validated['ringkasan'] ?? null;
+        $berita->konten = $validated['konten'];
+        $berita->status = $validated['status'];
 
-        if ($validated['status'] === 'published' && !$beritum->published_at) {
-            $beritum->published_at = now();
+        if ($validated['status'] === 'published' && !$berita->published_at) {
+            $berita->published_at = \Illuminate\Support\Carbon::now();
         }
 
         if ($request->hasFile('gambar')) {
-            if ($beritum->gambar) {
-                Storage::disk('public')->delete($beritum->gambar);
+            if ($berita->gambar) {
+                Storage::disk('public')->delete($berita->gambar);
             }
-            $beritum->gambar = $request->file('gambar')->store('berita', 'public');
+            $berita->gambar = $request->file('gambar')->store('berita', 'public');
         }
 
-        $beritum->save();
+        $berita->save();
 
         return redirect()->route('dashboard.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
     }
 
-    public function destroy(Berita $beritum)
+    public function destroy(Berita $berita)
     {
-        if ($beritum->gambar) {
-            Storage::disk('public')->delete($beritum->gambar);
+        if ($berita->gambar) {
+            Storage::disk('public')->delete($berita->gambar);
         }
-        $beritum->delete();
+        $berita->delete();
 
         return redirect()->route('dashboard.berita.index')
             ->with('success', 'Berita berhasil dihapus.');

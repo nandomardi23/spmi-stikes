@@ -1,6 +1,7 @@
 import { Link, usePage, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import clsx from 'clsx';
+import Swal from 'sweetalert2';
 
 const menuItems = [
     { name: 'Dashboard', href: '/dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -27,6 +28,33 @@ export default function DashboardLayout({ children, title }) {
         if (!item.roles) return true;
         return item.roles.some(role => userRoles.includes(role));
     });
+
+    useEffect(() => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        if (flash.success) {
+            Toast.fire({
+                icon: 'success',
+                title: flash.success
+            });
+        }
+        if (flash.error) {
+            Toast.fire({
+                icon: 'error',
+                title: flash.error
+            });
+        }
+    }, [flash.success, flash.error]);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -114,24 +142,6 @@ export default function DashboardLayout({ children, title }) {
                         </div>
                     </div>
                 </header>
-
-                {/* Flash Messages */}
-                {flash.success && (
-                    <div className="mx-4 sm:mx-6 lg:mx-8 mt-4">
-                        <div className="px-4 py-3 bg-success-50 border border-green-200 text-green-800 rounded-xl text-sm font-medium flex items-center gap-2">
-                            <svg className="w-5 h-5 text-success-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            {flash.success}
-                        </div>
-                    </div>
-                )}
-                {flash.error && (
-                    <div className="mx-4 sm:mx-6 lg:mx-8 mt-4">
-                        <div className="px-4 py-3 bg-danger-50 border border-red-200 text-red-800 rounded-xl text-sm font-medium flex items-center gap-2">
-                            <svg className="w-5 h-5 text-danger-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            {flash.error}
-                        </div>
-                    </div>
-                )}
 
                 {/* Page Content */}
                 <main className="p-4 sm:p-6 lg:p-8">

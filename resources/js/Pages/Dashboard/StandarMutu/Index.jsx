@@ -2,6 +2,9 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
+import Swal from 'sweetalert2';
+import EmptyState from '@/Components/EmptyState';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan', penelitian: 'Penelitian', pengabdian: 'Pengabdian',
@@ -18,9 +21,10 @@ const kategoriOptions = [
 
 export default function Index({ standarMutu, filters }) {
     const [search, setSearch] = useState(filters.search || '');
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         kode: '', nama: '', deskripsi: '', kategori: 'pendidikan',
         indikator: '', target: '', is_active: true,
     });
@@ -31,40 +35,90 @@ export default function Index({ standarMutu, filters }) {
     };
 
     const handleDelete = (id) => {
-        if (confirm('Yakin ingin menghapus standar mutu ini?')) {
-            router.delete(`/dashboard/standar-mutu/${id}`);
-        }
-    };
-
-    const handleCreateSubmit = (e) => {
-        e.preventDefault();
-        post('/dashboard/standar-mutu', {
-            onSuccess: () => {
-                setIsCreateModalOpen(false);
-                reset();
+        Swal.fire({
+            title: 'Hapus Standar Mutu?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(`/dashboard/standar-mutu/${id}`);
             }
         });
     };
 
-    const openCreateModal = () => {
-        reset();
-        setIsCreateModalOpen(true);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (editingData) {
+            put(`/dashboard/standar-mutu/${editingData.id}`, {
+                onSuccess: () => {
+                    closeModal();
+                    Swal.fire('Berhasil!', 'Standar mutu telah diperbarui.', 'success');
+                },
+            });
+        } else {
+            post('/dashboard/standar-mutu', {
+                onSuccess: () => {
+                    closeModal();
+                    Swal.fire('Berhasil!', 'Standar mutu baru telah ditambahkan.', 'success');
+                }
+            });
+        }
     };
 
-    const closeCreateModal = () => {
-        setIsCreateModalOpen(false);
+    const openCreateModal = () => {
         reset();
+        clearErrors();
+        setEditingData(null);
+        setIsModalOpen(true);
+    };
+
+    const openEditModal = (item) => {
+        clearErrors();
+        setEditingData(item);
+        setData({
+            kode: item.kode, nama: item.nama, deskripsi: item.deskripsi || '',
+            kategori: item.kategori, indikator: item.indikator || '',
+            target: item.target || '', is_active: item.is_active,
+        });
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setTimeout(() => {
+            reset();
+            clearErrors();
+            setEditingData(null);
+        }, 150);
     };
 
     return (
         <DashboardLayout title="Standar Mutu">
             <Head title="Standar Mutu" />
+            
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <form onSubmit={handleSearch} className="flex gap-2">
-                    <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari standar mutu..." className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none w-64" />
-                    <button type="submit" className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Cari</button>
+                    <input 
+                        type="text" 
+                        value={search} 
+                        onChange={(e) => setSearch(e.target.value)} 
+                        placeholder="Cari standar mutu..." 
+                        className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none w-64 transition-all" 
+                    />
+                    <button type="submit" className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Cari</button>
+                    {filters.search && (
+                        <Link href="/dashboard/standar-mutu" className="px-4 py-2.5 text-danger-600 text-sm font-medium hover:underline">Reset</Link>
+                    )}
                 </form>
-                <button onClick={openCreateModal} className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25">
+                <button 
+                    onClick={openCreateModal} 
+                    className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25"
+                >
                     + Tambah Standar
                 </button>
             </div>
@@ -74,31 +128,56 @@ export default function Index({ standarMutu, filters }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="text-left px-6 py-3.5 font-semibold text-gray-600">Kode</th>
-                                <th className="text-left px-6 py-3.5 font-semibold text-gray-600">Nama</th>
-                                <th className="text-left px-6 py-3.5 font-semibold text-gray-600">Kategori</th>
-                                <th className="text-left px-6 py-3.5 font-semibold text-gray-600">Status</th>
-                                <th className="text-right px-6 py-3.5 font-semibold text-gray-600">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kode</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Nama Standar</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kategori</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {standarMutu.data.length > 0 ? standarMutu.data.map((s) => (
                                 <tr key={s.id} className="hover:bg-gray-50 transition">
-                                    <td className="px-6 py-4"><span className="px-2.5 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg">{s.kode}</span></td>
-                                    <td className="px-6 py-4 font-medium text-gray-900">{s.nama}</td>
-                                    <td className="px-6 py-4 text-gray-600">{kategoriLabels[s.kategori] || s.kategori}</td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                            {s.is_active ? 'Aktif' : 'Non-aktif'}
+                                        <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded-lg border border-indigo-100 uppercase tracking-tight">
+                                            {s.kode}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link href={`/dashboard/standar-mutu/${s.id}/edit`} className="text-primary-600 hover:text-primary-700 font-medium">Edit</Link>
-                                        <button onClick={() => handleDelete(s.id)} className="text-danger-500 hover:text-danger-600 font-medium">Hapus</button>
+                                    <td className="px-6 py-4">
+                                        <p className="font-bold text-gray-900">{s.nama}</p>
+                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5 truncate max-w-xs">{s.target || 'Tanpa Target'}</p>
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-600">{kategoriLabels[s.kategori] || s.kategori}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            {s.is_active ? 'AKTIF' : 'NON-AKTIF'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex items-center justify-end gap-1.5">
+                                            <button 
+                                                onClick={() => openEditModal(s)} 
+                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
+                                                title="Edit"
+                                            >
+                                                <PencilSquareIcon className="w-5 h-5" />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(s.id)} 
+                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
+                                                title="Hapus"
+                                            >
+                                                <TrashIcon className="w-5 h-5" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             )) : (
-                                <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-400">Tidak ada data standar mutu.</td></tr>
+                                <tr>
+                                    <td colSpan={5}>
+                                        <EmptyState title="Standar Mutu Kosong" message="Belum ada data standar mutu atau sesuaikan kata kunci pencarian Anda." />
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
@@ -107,60 +186,122 @@ export default function Index({ standarMutu, filters }) {
                 {/* Pagination */}
                 {standarMutu.links && standarMutu.links.length > 3 && (
                     <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                        <p className="text-sm text-gray-500">Menampilkan {standarMutu.from}-{standarMutu.to} dari {standarMutu.total} data</p>
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {standarMutu.from}-{standarMutu.to} data</p>
                         <div className="flex gap-1">
                             {standarMutu.links.map((link, i) => (
-                                <Link key={i} href={link.url || '#'} className={`px-3 py-1.5 text-sm rounded-lg transition ${link.active ? 'bg-primary-600 text-white' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 cursor-not-allowed'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <Link 
+                                    key={i} 
+                                    href={link.url || '#'} 
+                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }} 
+                                />
                             ))}
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Create Modal */}
-            <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
-                <div className="p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-6">Tambah Standar Mutu</h2>
-                    <form onSubmit={handleCreateSubmit} className="space-y-5">
-                        <div className="grid grid-cols-2 gap-4">
+            {/* Form Modal */}
+            <Modal show={isModalOpen} onClose={closeModal}>
+                <div className="p-7">
+                    <h2 className="text-xl font-extrabold text-gray-900 mb-6 tracking-tight">{editingData ? 'Edit Standar Mutu' : 'Tambah Standar Mutu Baru'}</h2>
+                    
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Kode *</label>
-                                <input type="text" value={data.kode} onChange={(e) => setData('kode', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="SM-01" />
-                                {errors.kode && <p className="mt-1 text-xs text-danger-500">{errors.kode}</p>}
+                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kode Standar <span className="text-danger-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    value={data.kode} 
+                                    onChange={(e) => setData('kode', e.target.value)} 
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold" 
+                                    placeholder="SM-01" 
+                                />
+                                {errors.kode && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.kode}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Kategori *</label>
-                                <select value={data.kategori} onChange={(e) => setData('kategori', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori Standar <span className="text-danger-500">*</span></label>
+                                <select 
+                                    value={data.kategori} 
+                                    onChange={(e) => setData('kategori', e.target.value)} 
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
+                                >
                                     {kategoriOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                                 </select>
                             </div>
                         </div>
+
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama Standar *</label>
-                            <input type="text" value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
-                            {errors.nama && <p className="mt-1 text-xs text-danger-500">{errors.nama}</p>}
+                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Standar <span className="text-danger-500">*</span></label>
+                            <input 
+                                type="text" 
+                                value={data.nama} 
+                                onChange={(e) => setData('nama', e.target.value)} 
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
+                            />
+                            {errors.nama && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.nama}</p>}
                         </div>
+
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi</label>
-                            <textarea rows={3} value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi Singkat</label>
+                            <textarea 
+                                rows={2} 
+                                value={data.deskripsi} 
+                                onChange={(e) => setData('deskripsi', e.target.value)} 
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
+                            />
                         </div>
+
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Indikator</label>
-                            <textarea rows={3} value={data.indikator} onChange={(e) => setData('indikator', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Indikator Kinerja</label>
+                            <textarea 
+                                rows={2} 
+                                value={data.indikator} 
+                                onChange={(e) => setData('indikator', e.target.value)} 
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
+                            />
                         </div>
+
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Target</label>
-                            <input type="text" value={data.target} onChange={(e) => setData('target', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Target Capaian</label>
+                            <input 
+                                type="text" 
+                                value={data.target} 
+                                onChange={(e) => setData('target', e.target.value)} 
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
+                            />
                         </div>
-                        <div className="flex items-center gap-2">
-                            <input type="checkbox" id="is_active" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
-                            <label htmlFor="is_active" className="text-sm text-gray-700">Standar Aktif</label>
+
+                        <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                            <div className="flex items-center gap-3">
+                                <input 
+                                    type="checkbox" 
+                                    id="is_active" 
+                                    checked={data.is_active} 
+                                    onChange={(e) => setData('is_active', e.target.checked)} 
+                                    className="w-5 h-5 rounded-lg border-gray-300 text-primary-600 focus:ring-primary-500" 
+                                />
+                                <label htmlFor="is_active" className="text-sm font-bold text-gray-800 cursor-pointer">
+                                    Aktifkan Standar Mutu
+                                    <span className="block text-[10px] font-normal text-gray-400 uppercase tracking-tighter">Standar ini akan muncul dalam instrumen audit</span>
+                                </label>
+                            </div>
                         </div>
-                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                            <button type="button" onClick={closeCreateModal} className="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">Batal</button>
-                            <button type="submit" disabled={processing} className="px-6 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 transition shadow-lg shadow-primary-500/25">
-                                {processing ? 'Menyimpan...' : 'Simpan'}
+
+                        <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                            <button 
+                                type="button" 
+                                onClick={closeModal} 
+                                className="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm"
+                            >
+                                Batal
+                            </button>
+                            <button 
+                                type="submit" 
+                                disabled={processing} 
+                                className="px-8 py-3 bg-linear-to-br from-primary-600 to-primary-700 text-white font-extrabold rounded-xl disabled:opacity-50 transition duration-200 shadow-xl shadow-primary-500/25 hover:from-primary-700 hover:to-primary-800 text-sm"
+                            >
+                                {processing ? 'Sedang Memproses...' : editingData ? 'Perbarui Standar' : 'Simpan Standar'}
                             </button>
                         </div>
                     </form>

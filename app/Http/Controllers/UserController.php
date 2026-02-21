@@ -34,21 +34,14 @@ class UserController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Dashboard/Users/Create', [
-            'roles' => Role::all(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-        ]);
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|exists:roles,name',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
             'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
         ]);
 
@@ -59,19 +52,10 @@ class UserController extends Controller
             'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
         ]);
 
-        $user->assignRole($validated['role']);
+        $user->assignRole($validated['roles']);
 
         return redirect()->route('dashboard.users.index')
             ->with('success', 'User berhasil ditambahkan.');
-    }
-
-    public function edit(User $user)
-    {
-        return Inertia::render('Dashboard/Users/Edit', [
-            'user' => $user->load(['roles', 'unitKerja']),
-            'roles' => Role::all(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-        ]);
     }
 
     public function update(Request $request, User $user)
@@ -80,7 +64,8 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|exists:roles,name',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
             'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
         ]);
 
@@ -93,7 +78,7 @@ class UserController extends Controller
         }
 
         $user->save();
-        $user->syncRoles([$validated['role']]);
+        $user->syncRoles($validated['roles']);
 
         return redirect()->route('dashboard.users.index')
             ->with('success', 'User berhasil diperbarui.');
