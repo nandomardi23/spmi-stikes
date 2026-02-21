@@ -37,32 +37,32 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 
     // Standar Mutu
-    Route::resource('standar-mutu', StandarMutuController::class)->except('show');
+    Route::resource('standar-mutu', StandarMutuController::class)->except(['show', 'create']);
 
     // Siklus Audit
-    Route::resource('siklus-audit', SiklusAuditController::class)->except('show');
+    Route::resource('siklus-audit', SiklusAuditController::class)->except(['show', 'create']);
 
     // Audit
-    Route::resource('audit', AuditController::class);
+    Route::resource('audit', AuditController::class)->except(['create']);
 
     // Temuan
-    Route::resource('temuan', TemuanController::class)->except('show');
+    Route::resource('temuan', TemuanController::class)->except(['show', 'create']);
 
     // Dokumen
-    Route::resource('dokumen', DokumenController::class)->except('show');
+    Route::resource('dokumen', DokumenController::class)->except(['show', 'create']);
     Route::get('dokumen/{dokumen}/download', [DokumenController::class, 'download'])->name('dokumen.download');
 
     // Unit Kerja
-    Route::resource('unit-kerja', UnitKerjaController::class)->except('show');
+    Route::resource('unit-kerja', UnitKerjaController::class)->except(['show', 'create']);
 
     // Galeri
-    Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except('show');
+    Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except(['show', 'create']);
 
     // Berita
-    Route::resource('berita', BeritaController::class)->except('show');
+    Route::resource('berita', BeritaController::class)->except(['show', 'create']);
 
     // Users
-    Route::resource('users', UserController::class)->except('show');
+    Route::resource('users', UserController::class)->except(['show', 'create']);
 });
 
 // ==========================================

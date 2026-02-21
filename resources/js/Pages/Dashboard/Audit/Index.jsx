@@ -1,12 +1,40 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState } from 'react';
+import Modal from '@/Components/Modal';
 
 const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
 
-export default function Index({ audits, siklus, filters }) {
+export default function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filters }) {
     const [status, setStatus] = useState(filters.status || '');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        siklus_audit_id: '', unit_kerja_id: '', auditor_id: '', tanggal_audit: '', status: 'dijadwalkan', catatan: '',
+    });
+
     const handleFilter = (val) => { setStatus(val); router.get('/dashboard/audit', { status: val, siklus: filters.siklus }, { preserveState: true }); };
+
+    const handleCreateSubmit = (e) => {
+        e.preventDefault();
+        post('/dashboard/audit', {
+            onSuccess: () => {
+                setIsCreateModalOpen(false);
+                reset();
+            }
+        });
+    };
+
+    const openCreateModal = () => {
+        reset();
+        setIsCreateModalOpen(true);
+    };
+
+    const closeCreateModal = () => {
+        setIsCreateModalOpen(false);
+        reset();
+    };
+
     return (
         <DashboardLayout title="Audit">
             <Head title="Audit" />
@@ -16,7 +44,9 @@ export default function Index({ audits, siklus, filters }) {
                         <button key={s} onClick={() => handleFilter(s)} className={`px-4 py-2 text-sm rounded-xl transition ${status === s ? 'bg-primary-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{s || 'Semua'}</button>
                     ))}
                 </div>
-                <Link href="/dashboard/audit/create" className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25">+ Tambah Audit</Link>
+                <button onClick={openCreateModal} className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25">
+                    + Tambah Audit
+                </button>
             </div>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table className="w-full text-sm">
@@ -45,6 +75,59 @@ export default function Index({ audits, siklus, filters }) {
                     </div>
                 )}
             </div>
+
+            {/* Create Modal */}
+            <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
+                <div className="p-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-6">Tambah Audit</h2>
+                    <form onSubmit={handleCreateSubmit} className="space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Siklus Audit *</label>
+                                <select value={data.siklus_audit_id} onChange={e => setData('siklus_audit_id', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none">
+                                    <option value="">Pilih Siklus</option>{siklusAudit.map(s => <option key={s.id} value={s.id}>{s.nama}</option>)}
+                                </select>
+                                {errors.siklus_audit_id && <p className="mt-1 text-xs text-danger-500">{errors.siklus_audit_id}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Unit Kerja *</label>
+                                <select value={data.unit_kerja_id} onChange={e => setData('unit_kerja_id', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none">
+                                    <option value="">Pilih Unit</option>{unitKerja.map(u => <option key={u.id} value={u.id}>{u.nama}</option>)}
+                                </select>
+                                {errors.unit_kerja_id && <p className="mt-1 text-xs text-danger-500">{errors.unit_kerja_id}</p>}
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Auditor</label>
+                            <select value={data.auditor_id} onChange={e => setData('auditor_id', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none">
+                                <option value="">Pilih Auditor</option>{auditors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Tanggal Audit</label>
+                                <input type="date" value={data.tanggal_audit} onChange={e => setData('tanggal_audit', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
+                                <select value={data.status} onChange={e => setData('status', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="dijadwalkan">Dijadwalkan</option><option value="berlangsung">Berlangsung</option><option value="selesai">Selesai</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Catatan</label>
+                            <textarea rows={3} value={data.catatan} onChange={e => setData('catatan', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+                        </div>
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                            <button type="button" onClick={closeCreateModal} className="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">Batal</button>
+                            <button type="submit" disabled={processing} className="px-6 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white font-semibold rounded-xl disabled:opacity-50 transition shadow-lg shadow-primary-500/25">
+                                {processing ? 'Menyimpan...' : 'Simpan'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
         </DashboardLayout>
     );
 }

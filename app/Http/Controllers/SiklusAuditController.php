@@ -15,11 +15,6 @@ class SiklusAuditController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Dashboard/SiklusAudit/Create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([

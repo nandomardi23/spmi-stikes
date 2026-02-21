@@ -27,11 +27,6 @@ class BeritaController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Dashboard/Berita/Create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([

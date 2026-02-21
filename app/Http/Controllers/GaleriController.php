@@ -24,11 +24,6 @@ class GaleriController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return \Inertia\Inertia::render('Dashboard/Galeri/Create');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([

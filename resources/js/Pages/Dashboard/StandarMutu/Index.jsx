@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState } from 'react';
+import Modal from '@/Components/Modal';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan', penelitian: 'Penelitian', pengabdian: 'Pengabdian',
@@ -8,8 +9,21 @@ const kategoriLabels = {
     keuangan: 'Keuangan', sarana_prasarana: 'Sarana & Prasarana',
 };
 
+const kategoriOptions = [
+    { value: 'pendidikan', label: 'Pendidikan' }, { value: 'penelitian', label: 'Penelitian' },
+    { value: 'pengabdian', label: 'Pengabdian' }, { value: 'tata_kelola', label: 'Tata Kelola' },
+    { value: 'kemahasiswaan', label: 'Kemahasiswaan' }, { value: 'sdm', label: 'SDM' },
+    { value: 'keuangan', label: 'Keuangan' }, { value: 'sarana_prasarana', label: 'Sarana & Prasarana' },
+];
+
 export default function Index({ standarMutu, filters }) {
     const [search, setSearch] = useState(filters.search || '');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+    const { data, setData, post, processing, errors, reset } = useForm({
+        kode: '', nama: '', deskripsi: '', kategori: 'pendidikan',
+        indikator: '', target: '', is_active: true,
+    });
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -22,6 +36,26 @@ export default function Index({ standarMutu, filters }) {
         }
     };
 
+    const handleCreateSubmit = (e) => {
+        e.preventDefault();
+        post('/dashboard/standar-mutu', {
+            onSuccess: () => {
+                setIsCreateModalOpen(false);
+                reset();
+            }
+        });
+    };
+
+    const openCreateModal = () => {
+        reset();
+        setIsCreateModalOpen(true);
+    };
+
+    const closeCreateModal = () => {
+        setIsCreateModalOpen(false);
+        reset();
+    };
+
     return (
         <DashboardLayout title="Standar Mutu">
             <Head title="Standar Mutu" />
@@ -30,9 +64,9 @@ export default function Index({ standarMutu, filters }) {
                     <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari standar mutu..." className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none w-64" />
                     <button type="submit" className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Cari</button>
                 </form>
-                <Link href="/dashboard/standar-mutu/create" className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25">
+                <button onClick={openCreateModal} className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25">
                     + Tambah Standar
-                </Link>
+                </button>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -83,6 +117,55 @@ export default function Index({ standarMutu, filters }) {
                     </div>
                 )}
             </div>
+
+            {/* Create Modal */}
+            <Modal show={isCreateModalOpen} onClose={closeCreateModal}>
+                <div className="p-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-6">Tambah Standar Mutu</h2>
+                    <form onSubmit={handleCreateSubmit} className="space-y-5">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Kode *</label>
+                                <input type="text" value={data.kode} onChange={(e) => setData('kode', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="SM-01" />
+                                {errors.kode && <p className="mt-1 text-xs text-danger-500">{errors.kode}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Kategori *</label>
+                                <select value={data.kategori} onChange={(e) => setData('kategori', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                                    {kategoriOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Nama Standar *</label>
+                            <input type="text" value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                            {errors.nama && <p className="mt-1 text-xs text-danger-500">{errors.nama}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Deskripsi</label>
+                            <textarea rows={3} value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Indikator</label>
+                            <textarea rows={3} value={data.indikator} onChange={(e) => setData('indikator', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Target</label>
+                            <input type="text" value={data.target} onChange={(e) => setData('target', e.target.value)} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input type="checkbox" id="is_active" checked={data.is_active} onChange={(e) => setData('is_active', e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                            <label htmlFor="is_active" className="text-sm text-gray-700">Standar Aktif</label>
+                        </div>
+                        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                            <button type="button" onClick={closeCreateModal} className="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition">Batal</button>
+                            <button type="submit" disabled={processing} className="px-6 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 transition shadow-lg shadow-primary-500/25">
+                                {processing ? 'Menyimpan...' : 'Simpan'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
         </DashboardLayout>
     );
 }
