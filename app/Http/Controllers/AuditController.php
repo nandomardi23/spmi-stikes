@@ -60,6 +60,9 @@ class AuditController extends Controller
     {
         return Inertia::render('Dashboard/Audit/Show', [
             'audit' => $audit->load(['siklusAudit', 'unitKerja', 'auditor', 'temuans.standarMutu']),
+            'siklusAudit' => SiklusAudit::latest()->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->get(),
+            'auditors' => User::role('auditor')->get(),
         ]);
     }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
 import Pagination from '@/Components/Pagination';
 import Modal from '@/Components/Modal';
@@ -233,6 +233,7 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                             total: standarMutu.total,
                                             per_page: standarMutu.per_page
                                         }}
+                                        preserveScroll={true}
                                         onPerPageChange={(per_page) => {
                                             router.get('/#standar-mutu', { per_page_standar: per_page }, { preserveState: true, preserveScroll: true });
                                         }}
@@ -451,17 +452,18 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                         
                         <div className="mt-12 flex justify-end">
                             <Pagination 
-                                links={berita.links} 
-                                meta={{
-                                    from: berita.from,
-                                    to: berita.to,
-                                    total: berita.total,
-                                    per_page: berita.per_page
-                                }}
-                                onPerPageChange={(per_page) => {
-                                    router.get('/#berita', { per_page_berita: per_page }, { preserveState: true, preserveScroll: true });
-                                }}
-                            />
+                                        links={berita.links} 
+                                        meta={{
+                                            from: berita.from,
+                                            to: berita.to,
+                                            total: berita.total,
+                                            per_page: berita.per_page
+                                        }}
+                                        preserveScroll={true}
+                                        onPerPageChange={(per_page) => {
+                                            router.get('/#berita', { per_page: per_page }, { preserveState: true, preserveScroll: true });
+                                        }}
+                                    />
                         </div>
                         </>
                     ) : (

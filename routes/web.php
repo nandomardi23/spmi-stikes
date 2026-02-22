@@ -46,7 +46,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('audit', AuditController::class)->except(['create', 'edit']);
 
     // Temuan
-    Route::resource('temuan', TemuanController::class)->except(['show', 'create', 'edit']);
+    Route::resource('temuan', TemuanController::class)->except(['show']);
 
     // Dokumen
     Route::resource('dokumen', DokumenController::class)->except(['show', 'create', 'edit']);
@@ -72,7 +72,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
 
     // Settings
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
-    Route::post('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
+    Route::put('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
 });
 
 // ==========================================

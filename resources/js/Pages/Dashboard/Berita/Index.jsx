@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function Index({ berita, filters }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -268,13 +270,31 @@ export default function Index({ berita, filters }) {
 
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Konten Utama <span className="text-danger-500">*</span></label>
-                                <textarea 
-                                    rows={8} 
-                                    value={data.konten} 
-                                    onChange={e => setData('konten', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-sans transition-all" 
-                                    placeholder="Tuliskan berita lengkap di sini..." 
-                                />
+                                <div className="prose-sm ck-editor-container">
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        data={data.konten}
+                                        onReady={editor => {
+                                            editor.editing.view.change(writer => {
+                                                writer.setStyle('min-height', '300px', editor.editing.view.document.getRoot());
+                                            });
+                                        }}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            setData('konten', data);
+                                        }}
+                                        config={{
+                                            placeholder: 'Tuliskan berita lengkap di sini...',
+                                            toolbar: [
+                                                'heading', '|',
+                                                'bold', 'italic', 'underline', 'strikethrough', '|',
+                                                'bulletedList', 'numberedList', '|',
+                                                'link', 'blockQuote', 'insertTable', '|',
+                                                'undo', 'redo'
+                                            ]
+                                        }}
+                                    />
+                                </div>
                                 {errors.konten && <p className="mt-1.5 text-[11px] font-medium text-danger-500 ml-1">{errors.konten}</p>}
                             </div>
 

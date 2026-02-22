@@ -68,3 +68,22 @@ body {
 .glass-dark {
     @apply bg-gray-900/70 backdrop-blur-xl border border-gray-700/30;
 }
+
+/* CKEditor Custom Styles */
+.ck-editor__editable {
+    min-height: 250px;
+    max-height: 500px;
+    @apply !border-gray-200 !rounded-b-xl;
+}
+
+.ck-toolbar {
+    @apply !border-gray-200 !rounded-t-xl !bg-gray-50/50;
+}
+
+.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+    @apply !border-gray-200;
+}
+
+.ck.ck-editor__main>.ck-editor__editable.ck-focused {
+    @apply !border-primary-500 !ring-2 !ring-primary-500/20;
+}

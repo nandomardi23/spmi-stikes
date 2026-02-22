@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, ArrowDownTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
 const kategoriLabels = {
@@ -23,6 +23,8 @@ export default function Index({ dokumens, filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [viewingData, setViewingData] = useState(null);
 
     const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
         judul: '', deskripsi: '', kategori: 'kebijakan', nomor_dokumen: '',
@@ -101,6 +103,16 @@ export default function Index({ dokumens, filters }) {
         }, 150);
     };
 
+    const openDetailModal = (item) => {
+        setViewingData(item);
+        setIsDetailModalOpen(true);
+    };
+
+    const closeDetailModal = () => {
+        setIsDetailModalOpen(false);
+        setTimeout(() => setViewingData(null), 150);
+    };
+
     return (
         <DashboardLayout title="Dokumen Mutu">
             <Head title="Dokumen Mutu" />
@@ -161,11 +173,19 @@ export default function Index({ dokumens, filters }) {
                                     <td className="px-6 py-4 text-center text-gray-600 font-medium text-xs tracking-tight">{d.uploader?.name || '-'}</td>
                                     <td className="px-6 py-4 text-center">
                                         <div className="flex items-center justify-center gap-1.5">
+                                            <button 
+                                                onClick={() => openDetailModal(d)} 
+                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
+                                                title="Detail"
+                                            >
+                                                <EyeIcon className="w-5 h-5" />
+                                            </button>
                                             <a 
                                                 href={`/dashboard/dokumen/${d.id}/download`} 
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition duration-200" 
                                                 title="Download"
                                             >
+
                                                 <ArrowDownTrayIcon className="w-5 h-5" />
                                             </a>
                                             <button 
@@ -324,6 +344,84 @@ export default function Index({ dokumens, filters }) {
                         </div>
                     </form>
                 </div>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal show={isDetailModalOpen} onClose={closeDetailModal} maxWidth="xl">
+                {viewingData && (
+                    <div className="p-7">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1">Detail Dokumen Mutu</h2>
+                                <p className="text-sm text-gray-500">Informasi lengkap dokumen yang dipilih</p>
+                            </div>
+                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg mt-1 ${viewingData.is_public ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-700 border border-gray-200'}`}>
+                                {viewingData.is_public ? 'PUBLIK' : 'INTERNAL'}
+                            </span>
+                        </div>
+
+                        <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">
+                            <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Judul Dokumen</h3>
+                                <p className="text-base font-bold text-gray-900">{viewingData.judul}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Kategori</h3>
+                                    <p className="text-sm font-semibold text-gray-900">{kategoriLabels[viewingData.kategori] || viewingData.kategori}</p>
+                                </div>
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Nomor Dokumen</h3>
+                                    <div className="inline-flex px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-100">
+                                        {viewingData.nomor_dokumen || 'Tidak ada nomor'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tanggal Terbit</h3>
+                                    <p className="text-sm font-semibold text-gray-900">{viewingData.tanggal_dokumen ? new Date(viewingData.tanggal_dokumen).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-'}</p>
+                                </div>
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Ukuran File</h3>
+                                    <p className="text-sm font-semibold text-gray-900">{(viewingData.file_size / 1024).toFixed(0)} KB</p>
+                                </div>
+                            </div>
+
+                            {viewingData.deskripsi && (
+                                <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi / Ringkasan</h3>
+                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{viewingData.deskripsi}</p>
+                                </div>
+                            )}
+                            
+                            <div className="bg-blue-50/50 p-3 rounded-xl border border-blue-100 flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Diupload Oleh</h3>
+                                    <p className="text-xs font-semibold text-blue-900">{viewingData.uploader?.name || 'Sistem'}</p>
+                                </div>
+                                <a 
+                                    href={`/dashboard/dokumen/${viewingData.id}/download`} 
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition"
+                                >
+                                    <ArrowDownTrayIcon className="w-4 h-4" />
+                                    Download File
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <button 
+                                onClick={closeDetailModal} 
+                                className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm shadow-sm"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                )}
             </Modal>
         </DashboardLayout>
     );

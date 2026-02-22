@@ -38,6 +38,11 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'settings' => [
+                'site_name' => \App\Models\Setting::getValue('site_name', 'SPMI STIKES Hang Tuah'),
+                'site_description' => \App\Models\Setting::getValue('site_description', 'Sistem Penjaminan Mutu Internal'),
+                'site_logo' => \App\Models\Setting::getValue('site_logo') ? asset('storage/' . \App\Models\Setting::getValue('site_logo')) : null,
+            ],
         ];
     }
 }

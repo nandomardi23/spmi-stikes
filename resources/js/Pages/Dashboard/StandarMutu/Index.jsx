@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
 const kategoriLabels = {
@@ -24,6 +24,8 @@ export default function Index({ standarMutu, filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [viewingData, setViewingData] = useState(null);
 
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         kode: '', nama: '', deskripsi: '', kategori: 'pendidikan',
@@ -98,6 +100,16 @@ export default function Index({ standarMutu, filters }) {
         }, 150);
     };
 
+    const openDetailModal = (item) => {
+        setViewingData(item);
+        setIsDetailModalOpen(true);
+    };
+
+    const closeDetailModal = () => {
+        setIsDetailModalOpen(false);
+        setTimeout(() => setViewingData(null), 150);
+    };
+
     return (
         <DashboardLayout title="Standar Mutu">
             <Head title="Standar Mutu" />
@@ -156,6 +168,13 @@ export default function Index({ standarMutu, filters }) {
                                     </td>
                                     <td className="px-6 py-4 text-center">
                                         <div className="flex items-center justify-center gap-1.5">
+                                            <button 
+                                                onClick={() => openDetailModal(s)} 
+                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
+                                                title="Detail"
+                                            >
+                                                <EyeIcon className="w-5 h-5" />
+                                            </button>
                                             <button 
                                                 onClick={() => openEditModal(s)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
@@ -306,6 +325,71 @@ export default function Index({ standarMutu, filters }) {
                         </div>
                     </form>
                 </div>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal show={isDetailModalOpen} onClose={closeDetailModal} maxWidth="xl">
+                {viewingData && (
+                    <div className="p-7">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1">Detail Standar Mutu</h2>
+                                <p className="text-sm text-gray-500">Informasi lengkap terkait standar mutu yang dipilih</p>
+                            </div>
+                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg mt-1 ${viewingData.is_active ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
+                                {viewingData.is_active ? 'AKTIF' : 'NON-AKTIF'}
+                            </span>
+                        </div>
+
+                        <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Kode Standar</h3>
+                                    <div className="inline-flex px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-100 uppercase tracking-tight">
+                                        {viewingData.kode}
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Kategori</h3>
+                                    <p className="text-sm font-semibold text-gray-900">{kategoriLabels[viewingData.kategori] || viewingData.kategori}</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Nama Standar</h3>
+                                <p className="text-base font-bold text-gray-900">{viewingData.nama}</p>
+                            </div>
+
+                            {viewingData.deskripsi && (
+                                <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi Singkat</h3>
+                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{viewingData.deskripsi}</p>
+                                </div>
+                            )}
+
+                            {viewingData.indikator && (
+                                <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Indikator Kinerja</h3>
+                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{viewingData.indikator}</p>
+                                </div>
+                            )}
+
+                            <div className="bg-primary-50 p-4 rounded-xl border border-primary-100">
+                                <h3 className="text-[10px] font-bold text-primary-400 uppercase tracking-wider mb-1.5">Target Capaian</h3>
+                                <p className="text-sm font-extrabold text-primary-900">{viewingData.target || 'Tidak ada target khusus'}</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <button 
+                                onClick={closeDetailModal} 
+                                className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm shadow-sm"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                )}
             </Modal>
         </DashboardLayout>
     );

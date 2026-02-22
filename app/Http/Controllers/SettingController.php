@@ -14,6 +14,9 @@ class SettingController extends Controller
         return Inertia::render('Dashboard/Pengaturan/Index', [
             'visi' => Setting::getValue('visi', ''),
             'misi' => Setting::getValue('misi', ''),
+            'site_name' => Setting::getValue('site_name', 'SPMI STIKES Hang Tuah'),
+            'site_description' => Setting::getValue('site_description', 'Sistem Penjaminan Mutu Internal'),
+            'site_logo' => Setting::getValue('site_logo') ? asset('storage/' . Setting::getValue('site_logo')) : null,
         ]);
     }
 
@@ -22,15 +25,29 @@ class SettingController extends Controller
         $validated = $request->validate([
             'visi' => 'nullable|string',
             'misi' => 'nullable|string',
+            'site_name' => 'nullable|string|max:255',
+            'site_description' => 'nullable|string|max:255',
+            'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        foreach ($validated as $key => $value) {
+        if ($request->hasFile('site_logo')) {
+            $path = $request->file('site_logo')->store('settings', 'public');
             Setting::updateOrCreate(
-                ['key' => $key],
-                ['value' => $value]
+                ['key' => 'site_logo'],
+                ['value' => $path]
             );
         }
 
-        return redirect()->back()->with('success', 'Pengaturan visi misi berhasil diperbarui.');
+        $keys = ['visi', 'misi', 'site_name', 'site_description'];
+        foreach ($keys as $key) {
+            if ($request->has($key)) {
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $request->get($key)]
+                );
+            }
+        }
+
+        return redirect()->back()->with('success', 'Pengaturan berhasil diperbarui.');
     }
 }

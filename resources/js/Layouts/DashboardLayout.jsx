@@ -20,7 +20,7 @@ const menuItems = [
 ];
 
 export default function DashboardLayout({ children, title }) {
-    const { auth, flash } = usePage().props;
+    const { auth, flash, settings } = usePage().props;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const currentUrl = usePage().url;
 
@@ -71,12 +71,16 @@ export default function DashboardLayout({ children, title }) {
                 sidebarOpen ? 'translate-x-0' : '-translate-x-full'
             )}>
                 <div className="flex items-center gap-3 px-6 h-16 border-b border-gray-100">
-                    <div className="w-9 h-9 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center shadow-md">
-                        <span className="text-white font-extrabold text-xs">HT</span>
+                    <div className="w-9 h-9 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center shadow-md overflow-hidden shrink-0">
+                        {settings?.site_logo ? (
+                            <img src={settings.site_logo} alt="Logo" className="w-full h-full object-cover" />
+                        ) : (
+                            <span className="text-white font-extrabold text-xs">{settings?.site_name?.charAt(0) || 'H'}T</span>
+                        )}
                     </div>
-                    <div>
-                        <h1 className="text-sm font-bold text-gray-900">SPMI</h1>
-                        <p className="text-[10px] text-gray-400 uppercase tracking-wider">Dashboard</p>
+                    <div className="overflow-hidden">
+                        <h1 className="text-sm font-bold text-gray-900 truncate tracking-tight">{settings?.site_name || 'SPMI'}</h1>
+                        <p className="text-[9px] text-gray-400 uppercase tracking-widest truncate">Dashboard Admin</p>
                     </div>
                 </div>
 

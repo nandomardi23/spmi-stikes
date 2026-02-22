@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
 export default function Index({ unitKerjas, users }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [viewingData, setViewingData] = useState(null);
 
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         nama: '', kepala_unit: '', jenis: 'prodi', deskripsi: '', kode: ''
@@ -77,6 +79,16 @@ export default function Index({ unitKerjas, users }) {
         }, 150);
     };
 
+    const openDetailModal = (item) => {
+        setViewingData(item);
+        setIsDetailModalOpen(true);
+    };
+
+    const closeDetailModal = () => {
+        setIsDetailModalOpen(false);
+        setTimeout(() => setViewingData(null), 150);
+    };
+
     return (
         <DashboardLayout title="Unit Kerja">
             <Head title="Unit Kerja" />
@@ -127,6 +139,13 @@ export default function Index({ unitKerjas, users }) {
                                     </td>
                                     <td className="px-6 py-4 text-center">
                                         <div className="flex items-center justify-center gap-1.5">
+                                            <button 
+                                                onClick={() => openDetailModal(u)} 
+                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
+                                                title="Detail"
+                                            >
+                                                <EyeIcon className="w-5 h-5" />
+                                            </button>
                                             <button 
                                                 onClick={() => openEditModal(u)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
@@ -260,6 +279,59 @@ export default function Index({ unitKerjas, users }) {
                         </div>
                     </form>
                 </div>
+            </Modal>
+
+            {/* Detail Modal */}
+            <Modal show={isDetailModalOpen} onClose={closeDetailModal} maxWidth="xl">
+                {viewingData && (
+                    <div className="p-7">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1">Detail Unit Kerja</h2>
+                                <p className="text-sm text-gray-500">Informasi profil unit kerja auditee</p>
+                            </div>
+                            <span className="px-2.5 py-1 bg-primary-50 text-primary-700 text-[11px] font-bold rounded-lg border border-primary-100 uppercase tracking-tight mt-1">
+                                {viewingData.jenis?.replace('_', ' ')}
+                            </span>
+                        </div>
+
+                        <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">
+                            <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Nama Unit Kerja</h3>
+                                <p className="text-base font-bold text-gray-900">{viewingData.nama}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Kode Unit</h3>
+                                    <div className="inline-flex px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-100">
+                                        {viewingData.kode || 'Belum diatur'}
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Kepala/Ketua Unit</h3>
+                                    <p className="text-sm font-semibold text-gray-900">{viewingData.kepala_unit || 'Belum diatur'}</p>
+                                </div>
+                            </div>
+
+                            {viewingData.deskripsi && (
+                                <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Deskripsi / Catatan</h3>
+                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{viewingData.deskripsi}</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-6 flex justify-end">
+                            <button 
+                                onClick={closeDetailModal} 
+                                className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm shadow-sm"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                )}
             </Modal>
         </DashboardLayout>
     );

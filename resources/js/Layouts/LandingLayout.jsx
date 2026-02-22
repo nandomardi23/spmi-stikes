@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function LandingLayout({ children }) {
-    const { auth } = usePage().props;
+    const { auth, settings } = usePage().props;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
@@ -12,12 +12,16 @@ export default function LandingLayout({ children }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <Link href="/" className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center shadow-lg">
-                                <span className="text-white font-extrabold text-sm">HT</span>
+                            <div className="w-10 h-10 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center shadow-lg overflow-hidden shrink-0">
+                                {settings?.site_logo ? (
+                                    <img src={settings.site_logo} alt="Logo" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-white font-extrabold text-sm">{settings?.site_name?.charAt(0) || 'H'}T</span>
+                                )}
                             </div>
-                            <div className="hidden sm:block">
-                                <h1 className="text-sm font-bold text-gray-900 leading-tight">SPMI</h1>
-                                <p className="text-xs text-gray-500 leading-tight">STIKES Hang Tuah</p>
+                            <div className="hidden sm:block overflow-hidden max-w-[200px]">
+                                <h1 className="text-sm font-bold text-gray-900 leading-tight truncate">{settings?.site_name || 'SPMI'}</h1>
+                                <p className="text-[10px] text-gray-500 leading-tight truncate">{settings?.site_description || 'STIKES Hang Tuah'}</p>
                             </div>
                         </Link>
 
@@ -85,16 +89,20 @@ export default function LandingLayout({ children }) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div>
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
-                                    <span className="text-white font-extrabold text-sm">HT</span>
+                                <div className="w-10 h-10 bg-linear-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-md overflow-hidden shrink-0">
+                                    {settings?.site_logo ? (
+                                        <img src={settings.site_logo} alt="Logo" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-white font-extrabold text-sm">{settings?.site_name?.charAt(0) || 'H'}T</span>
+                                    )}
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-bold">SPMI STIKES Hang Tuah</h3>
-                                    <p className="text-xs text-gray-400">Tanjungpinang</p>
+                                    <h3 className="text-white font-bold truncate max-w-[200px]">{settings?.site_name || 'SPMI STIKES Hang Tuah'}</h3>
+                                    <p className="text-[10px] text-gray-400 tracking-wider">Tanjungpinang</p>
                                 </div>
                             </div>
-                            <p className="text-sm text-gray-400 leading-relaxed">
-                                Sistem Penjaminan Mutu Internal untuk menjamin dan meningkatkan mutu pendidikan tinggi di STIKES Hang Tuah Tanjungpinang.
+                            <p className="text-sm text-gray-400 leading-relaxed italic">
+                                {settings?.site_description || 'Sistem Penjaminan Mutu Internal untuk menjamin dan meningkatkan mutu pendidikan tinggi.'}
                             </p>
                         </div>
 
@@ -124,7 +132,7 @@ export default function LandingLayout({ children }) {
                     </div>
 
                     <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-500">
-                        <p>&copy; {new Date().getFullYear()} STIKES Hang Tuah Tanjungpinang. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} {settings?.site_name || 'STIKES Hang Tuah Tanjungpinang'}. All rights reserved.</p>
                     </div>
                 </div>
             </footer>
