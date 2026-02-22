@@ -19,7 +19,7 @@ class GaleriController extends Controller
         }
 
         return \Inertia\Inertia::render('Dashboard/Galeri/Index', [
-            'galeris' => $query->latest()->paginate(10)->withQueryString(),
+            'galeris' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search']),
         ]);
     }

@@ -157,7 +157,18 @@ export default function Index({ unitKerjas, users }) {
 
                 {/* Pagination */}
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                    <Pagination links={unitKerjas.links} />
+                    <Pagination 
+                        links={unitKerjas.links} 
+                        meta={{
+                            from: unitKerjas.from,
+                            to: unitKerjas.to,
+                            total: unitKerjas.total,
+                            per_page: unitKerjas.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/unit-kerja', { per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

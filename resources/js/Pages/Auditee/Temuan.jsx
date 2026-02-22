@@ -34,7 +34,18 @@ export default function Temuan({ temuans }) {
                     </tbody>
                 </table>
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                    <Pagination links={temuans.links} />
+                    <Pagination 
+                        links={temuans.links} 
+                        meta={{
+                            from: temuans.from,
+                            to: temuans.to,
+                            total: temuans.total,
+                            per_page: temuans.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/auditee/temuan', { per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
         </DashboardLayout>

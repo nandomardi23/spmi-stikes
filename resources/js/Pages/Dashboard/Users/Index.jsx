@@ -212,7 +212,18 @@ export default function Index({ users, roles = [], unitKerja = [], filters, auth
                     </table>
                 </div>
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                    <Pagination links={users.links} />
+                    <Pagination 
+                        links={users.links} 
+                        meta={{
+                            from: users.from,
+                            to: users.to,
+                            total: users.total,
+                            per_page: users.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/users', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

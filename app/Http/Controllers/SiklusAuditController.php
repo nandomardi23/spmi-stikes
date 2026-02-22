@@ -8,10 +8,10 @@ use Inertia\Inertia;
 
 class SiklusAuditController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return Inertia::render('Dashboard/SiklusAudit/Index', [
-            'siklusAudit' => SiklusAudit::withCount('audits')->latest()->paginate(10),
+            'siklusAudit' => SiklusAudit::withCount('audits')->latest()->paginate($request->input('per_page', 10))->withQueryString(),
         ]);
     }
 

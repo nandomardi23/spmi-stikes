@@ -185,9 +185,19 @@ export default function Index({ standarMutu, filters }) {
                 </div>
 
                 {/* Pagination */}
-                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {standarMutu.from}-{standarMutu.to} data</p>
-                    <Pagination links={standarMutu.links} />
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination 
+                        links={standarMutu.links} 
+                        meta={{
+                            from: standarMutu.from,
+                            to: standarMutu.to,
+                            total: standarMutu.total,
+                            per_page: standarMutu.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/standar-mutu', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

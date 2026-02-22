@@ -170,9 +170,19 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
                 </div>
 
                 {/* Pagination */}
-                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {temuans.from}-{temuans.to} data</p>
-                    <Pagination links={temuans.links} />
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination 
+                        links={temuans.links} 
+                        meta={{
+                            from: temuans.from,
+                            to: temuans.to,
+                            total: temuans.total,
+                            per_page: temuans.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/temuan', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

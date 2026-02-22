@@ -6,11 +6,12 @@ use App\Models\Berita;
 use App\Models\Dokumen;
 use App\Models\StandarMutu;
 use App\Models\Setting;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LandingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $visi = Setting::getValue('visi', 'Menjadi Sekolah Tinggi Ilmu Kesehatan yang unggul, berkarakter, dan berdaya saing di tingkat nasional dalam menghasilkan tenaga kesehatan profesional yang beretika dan bermutu.');
         $misiText = Setting::getValue('misi', '');
@@ -25,9 +26,9 @@ class LandingController extends Controller
                 'Mengembangkan tata kelola institusi yang transparan dan akuntabel',
                 'Menjalin kerjasama strategis dengan stakeholder',
             ] : array_values($misi),
-            'standarMutu' => StandarMutu::where('is_active', true)->get(),
+            'standarMutu' => StandarMutu::where('is_active', true)->paginate($request->input('per_page_standar', 10), ['*'], 'page_standar')->withQueryString(),
             'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
-            'berita' => Berita::published()->latest()->paginate(6)->withQueryString(),
+            'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
             'galeri' => \App\Models\Galeri::where('is_active', true)->latest()->take(8)->get(),
         ]);
     }

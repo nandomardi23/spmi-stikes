@@ -82,10 +82,10 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
                         {[
-                            { label: 'Standar Mutu', value: standarMutu.length },
-                            { label: 'Dokumen Publik', value: dokumenPublik.length },
+                            { label: 'Standar Mutu', value: standarMutu.total || standarMutu.length },
+                            { label: 'Dokumen Publik', value: dokumenPublik.length || 0 },
                             { label: 'Galeri', value: galeri?.length || 0 },
-                            { label: 'Berita', value: berita.length },
+                            { label: 'Berita', value: berita.total || berita.length },
                         ].map((stat, i) => (
                             <div key={i} className="bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/10">
                                 <p className="text-3xl font-bold text-white">{stat.value}{stat.suffix && <span className="text-lg ml-1">{stat.suffix}</span>}</p>
@@ -171,7 +171,7 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                         <p className="text-gray-500 mt-3 font-medium">Standar mutu yang ditetapkan untuk menjamin kualitas pendidikan</p>
                     </div>
 
-                    {standarMutu.length > 0 ? (
+                    {(standarMutu.data || standarMutu).length > 0 ? (
                         <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
@@ -183,7 +183,7 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-50">
-                                        {standarMutu.map((standar) => (
+                                        {(standarMutu.data || standarMutu).map((standar) => (
                                             <tr key={standar.id} className="hover:bg-primary-50/30 transition-colors group">
                                                 <td className="px-8 py-6">
                                                     <div className="flex items-start gap-5">
@@ -222,6 +222,23 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            {standarMutu.links && (
+                                <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/30 flex justify-end">
+                                    <Pagination 
+                                        links={standarMutu.links} 
+                                        meta={{
+                                            from: standarMutu.from,
+                                            to: standarMutu.to,
+                                            total: standarMutu.total,
+                                            per_page: standarMutu.per_page
+                                        }}
+                                        onPerPageChange={(per_page) => {
+                                            router.get('/#standar-mutu', { per_page_standar: per_page }, { preserveState: true, preserveScroll: true });
+                                        }}
+                                    />
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
@@ -432,8 +449,19 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                             ))}
                         </div>
                         
-                        <div className="mt-12 flex justify-center">
-                            <Pagination links={berita.links} preserveScroll={true} />
+                        <div className="mt-12 flex justify-end">
+                            <Pagination 
+                                links={berita.links} 
+                                meta={{
+                                    from: berita.from,
+                                    to: berita.to,
+                                    total: berita.total,
+                                    per_page: berita.per_page
+                                }}
+                                onPerPageChange={(per_page) => {
+                                    router.get('/#berita', { per_page_berita: per_page }, { preserveState: true, preserveScroll: true });
+                                }}
+                            />
                         </div>
                         </>
                     ) : (

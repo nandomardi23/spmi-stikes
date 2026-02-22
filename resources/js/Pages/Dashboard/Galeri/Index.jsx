@@ -185,9 +185,19 @@ export default function Index({ galeris, filters }) {
                 </div>
 
                 {/* Pagination */}
-                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {galeris.from}-{galeris.to} data</p>
-                    <Pagination links={galeris.links} />
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination 
+                        links={galeris.links} 
+                        meta={{
+                            from: galeris.from,
+                            to: galeris.to,
+                            total: galeris.total,
+                            per_page: galeris.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/galeri', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

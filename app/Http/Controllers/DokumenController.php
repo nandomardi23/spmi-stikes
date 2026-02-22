@@ -22,7 +22,7 @@ class DokumenController extends Controller
         }
 
         return Inertia::render('Dashboard/Dokumen/Index', [
-            'dokumens' => $query->latest()->paginate(10)->withQueryString(),
+            'dokumens' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search', 'kategori']),
         ]);
     }

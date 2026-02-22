@@ -22,7 +22,7 @@ class TemuanController extends Controller
         }
 
         return Inertia::render('Dashboard/Temuan/Index', [
-            'temuans' => $query->latest()->paginate(10)->withQueryString(),
+            'temuans' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['status', 'jenis']),
         ]);
     }

@@ -198,7 +198,18 @@ export default function Index({ dokumens, filters }) {
 
                 {/* Pagination */}
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                    <Pagination links={dokumens.links} />
+                    <Pagination 
+                        links={dokumens.links} 
+                        meta={{
+                            from: dokumens.from,
+                            to: dokumens.to,
+                            total: dokumens.total,
+                            per_page: dokumens.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/dokumen', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

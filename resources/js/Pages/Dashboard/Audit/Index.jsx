@@ -195,9 +195,19 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                 </div>
 
                 {/* Pagination */}
-                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {audits.from}-{audits.to} data</p>
-                    <Pagination links={audits.links} />
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination 
+                        links={audits.links} 
+                        meta={{
+                            from: audits.from,
+                            to: audits.to,
+                            total: audits.total,
+                            per_page: audits.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/audit', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 

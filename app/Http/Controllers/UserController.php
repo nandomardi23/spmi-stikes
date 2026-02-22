@@ -28,7 +28,7 @@ class UserController extends Controller
         }
 
         return Inertia::render('Dashboard/Users/Index', [
-            'users' => $query->latest()->paginate(10)->withQueryString(),
+            'users' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'roles' => Role::all(),
             'filters' => $request->only(['search', 'role']),
         ]);

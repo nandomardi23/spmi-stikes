@@ -17,7 +17,7 @@ class UnitKerjaController extends Controller
         }
 
         return Inertia::render('Dashboard/UnitKerja/Index', [
-            'unitKerjas' => $query->latest()->paginate(10)->withQueryString(),
+            'unitKerjas' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'users' => \App\Models\User::all(),
             'filters' => $request->only(['search']),
         ]);

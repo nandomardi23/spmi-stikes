@@ -24,7 +24,7 @@ class StandarMutuController extends Controller
         }
 
         return Inertia::render('Dashboard/StandarMutu/Index', [
-            'standarMutu' => $query->latest()->paginate(10)->withQueryString(),
+            'standarMutu' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search', 'kategori']),
         ]);
     }

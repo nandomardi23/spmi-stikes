@@ -44,7 +44,7 @@ class AuditeeController extends Controller
 
         return Inertia::render('Auditee/Dokumen/Index', [
             'dokumens' => Dokumen::where('unit_kerja_id', $unitKerjaId)
-                ->latest()->paginate(10),
+                ->latest()->paginate($request->input('per_page', 10))->withQueryString(),
         ]);
     }
 
@@ -81,7 +81,7 @@ class AuditeeController extends Controller
         $temuans = Temuan::with(['audit.siklusAudit', 'standarMutu', 'tindakLanjuts'])
             ->whereHas('audit', fn($q) => $q->where('unit_kerja_id', $unitKerjaId))
             ->latest()
-            ->paginate(10);
+            ->paginate($request->input('per_page', 10))->withQueryString();
 
         return Inertia::render('Auditee/Temuan/Index', [
             'temuans' => $temuans,

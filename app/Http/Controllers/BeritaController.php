@@ -22,7 +22,7 @@ class BeritaController extends Controller
         }
 
         return Inertia::render('Dashboard/Berita/Index', [
-            'berita' => $query->latest()->paginate(10)->withQueryString(),
+            'berita' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search', 'status']),
         ]);
     }

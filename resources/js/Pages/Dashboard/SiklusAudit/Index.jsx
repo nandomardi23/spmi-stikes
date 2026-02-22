@@ -168,6 +168,22 @@ export default function Index({ siklusAudit }) {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination */}
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination 
+                        links={siklusAudit.links} 
+                        meta={{
+                            from: siklusAudit.from,
+                            to: siklusAudit.to,
+                            total: siklusAudit.total,
+                            per_page: siklusAudit.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/siklus-audit', { per_page }, { preserveState: true });
+                        }}
+                    />
+                </div>
             </div>
 
             {/* Form Modal */}

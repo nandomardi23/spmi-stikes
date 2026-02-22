@@ -24,7 +24,7 @@ class AuditController extends Controller
         }
 
         return Inertia::render('Dashboard/Audit/Index', [
-            'audits' => $query->latest()->paginate(10)->withQueryString(),
+            'audits' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'siklus' => SiklusAudit::latest()->get(),
             'filters' => $request->only(['status', 'siklus']),
         ]);

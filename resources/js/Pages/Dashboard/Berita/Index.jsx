@@ -194,7 +194,18 @@ export default function Index({ berita, filters }) {
                     </table>
                 </div>
                 <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                    <Pagination links={berita.links} />
+                    <Pagination 
+                        links={berita.links} 
+                        meta={{
+                            from: berita.from,
+                            to: berita.to,
+                            total: berita.total,
+                            per_page: berita.per_page
+                        }}
+                        onPerPageChange={(per_page) => {
+                            router.get('/dashboard/berita', { ...filters, per_page }, { preserveState: true });
+                        }}
+                    />
                 </div>
             </div>
 
