@@ -384,16 +384,25 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                 <XMarkIcon className="w-6 h-6" />
                             </button>
                             <div className="flex flex-col md:flex-row">
-                                <div className="md:w-2/3 bg-gray-100 flex items-center justify-center min-h-[300px]">
-                                    <img 
-                                        src={`/storage/${selectedGaleri.file_path}`} 
-                                        className="w-full h-full object-contain max-h-[80vh]"
-                                        alt={selectedGaleri.judul}
-                                        onError={(e) => {
-                                            e.target.onerror = null; 
-                                            e.target.src = `https://picsum.photos/seed/${selectedGaleri.id}/1200/900`;
-                                        }}
-                                    />
+                                <div className="md:w-2/3 bg-black flex flex-col items-center overflow-y-auto max-h-[85vh] scrollbar-hide">
+                                    {selectedGaleri.images && selectedGaleri.images.length > 0 ? (
+                                        selectedGaleri.images.map((img) => (
+                                            <img 
+                                                key={img.id}
+                                                src={`/storage/${img.file_path}`} 
+                                                className="w-full h-auto object-contain max-h-[80vh] border-b border-gray-800"
+                                                alt={selectedGaleri.judul}
+                                                onError={(e) => {
+                                                    e.target.onerror = null; 
+                                                    e.target.src = `https://picsum.photos/seed/${selectedGaleri.id}/1200/900`;
+                                                }}
+                                            />
+                                        ))
+                                    ) : (
+                                        <div className="w-full h-[300px] flex items-center justify-center text-gray-400">
+                                            Tidak ada foto
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="md:w-1/3 p-8 flex flex-col justify-center bg-white">
                                     <span className="text-primary-600 font-bold text-xs uppercase tracking-widest mb-3">Dokumentasi Kegiatan</span>

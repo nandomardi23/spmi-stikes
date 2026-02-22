@@ -12,12 +12,14 @@ class Galeri extends Model
     protected $fillable = [
         'judul',
         'deskripsi',
-        'file_path',
-        'file_name',
-        'file_size',
         'is_active',
         'uploaded_by',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(GaleriImage::class, 'galeri_id');
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

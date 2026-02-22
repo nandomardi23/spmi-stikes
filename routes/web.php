@@ -56,6 +56,8 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('unit-kerja', UnitKerjaController::class)->except(['show', 'create', 'edit']);
 
     // Galeri
+    Route::delete('galeri/image/{image}', [App\Http\Controllers\GaleriController::class, 'destroyImage'])->name('galeri.image.destroy');
+    Route::post('galeri/{galeri}', [App\Http\Controllers\GaleriController::class, 'update'])->name('galeri.update.post');
     Route::resource('galeri', App\Http\Controllers\GaleriController::class)->except(['show', 'create', 'edit']);
 
     // Berita

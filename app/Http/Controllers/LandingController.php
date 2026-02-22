@@ -29,7 +29,7 @@ class LandingController extends Controller
             'standarMutu' => StandarMutu::where('is_active', true)->paginate($request->input('per_page_standar', 10), ['*'], 'page_standar')->withQueryString(),
             'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
-            'galeri' => \App\Models\Galeri::where('is_active', true)->latest()->take(8)->get(),
+            'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
         ]);
     }
 
