@@ -64,6 +64,12 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     // Users
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
 
+    // Roles & Permissions (Super Admin only)
+    Route::middleware('role:super-admin')->group(function () {
+        Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show', 'create', 'edit']);
+        Route::resource('permissions', \App\Http\Controllers\PermissionController::class)->except(['show', 'create', 'edit']);
+    });
+
     // Settings
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
     Route::post('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');

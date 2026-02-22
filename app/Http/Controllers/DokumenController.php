@@ -115,6 +115,7 @@ class DokumenController extends Controller
     public function download(Dokumen $dokumen)
     {
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        //masih belum bisa download
         $disk = Storage::disk('public');
 
         return $disk->download($dokumen->file_path, $dokumen->file_name);
