@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan', penelitian: 'Penelitian', pengabdian: 'Pengabdian',
@@ -128,10 +129,10 @@ export default function Index({ standarMutu, filters }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kode</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Nama Standar</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kategori</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Kode</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Nama Standar</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Kategori</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -147,8 +148,8 @@ export default function Index({ standarMutu, filters }) {
                                         <p className="font-bold text-gray-900">{s.nama}</p>
                                         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5 truncate max-w-xs">{s.target || 'Tanpa Target'}</p>
                                     </td>
-                                    <td className="px-6 py-4 font-medium text-gray-600">{kategoriLabels[s.kategori] || s.kategori}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center font-medium text-gray-600">{kategoriLabels[s.kategori] || s.kategori}</td>
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                             {s.is_active ? 'AKTIF' : 'NON-AKTIF'}
                                         </span>
@@ -184,21 +185,10 @@ export default function Index({ standarMutu, filters }) {
                 </div>
 
                 {/* Pagination */}
-                {standarMutu.links && standarMutu.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {standarMutu.from}-{standarMutu.to} data</p>
-                        <div className="flex gap-1">
-                            {standarMutu.links.map((link, i) => (
-                                <Link 
-                                    key={i} 
-                                    href={link.url || '#'} 
-                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} 
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {standarMutu.from}-{standarMutu.to} data</p>
+                    <Pagination links={standarMutu.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

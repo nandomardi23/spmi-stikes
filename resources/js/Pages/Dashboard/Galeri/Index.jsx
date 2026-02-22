@@ -1,6 +1,9 @@
-import { TrashIcon, PencilSquareIcon, PhotoIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import DashboardLayout from '@/Layouts/DashboardLayout';
+import { useState } from 'react';
+import Modal from '@/Components/Modal';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ galeris, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -116,23 +119,23 @@ export default function Index({ galeris, filters }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="text-left px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Gambar</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Informasi Dokumentasi</th>
-                                <th className="text-left px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] hidden md:table-cell">Deskripsi</th>
-                                <th className="text-right px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Gambar</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Dokumentasi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left hidden md:table-cell">Deskripsi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {galeris.data.length > 0 ? galeris.data.map((g) => (
                                 <tr key={g.id} className="hover:bg-gray-50/50 transition duration-200">
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-tight border ${g.is_active ? 'bg-green-50 text-green-700 border-green-100' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
                                             {g.is_active ? 'Publik' : 'Draft'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="relative group">
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="relative group flex justify-center">
                                             <img 
                                                 src={`/storage/${g.file_path}`} 
                                                 alt={g.judul} 
@@ -182,21 +185,10 @@ export default function Index({ galeris, filters }) {
                 </div>
 
                 {/* Pagination */}
-                {galeris.links && galeris.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {galeris.from}-{galeris.to} data</p>
-                        <div className="flex gap-1">
-                            {galeris.links.map((link, i) => (
-                                <Link 
-                                    key={i} 
-                                    href={link.url || '#'} 
-                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} 
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {galeris.from}-{galeris.to} data</p>
+                    <Pagination links={galeris.links} />
+                </div>
             </div>
 
             {/* Modal Form */}

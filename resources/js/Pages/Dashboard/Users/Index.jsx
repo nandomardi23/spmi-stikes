@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ users, roles = [], unitKerja = [], filters, auth }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -149,8 +150,8 @@ export default function Index({ users, roles = [], unitKerja = [], filters, auth
                     <table className="w-full text-sm text-left">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Informasi Pengguna</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Peran & Unit</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Pengguna</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Peran & Unit</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -210,18 +211,9 @@ export default function Index({ users, roles = [], unitKerja = [], filters, auth
                         </tbody>
                     </table>
                 </div>
-                {users.links && users.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-1">
-                        {users.links.map((link, i) => (
-                            <Link 
-                                key={i} 
-                                href={link.url || '#'} 
-                                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`} 
-                                dangerouslySetInnerHTML={{ __html: link.label }} 
-                            />
-                        ))}
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination links={users.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

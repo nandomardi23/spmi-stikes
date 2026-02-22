@@ -27,7 +27,7 @@ class LandingController extends Controller
             ] : array_values($misi),
             'standarMutu' => StandarMutu::where('is_active', true)->get(),
             'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
-            'berita' => Berita::published()->latest()->take(4)->get(),
+            'berita' => Berita::published()->latest()->paginate(6)->withQueryString(),
             'galeri' => \App\Models\Galeri::where('is_active', true)->latest()->take(8)->get(),
         ]);
     }

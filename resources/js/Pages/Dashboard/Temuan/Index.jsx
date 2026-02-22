@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
 const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
@@ -110,10 +111,10 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Unit Kerja & Audit</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Jenis Temuan</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Deskripsi Permasalahan</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Unit Kerja & Audit</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Jenis Temuan</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Deskripsi Permasalahan</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -124,7 +125,7 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
                                         <p className="font-bold text-gray-900">{t.audit?.unit_kerja?.nama}</p>
                                         <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5 italic">ID Audit: #{t.audit_id}</p>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-tight border ${jenisColors[t.jenis]?.replace('bg-', 'border-').replace('text-', 'border-').split(' ')[0]} ${jenisColors[t.jenis]}`}>
                                             {t.jenis}
                                         </span>
@@ -133,7 +134,7 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
                                         <p className="text-gray-600 max-w-xs truncate font-medium">{t.deskripsi}</p>
                                         {t.standar_mutu && <p className="text-[10px] text-primary-600 font-bold uppercase mt-1">Standar: {t.standar_mutu.kode}</p>}
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-tight border ${statusColors[t.status]?.replace('bg-', 'border-').replace('text-', 'border-').split(' ')[0]} ${statusColors[t.status]}`}>
                                             {t.status}
                                         </span>
@@ -169,21 +170,10 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
                 </div>
 
                 {/* Pagination */}
-                {temuans.links && temuans.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {temuans.from}-{temuans.to} data</p>
-                        <div className="flex gap-1">
-                            {temuans.links.map((link, i) => (
-                                <Link 
-                                    key={i} 
-                                    href={link.url || '#'} 
-                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} 
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {temuans.from}-{temuans.to} data</p>
+                    <Pagination links={temuans.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

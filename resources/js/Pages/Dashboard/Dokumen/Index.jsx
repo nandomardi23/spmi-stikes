@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 const kategoriLabels = {
     kebijakan: 'Kebijakan', manual: 'Manual', standar: 'Standar',
@@ -131,10 +132,10 @@ export default function Index({ dokumens, filters }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Judul & Informasi</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kategori</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Publikasi</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Uploader</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Judul & Informasi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Kategori</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Publikasi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Uploader</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -147,17 +148,17 @@ export default function Index({ dokumens, filters }) {
                                             {d.nomor_dokumen || 'Tanpa Nomor'} • {d.tanggal_dokumen || '-'} • {(d.file_size / 1024).toFixed(0)} KB
                                         </p>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded-md border border-indigo-100 uppercase tracking-tight">
                                             {kategoriLabels[d.kategori] || d.kategori}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg ${d.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                                             {d.is_public ? 'PUBLIK' : 'INTERNAL'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-600 font-medium text-xs tracking-tight">{d.uploader?.name || '-'}</td>
+                                    <td className="px-6 py-4 text-center text-gray-600 font-medium text-xs tracking-tight">{d.uploader?.name || '-'}</td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-1.5">
                                             <a 
@@ -196,18 +197,9 @@ export default function Index({ dokumens, filters }) {
                 </div>
 
                 {/* Pagination */}
-                {dokumens.links && dokumens.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-1">
-                        {dokumens.links.map((link, i) => (
-                            <Link 
-                                key={i} 
-                                href={link.url || '#'} 
-                                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`} 
-                                dangerouslySetInnerHTML={{ __html: link.label }} 
-                            />
-                        ))}
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination links={dokumens.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

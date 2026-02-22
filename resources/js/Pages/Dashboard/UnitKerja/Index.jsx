@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ unitKerjas, users }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,9 +99,9 @@ export default function Index({ unitKerjas, users }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Informasi Unit</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Ketua / Kepala</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Kategori</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Unit</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Ketua / Kepala</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Kategori</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -118,8 +119,8 @@ export default function Index({ unitKerjas, users }) {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 font-medium text-gray-700">{u.kepala_unit || '-'}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-left font-medium text-gray-700">{u.kepala_unit || '-'}</td>
+                                    <td className="px-6 py-4 text-center">
                                         <span className="px-2.5 py-1 bg-primary-50 text-primary-700 text-[10px] font-bold rounded-lg border border-primary-100 uppercase tracking-tight">
                                             {u.jenis?.replace('_', ' ')}
                                         </span>
@@ -155,18 +156,9 @@ export default function Index({ unitKerjas, users }) {
                 </div>
 
                 {/* Pagination */}
-                {unitKerjas.links && unitKerjas.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-1">
-                        {unitKerjas.links.map((link, i) => (
-                            <Link 
-                                key={i} 
-                                href={link.url || '#'} 
-                                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`} 
-                                dangerouslySetInnerHTML={{ __html: link.label }} 
-                            />
-                        ))}
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
+                    <Pagination links={unitKerjas.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

@@ -1,5 +1,9 @@
-import { Head } from '@inertiajs/react';
+import { useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
+import Pagination from '@/Components/Pagination';
+import Modal from '@/Components/Modal';
+import { XMarkIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan',
@@ -29,6 +33,8 @@ const dokumenKategoriLabels = {
 };
 
 export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi }) {
+    const [selectedGaleri, setSelectedGaleri] = useState(null);
+
     return (
         <LandingLayout>
             <Head>
@@ -162,35 +168,64 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     <div className="text-center mb-16">
                         <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Jaminan Kualitas</span>
                         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Standar Mutu</h2>
-                        <p className="text-gray-500 mt-3">Standar mutu yang ditetapkan untuk menjamin kualitas pendidikan</p>
+                        <p className="text-gray-500 mt-3 font-medium">Standar mutu yang ditetapkan untuk menjamin kualitas pendidikan</p>
                     </div>
 
                     {standarMutu.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {standarMutu.map((standar) => (
-                                <div key={standar.id} className="flex flex-col h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <span className="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg">{standar.kode}</span>
-                                        <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${kategoriColors[standar.kategori] || 'bg-gray-100 text-gray-600'}`}>
-                                            {kategoriLabels[standar.kategori] || standar.kategori}
-                                        </span>
-                                    </div>
-                                    <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition">{standar.nama}</h3>
-                                    {standar.deskripsi && (
-                                        <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed">{standar.deskripsi}</p>
-                                    )}
-                                    {standar.target && (
-                                        <div className="mt-auto pt-4 border-t border-gray-100">
-                                            <span className="text-xs text-gray-400">Target:</span>
-                                            <p className="text-sm font-medium text-gray-700">{standar.target}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                        <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50/50 border-b border-gray-100">
+                                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kode & Standar Mutu</th>
+                                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center hidden sm:table-cell">Kategori</th>
+                                            <th className="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Target</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {standarMutu.map((standar) => (
+                                            <tr key={standar.id} className="hover:bg-primary-50/30 transition-colors group">
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-start gap-5">
+                                                        <div className="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center shrink-0 border border-primary-100 group-hover:bg-white transition-colors">
+                                                            <span className="text-[10px] font-bold text-primary-700 leading-none text-center px-1">
+                                                                {standar.kode.includes('-') ? (
+                                                                    <>
+                                                                        {standar.kode.split('-')[0]}<br/>{standar.kode.split('-')[1]}
+                                                                    </>
+                                                                ) : standar.kode}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{standar.nama}</p>
+                                                            {standar.deskripsi && <p className="text-sm text-gray-500 mt-1 line-clamp-2 max-w-xl leading-relaxed">{standar.deskripsi}</p>}
+                                                            {/* Mobile category */}
+                                                            <div className="mt-2 sm:hidden">
+                                                                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-lg uppercase tracking-tight ${kategoriColors[standar.kategori] || 'bg-gray-100 text-gray-600'}`}>
+                                                                    {kategoriLabels[standar.kategori] || standar.kategori}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6 text-center hidden sm:table-cell align-middle">
+                                                    <span className={`px-3 py-1 text-xs font-bold rounded-xl uppercase tracking-tight ${kategoriColors[standar.kategori] || 'bg-gray-100 text-gray-600'}`}>
+                                                        {kategoriLabels[standar.kategori] || standar.kategori}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-6 align-middle text-center">
+                                                    <p className="text-sm font-extrabold text-gray-900">{standar.target || '-'}</p>
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Capaian</p>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     ) : (
-                        <div className="text-center py-12 bg-gray-50 rounded-2xl">
-                            <p className="text-gray-400">Belum ada standar mutu yang dipublikasikan.</p>
+                        <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                            <p className="text-gray-400 font-medium">Belum ada standar mutu yang dipublikasikan.</p>
                         </div>
                     )}
                 </div>
@@ -279,22 +314,35 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     <div className="text-center mb-16">
                         <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Dokumentasi</span>
                         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Galeri Kegiatan</h2>
-                        <p className="text-gray-500 mt-3">Dokumentasi kegiatan terkait penjaminan mutu</p>
+                        <p className="text-gray-500 mt-3 font-medium">Dokumentasi kegiatan terkait penjaminan mutu</p>
                     </div>
 
                     {galeri && galeri.length > 0 ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                             {galeri.map((g) => (
-                                <div key={g.id} className="group cursor-pointer">
+                                <div 
+                                    key={g.id} 
+                                    className="group cursor-pointer"
+                                    onClick={() => setSelectedGaleri(g)}
+                                >
                                     <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200 border border-gray-100 shadow-sm">
                                         <img 
                                             src={`/storage/${g.file_path}`} 
                                             alt={g.judul} 
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                            onError={(e) => {
+                                                e.target.onerror = null; 
+                                                e.target.src = `https://picsum.photos/seed/${g.id}/800/600`;
+                                            }}
                                         />
-                                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                                            <h3 className="text-white font-medium text-sm line-clamp-2 leading-tight">{g.judul}</h3>
-                                            {g.deskripsi && <p className="text-white/80 text-xs mt-1 line-clamp-1">{g.deskripsi}</p>}
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-5">
+                                            <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                                                    <EyeIcon className="w-5 h-5" />
+                                                </div>
+                                                <h3 className="text-white font-bold text-sm line-clamp-2 leading-tight">{g.judul}</h3>
+                                                {g.deskripsi && <p className="text-white/70 text-xs mt-1.5 line-clamp-1 font-medium">{g.deskripsi}</p>}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -302,10 +350,55 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-2xl">
-                            <p className="text-gray-400">Belum ada dokumentasi kegiatan.</p>
+                            <p className="text-gray-400 font-medium">Belum ada dokumentasi kegiatan.</p>
                         </div>
                     )}
                 </div>
+
+                {/* Lightbox Modal */}
+                <Modal show={!!selectedGaleri} onClose={() => setSelectedGaleri(null)} maxWidth="5xl">
+                    {selectedGaleri && (
+                        <div className="relative bg-white overflow-hidden">
+                            <button 
+                                onClick={() => setSelectedGaleri(null)}
+                                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-sm shadow-lg"
+                            >
+                                <XMarkIcon className="w-6 h-6" />
+                            </button>
+                            <div className="flex flex-col md:flex-row">
+                                <div className="md:w-2/3 bg-gray-100 flex items-center justify-center min-h-[300px]">
+                                    <img 
+                                        src={`/storage/${selectedGaleri.file_path}`} 
+                                        className="w-full h-full object-contain max-h-[80vh]"
+                                        alt={selectedGaleri.judul}
+                                        onError={(e) => {
+                                            e.target.onerror = null; 
+                                            e.target.src = `https://picsum.photos/seed/${selectedGaleri.id}/1200/900`;
+                                        }}
+                                    />
+                                </div>
+                                <div className="md:w-1/3 p-8 flex flex-col justify-center bg-white">
+                                    <span className="text-primary-600 font-bold text-xs uppercase tracking-widest mb-3">Dokumentasi Kegiatan</span>
+                                    <h2 className="text-2xl font-extrabold text-gray-900 leading-tight mb-4">{selectedGaleri.judul}</h2>
+                                    <div className="h-1 w-12 bg-primary-500 rounded-full mb-6" />
+                                    <p className="text-gray-600 leading-relaxed text-sm mb-8 whitespace-pre-line">
+                                        {selectedGaleri.deskripsi || 'Tidak ada deskripsi tambahan untuk dokumentasi ini.'}
+                                    </p>
+                                    <div className="mt-auto pt-6 border-t border-gray-100">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600">
+                                                <EyeIcon className="w-4 h-4" />
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                                                Dilihat Mode Pratinjau
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
             </section>
 
             {/* Berita */}
@@ -316,9 +409,10 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                         <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Berita & Pengumuman</h2>
                     </div>
 
-                    {berita.length > 0 ? (
-                        <div className="grid md:grid-cols-2 gap-8">
-                            {berita.map((item, i) => (
+                    {berita.data && berita.data.length > 0 ? (
+                        <>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {berita.data.map((item, i) => (
                                 <a key={item.id} href={`/berita/${item.slug}`} className="group block h-full">
                                     <div className="flex flex-col h-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                                         {item.gambar && (
@@ -337,6 +431,11 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                 </a>
                             ))}
                         </div>
+                        
+                        <div className="mt-12 flex justify-center">
+                            <Pagination links={berita.links} preserveScroll={true} />
+                        </div>
+                        </>
                     ) : (
                         <div className="text-center py-12 bg-gray-50 rounded-2xl">
                             <p className="text-gray-400">Belum ada berita atau pengumuman.</p>

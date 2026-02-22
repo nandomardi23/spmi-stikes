@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
 
@@ -110,11 +111,11 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Unit Kerja & Siklus</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Auditor</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Jadwal Pelaksanaan</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Hasil / Skor</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Unit Kerja & Siklus</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Auditor</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Jadwal</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Hasil</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -133,24 +134,24 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                                             <span className="font-medium text-gray-700">{a.auditor?.name || 'Belum Ditunjuk'}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-600 font-medium">
-                                        <div className="flex flex-col">
-                                            <span>{a.tanggal_audit || 'Belum Diatur'}</span>
-                                            {a.tanggal_audit && <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Tersinkron dengan Kalender</span>}
+                                    <td className="px-6 py-4 text-gray-600 font-medium text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span className="whitespace-nowrap">{a.tanggal_audit ? new Date(a.tanggal_audit).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Belum Diatur'}</span>
+                                            {a.tanggal_audit && <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Kalender</span>}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-tight border ${statusColors[a.status]?.replace('bg-', 'border-').replace('text-', 'border-').split(' ')[0]} ${statusColors[a.status]}`}>
                                             {a.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         {a.skor ? (
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex flex-col items-center">
                                                 <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-xs font-bold text-green-700 border border-green-100">
                                                     {a.skor}
                                                 </div>
-                                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Point</span>
+                                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter mt-1">Point</span>
                                             </div>
                                         ) : (
                                             <span className="text-gray-400 text-xs italic">Belum Dinilai</span>
@@ -194,21 +195,10 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                 </div>
 
                 {/* Pagination */}
-                {audits.links && audits.links.length > 3 && (
-                    <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {audits.from}-{audits.to} data</p>
-                        <div className="flex gap-1">
-                            {audits.links.map((link, i) => (
-                                <Link 
-                                    key={i} 
-                                    href={link.url || '#'} 
-                                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${link.active ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20' : link.url ? 'text-gray-600 hover:bg-gray-100' : 'text-gray-300 pointer-events-none'}`}
-                                    dangerouslySetInnerHTML={{ __html: link.label }} 
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+                <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menampilkan {audits.from}-{audits.to} data</p>
+                    <Pagination links={audits.links} />
+                </div>
             </div>
 
             {/* Form Modal */}

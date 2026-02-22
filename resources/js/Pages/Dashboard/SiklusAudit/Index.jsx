@@ -101,10 +101,10 @@ export default function Index({ siklusAudit }) {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-gray-100 bg-gray-50/50">
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Periode & Nama Siklus</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Tahun / Semester</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Status</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px]">Total Audit</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Periode & Nama Siklus</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Tahun / Semester</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Total Audit</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -118,23 +118,25 @@ export default function Index({ siklusAudit }) {
                                             </div>
                                             <div>
                                                 <p className="font-bold text-gray-900">{s.nama}</p>
-                                                <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5">{s.tanggal_mulai} - {s.tanggal_selesai}</p>
+                                                <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5">
+                                                    {s.tanggal_mulai ? new Date(s.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'} - {s.tanggal_selesai ? new Date(s.tanggal_selesai).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+                                                </p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <p className="font-bold text-gray-700">TA {s.tahun}</p>
-                                        <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter">Semester {s.semester}</p>
+                                    <td className="px-6 py-4 text-center">
+                                        <p className="font-bold text-gray-700 text-xs">TA {s.tahun}</p>
+                                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Semester {s.semester}</p>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 text-center">
                                         <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-tight border ${statusColors[s.status]?.replace('bg-', 'border-').replace('text-', 'border-').split(' ')[0]} ${statusColors[s.status]}`}>
                                             {s.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-gray-900">{s.audits_count}</span>
-                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Unit Auditing</span>
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span className="font-bold text-gray-900 text-xs">{s.audits_count}</span>
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Unit</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-right">
