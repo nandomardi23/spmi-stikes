@@ -45,7 +45,7 @@ export default function Dokumen({ dokumens, unitKerja }) {
                         <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Kategori</th>
                         <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Terbuka</th>
                         <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Ukuran</th>
-                        <th className="text-right px-6 py-3.5 font-semibold text-gray-600">Aksi</th>
+                        <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Aksi</th>
                     </tr></thead>
                     <tbody className="divide-y divide-gray-50">
                         {dokumens.data.length > 0 ? dokumens.data.map(d => (
@@ -54,7 +54,7 @@ export default function Dokumen({ dokumens, unitKerja }) {
                                 <td className="px-6 py-4 text-center text-gray-600 capitalize">{d.kategori}</td>
                                 <td className="px-6 py-4 text-center"><span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${d.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>{d.is_public ? 'Publik' : 'Internal'}</span></td>
                                 <td className="px-6 py-4 text-center text-gray-600">{(d.file_size / 1024).toFixed(0)} KB</td>
-                                <td className="px-6 py-4 text-right"><a href={`/dashboard/dokumen/${d.id}/download`} className="text-primary-600 font-medium">Download</a></td>
+                                <td className="px-6 py-4 text-center"><a href={`/dashboard/dokumen/${d.id}/download`} className="text-primary-600 font-medium">Download</a></td>
                             </tr>
                         )) : <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-400">Tidak ada dokumen unit yang diupload.</td></tr>}
                     </tbody>

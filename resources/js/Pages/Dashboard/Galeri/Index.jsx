@@ -123,7 +123,7 @@ export default function Index({ galeris, filters }) {
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Gambar</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Dokumentasi</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left hidden md:table-cell">Deskripsi</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -154,8 +154,8 @@ export default function Index({ galeris, filters }) {
                                     <td className="px-6 py-4 text-gray-600 max-w-xs truncate hidden md:table-cell font-medium italic">
                                         {g.deskripsi || 'Tidak ada deskripsi'}
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <button 
                                                 onClick={() => openEditModal(g)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 

@@ -5,6 +5,7 @@ import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ siklusAudit }) {
     const statusColors = { perencanaan: 'bg-blue-100 text-blue-700', pelaksanaan: 'bg-amber-100 text-amber-700', pelaporan: 'bg-purple-100 text-purple-700', selesai: 'bg-green-100 text-green-700' };
@@ -105,7 +106,7 @@ export default function Index({ siklusAudit }) {
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Tahun / Semester</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Total Audit</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -139,8 +140,8 @@ export default function Index({ siklusAudit }) {
                                             <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Unit</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <button 
                                                 onClick={() => openEditModal(s)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 

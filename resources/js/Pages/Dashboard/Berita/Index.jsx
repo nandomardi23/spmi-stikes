@@ -127,7 +127,7 @@ export default function Index({ berita, filters }) {
                                 <th className="px-6 py-3.5 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Judul & Ringkasan</th>
                                 <th className="px-6 py-3.5 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
                                 <th className="px-6 py-3.5 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Tanggal Publish</th>
-                                <th className="px-6 py-3.5 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-3.5 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -164,8 +164,8 @@ export default function Index({ berita, filters }) {
                                             {b.author?.name || 'Administrator'}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-right whitespace-nowrap">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <button 
                                                 onClick={() => openEditModal(b)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"

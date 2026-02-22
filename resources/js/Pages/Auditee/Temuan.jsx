@@ -18,7 +18,7 @@ export default function Temuan({ temuans }) {
                         <th className="text-left px-6 py-3.5 font-semibold text-gray-600">Deskripsi</th>
                         <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Batas Waktu</th>
                         <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Status</th>
-                        <th className="text-right px-6 py-3.5 font-semibold text-gray-600">Aksi</th>
+                        <th className="text-center px-6 py-3.5 font-semibold text-gray-600">Aksi</th>
                     </tr></thead>
                     <tbody className="divide-y divide-gray-50">
                         {temuans.data.length > 0 ? temuans.data.map(t => (
@@ -28,7 +28,7 @@ export default function Temuan({ temuans }) {
                                 <td className="px-6 py-4 text-left text-gray-600 max-w-xs truncate">{t.deskripsi}</td>
                                 <td className="px-6 py-4 text-center text-gray-500 text-xs">{t.batas_waktu || '-'}</td>
                                 <td className="px-6 py-4 text-center"><span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${statusColors[t.status]}`}>{t.status}</span></td>
-                                <td className="px-6 py-4 text-right"><Link href={`/auditee/temuan/${t.id}`} className="text-primary-600 font-medium">Lihat Detail & Tindak Lanjut</Link></td>
+                                <td className="px-6 py-4 text-center"><Link href={`/auditee/temuan/${t.id}`} className="text-primary-600 font-medium">Lihat Detail & Tindak Lanjut</Link></td>
                             </tr>
                         )) : <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">Tidak ada temuan.</td></tr>}
                     </tbody>

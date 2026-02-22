@@ -152,7 +152,7 @@ export default function Index({ users, roles = [], unitKerja = [], filters, auth
                             <tr className="border-b border-gray-100 bg-gray-50/50">
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Pengguna</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Peran & Unit</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -181,8 +181,8 @@ export default function Index({ users, roles = [], unitKerja = [], filters, auth
                                             <span className="font-semibold text-gray-400">Unit:</span> {u.unit_kerja?.nama || '-'}
                                         </p>
                                     </td>
-                                    <td className="px-6 py-4 text-right whitespace-nowrap">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <button 
                                                 onClick={() => openEditModal(u)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"

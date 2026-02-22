@@ -136,7 +136,7 @@ export default function Index({ dokumens, filters }) {
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Kategori</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Publikasi</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Uploader</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -159,8 +159,8 @@ export default function Index({ dokumens, filters }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-center text-gray-600 font-medium text-xs tracking-tight">{d.uploader?.name || '-'}</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <a 
                                                 href={`/dashboard/dokumen/${d.id}/download`} 
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition duration-200" 

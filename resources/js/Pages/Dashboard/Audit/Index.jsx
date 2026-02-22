@@ -116,7 +116,7 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Jadwal</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Status</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Hasil</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -157,8 +157,8 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
                                             <span className="text-gray-400 text-xs italic">Belum Dinilai</span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <Link 
                                                 href={`/dashboard/audit/${a.id}`} 
                                                 className="p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition duration-200" 

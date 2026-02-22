@@ -102,7 +102,7 @@ export default function Index({ unitKerjas, users }) {
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-left">Informasi Unit</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Ketua / Kepala</th>
                                 <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Kategori</th>
-                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-right">Aksi</th>
+                                <th className="px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[10px] text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -125,8 +125,8 @@ export default function Index({ unitKerjas, users }) {
                                             {u.jenis?.replace('_', ' ')}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-1.5">
+                                    <td className="px-6 py-4 text-center">
+                                        <div className="flex items-center justify-center gap-1.5">
                                             <button 
                                                 onClick={() => openEditModal(u)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
