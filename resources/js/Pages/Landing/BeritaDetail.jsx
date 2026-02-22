@@ -4,7 +4,14 @@ import LandingLayout from '@/Layouts/LandingLayout';
 export default function BeritaDetail({ berita }) {
     return (
         <LandingLayout>
-            <Head title={berita.judul} />
+            <Head>
+                <title>{`${berita.judul} - SPMI STIKES Hang Tuah`}</title>
+                <meta name="description" content={berita.ringkasan || berita.judul} />
+                <meta property="og:title" content={berita.judul} />
+                <meta property="og:description" content={berita.ringkasan || berita.judul} />
+                {berita.gambar && <meta property="og:image" content={`/storage/${berita.gambar}`} />}
+                <meta property="og:type" content="article" />
+            </Head>
             <div className="pt-24 pb-16">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <a href="/#berita" className="inline-flex items-center gap-2 text-sm text-primary-600 hover:text-primary-700 mb-8">

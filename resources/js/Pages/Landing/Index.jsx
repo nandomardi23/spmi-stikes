@@ -31,7 +31,13 @@ const dokumenKategoriLabels = {
 export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi }) {
     return (
         <LandingLayout>
-            <Head title="Beranda" />
+            <Head>
+                <title>Beranda - SPMI STIKES Hang Tuah</title>
+                <meta name="description" content="Sistem Penjaminan Mutu Internal (SPMI) STIKES Hang Tuah Tanjungpinang. Menjamin dan meningkatkan mutu pendidikan tinggi secara berkelanjutan." />
+                <meta property="og:title" content="Beranda - SPMI STIKES Hang Tuah" />
+                <meta property="og:description" content="Sistem Penjaminan Mutu Internal (SPMI) STIKES Hang Tuah Tanjungpinang." />
+                <meta property="og:type" content="website" />
+            </Head>
 
             {/* Hero Section */}
             <section id="beranda" className="relative min-h-screen flex items-center overflow-hidden">
@@ -162,7 +168,7 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     {standarMutu.length > 0 ? (
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {standarMutu.map((standar) => (
-                                <div key={standar.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 group">
+                                <div key={standar.id} className="flex flex-col h-full bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 group">
                                     <div className="flex items-start justify-between mb-4">
                                         <span className="px-3 py-1 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg">{standar.kode}</span>
                                         <span className={`px-2.5 py-1 text-xs font-medium rounded-lg ${kategoriColors[standar.kategori] || 'bg-gray-100 text-gray-600'}`}>
@@ -174,7 +180,7 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                                         <p className="text-sm text-gray-500 line-clamp-3 leading-relaxed">{standar.deskripsi}</p>
                                     )}
                                     {standar.target && (
-                                        <div className="mt-4 pt-4 border-t border-gray-100">
+                                        <div className="mt-auto pt-4 border-t border-gray-100">
                                             <span className="text-xs text-gray-400">Target:</span>
                                             <p className="text-sm font-medium text-gray-700">{standar.target}</p>
                                         </div>
@@ -200,31 +206,64 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     </div>
 
                     {dokumenPublik.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {dokumenPublik.map((doc) => (
-                                <div key={doc.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg transition-all group">
-                                    <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
-                                        <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                    <span className="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg">
-                                        {dokumenKategoriLabels[doc.kategori] || doc.kategori}
-                                    </span>
-                                    <h3 className="font-semibold text-gray-900 mt-3 mb-2 group-hover:text-primary-600 transition">{doc.judul}</h3>
-                                    {doc.deskripsi && <p className="text-sm text-gray-500 line-clamp-2">{doc.deskripsi}</p>}
-                                    <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                                        <span className="text-xs text-gray-400">{(doc.file_size / 1024).toFixed(0)} KB</span>
-                                        <a
-                                            href={`/dashboard/dokumen/${doc.id}/download`}
-                                            className="text-sm font-medium text-primary-600 hover:text-primary-700 flex items-center gap-1"
-                                        >
-                                            Download
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50/50 border-b border-gray-100">
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-1/2">Nama Dokumen</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap hidden sm:table-cell">Kategori</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Ukuran</th>
+                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right w-24">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {dokumenPublik.map((doc) => (
+                                            <tr key={doc.id} className="hover:bg-gray-50/50 transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">
+                                                            <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{doc.judul}</p>
+                                                            {doc.deskripsi && <p className="text-sm text-gray-500 mt-1 line-clamp-1">{doc.deskripsi}</p>}
+                                                            {/* Mobile metadata */}
+                                                            <div className="flex items-center gap-3 mt-2 sm:hidden">
+                                                                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-medium rounded">
+                                                                    {dokumenKategoriLabels[doc.kategori] || doc.kategori}
+                                                                </span>
+                                                                <span className="text-xs text-gray-400">{(doc.file_size / 1024).toFixed(0)} KB</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 hidden sm:table-cell align-middle">
+                                                    <span className="inline-flex px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg">
+                                                        {dokumenKategoriLabels[doc.kategori] || doc.kategori}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 hidden md:table-cell align-middle text-sm text-gray-500">
+                                                    {(doc.file_size / 1024).toFixed(0)} KB
+                                                </td>
+                                                <td className="px-6 py-4 text-right align-middle">
+                                                    <a
+                                                        href={`/dashboard/dokumen/${doc.id}/download`}
+                                                        className="inline-flex items-center justify-center p-2 text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors group/btn"
+                                                        title="Download Dokumen"
+                                                    >
+                                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                        </svg>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-2xl">
@@ -280,8 +319,8 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     {berita.length > 0 ? (
                         <div className="grid md:grid-cols-2 gap-8">
                             {berita.map((item, i) => (
-                                <a key={item.id} href={`/berita/${item.slug}`} className="group block">
-                                    <div className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
+                                <a key={item.id} href={`/berita/${item.slug}`} className="group block h-full">
+                                    <div className="flex flex-col h-full bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300">
                                         {item.gambar && (
                                             <div className="aspect-video bg-gray-200 overflow-hidden">
                                                 <img src={`/storage/${item.gambar}`} alt={item.judul} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />

@@ -81,7 +81,9 @@ export default function DashboardLayout({ children, title }) {
                 <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100%-4rem)]">
                     <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Menu Utama</p>
                     {filteredMenu.map((item) => {
-                        const isActive = currentUrl === item.href || currentUrl.startsWith(item.href + '/');
+                        const isActive = item.href === '/dashboard' 
+                            ? currentUrl === '/dashboard'
+                            : (currentUrl === item.href || currentUrl.startsWith(item.href + '/'));
                         return (
                             <Link
                                 key={item.href}

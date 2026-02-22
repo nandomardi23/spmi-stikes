@@ -1,4 +1,6 @@
 import { ChartBarSquareIcon, ClipboardDocumentCheckIcon, DocumentIcon, MagnifyingGlassIcon, UsersIcon, ExclamationTriangleIcon, ArrowPathIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
+import DashboardLayout from '@/Layouts/DashboardLayout';
+import { Head, Link } from '@inertiajs/react';
 
 const statusColors = {
     dijadwalkan: 'bg-blue-100 text-blue-700',
