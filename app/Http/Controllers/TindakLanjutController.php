@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\TindakLanjut;
+use App\Models\Temuan;
 
 class TindakLanjutController extends Controller
 {
     public function index(Request $request)
     {
-        $items = TindakLanjut::latest()->paginate(15);
+        $items = TindakLanjut::with('temuan')->latest()->paginate(15);
+        $temuan = Temuan::latest()->take(50)->get(['id','deskripsi']);
         return Inertia::render('Dashboard/TindakLanjut/Index', [
             'items' => $items,
+            'temuan' => $temuan,
         ]);
     }
 

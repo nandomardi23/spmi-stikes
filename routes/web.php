@@ -80,7 +80,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
 
     // Additional Dashboard pages from reference
     Route::get('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'index'])->name('profil-spmi.index');
-    Route::get('rapat-tinjauan', [\App\Http\Controllers\RapatTinjauanController::class, 'index'])->name('rapat-tinjauan.index');
+    Route::resource('rapat-tinjauan', \App\Http\Controllers\RapatTinjauanController::class)->except(['show', 'create', 'edit']);
     Route::resource('tindak-lanjut', \App\Http\Controllers\TindakLanjutController::class)->except(['show', 'create', 'edit']);
     Route::get('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'index'])->name('umpan-balik.index');
     Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
