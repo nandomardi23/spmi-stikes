@@ -40,4 +40,24 @@ class LandingController extends Controller
             'berita' => $berita->load('author'),
         ]);
     }
+
+    public function profil()
+    {
+        $profil = [
+            'visi' => Setting::getValue('visi'),
+            'misi' => Setting::getValue('misi'),
+            'sejarah' => Setting::getValue('sejarah'),
+        ];
+        return Inertia::render('Landing/ProfilSPMI', [
+            'profil' => $profil,
+        ]);
+    }
+
+    public function dokumenPublik(Request $request)
+    {
+        $dokumen = Dokumen::where('is_public', true)->latest()->paginate(12);
+        return Inertia::render('Landing/DokumenSPMI', [
+            'dokumen' => $dokumen,
+        ]);
+    }
 }

@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 // ==========================================
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/berita/{slug}', [LandingController::class, 'beritaDetail'])->name('berita.detail');
+Route::get('/profil-spmi', [LandingController::class, 'profil'])->name('landing.profil');
+Route::get('/dokumen-spmi', [LandingController::class, 'dokumenPublik'])->name('landing.dokumen');
 
 // ==========================================
 // Auth
@@ -75,6 +77,14 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     // Settings
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
     Route::put('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
+
+    // Additional Dashboard pages from reference
+    Route::get('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'index'])->name('profil-spmi.index');
+    Route::get('rapat-tinjauan', [\App\Http\Controllers\RapatTinjauanController::class, 'index'])->name('rapat-tinjauan.index');
+    Route::resource('tindak-lanjut', \App\Http\Controllers\TindakLanjutController::class)->except(['show', 'create', 'edit']);
+    Route::get('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'index'])->name('umpan-balik.index');
+    Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
+    Route::get('dokumen-publik', [\App\Http\Controllers\DokumenPublikController::class, 'index'])->name('dokumen-publik.index');
 });
 
 // ==========================================
