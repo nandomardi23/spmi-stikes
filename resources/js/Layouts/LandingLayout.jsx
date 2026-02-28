@@ -31,6 +31,8 @@ export default function LandingLayout({ children }) {
                             <a href="#visi-misi" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Visi & Misi</a>
                             <a href="#standar-mutu" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Standar Mutu</a>
                             <a href="#dokumen" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Dokumen</a>
+                            <a href="#kepuasan" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Kepuasan</a>
+                            <a href="#galeri" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Galeri</a>
                             <a href="#berita" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Berita</a>
                         </div>
 
@@ -74,6 +76,8 @@ export default function LandingLayout({ children }) {
                             <a href="#visi-misi" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Visi & Misi</a>
                             <a href="#standar-mutu" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Standar Mutu</a>
                             <a href="#dokumen" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Dokumen</a>
+                            <a href="#kepuasan" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Kepuasan</a>
+                            <a href="#galeri" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Galeri</a>
                             <a href="#berita" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Berita</a>
                         </div>
                     )}
@@ -113,6 +117,9 @@ export default function LandingLayout({ children }) {
                                 <li><a href="#visi-misi" className="hover:text-primary-400 transition">Visi & Misi</a></li>
                                 <li><a href="#standar-mutu" className="hover:text-primary-400 transition">Standar Mutu</a></li>
                                 <li><a href="#dokumen" className="hover:text-primary-400 transition">Dokumen</a></li>
+                                <li><a href="#kepuasan" className="hover:text-primary-400 transition">Kepuasan</a></li>
+                                <li><a href="#galeri" className="hover:text-primary-400 transition">Galeri</a></li>
+                                <li><a href="#berita" className="hover:text-primary-400 transition">Berita</a></li>
                             </ul>
                         </div>
 

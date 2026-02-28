@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\Dokumen;
+use App\Models\Feedback;
 use App\Models\StandarMutu;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class LandingController extends Controller
@@ -16,6 +18,11 @@ class LandingController extends Controller
         $visi = Setting::getValue('visi', 'Menjadi Sekolah Tinggi Ilmu Kesehatan yang unggul, berkarakter, dan berdaya saing di tingkat nasional dalam menghasilkan tenaga kesehatan profesional yang beretika dan bermutu.');
         $misiText = Setting::getValue('misi', '');
         $misi = array_filter(array_map('trim', explode("\n", $misiText)));
+
+        // Kepuasan data for public chart
+        $kepuasanData = Feedback::select('responden', DB::raw('AVG(nilai_kepuasan) as rata_rata'))
+            ->groupBy('responden')
+            ->get();
 
         return Inertia::render('Landing/Index', [
             'visi' => $visi,
@@ -30,6 +37,7 @@ class LandingController extends Controller
             'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
             'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
+            'kepuasanData' => $kepuasanData,
         ]);
     }
 

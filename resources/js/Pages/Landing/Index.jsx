@@ -32,7 +32,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi }) {
+export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [] }) {
     const [selectedGaleri, setSelectedGaleri] = useState(null);
 
     return (
@@ -321,6 +321,50 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
                     ) : (
                         <div className="text-center py-12 bg-white rounded-2xl">
                             <p className="text-gray-400">Belum ada dokumen publik yang tersedia.</p>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* Kepuasan Stakeholder */}
+            <section id="kepuasan" className="py-24 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-16">
+                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Transparansi Mutu</span>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Kepuasan Stakeholder</h2>
+                        <p className="text-gray-500 mt-3 max-w-2xl mx-auto">Hasil survei kepuasan dari berbagai kelompok stakeholder yang diolah secara berkala</p>
+                    </div>
+
+                    {kepuasanData.length > 0 ? (
+                        <div className="max-w-4xl mx-auto">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {kepuasanData.map((item, i) => {
+                                    const val = parseFloat(item.rata_rata);
+                                    const color = val >= 80 ? 'from-green-500 to-emerald-600' : val >= 60 ? 'from-amber-500 to-orange-600' : 'from-red-500 to-rose-600';
+                                    const bgColor = val >= 80 ? 'bg-green-50 border-green-100' : val >= 60 ? 'bg-amber-50 border-amber-100' : 'bg-red-50 border-red-100';
+                                    const textColor = val >= 80 ? 'text-green-700' : val >= 60 ? 'text-amber-700' : 'text-red-700';
+                                    return (
+                                        <div key={i} className={`${bgColor} border rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300`}>
+                                            <div className="relative w-24 h-24 mx-auto mb-4">
+                                                <svg className="w-24 h-24 -rotate-90" viewBox="0 0 36 36">
+                                                    <path className="text-gray-200" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" />
+                                                    <path className={textColor} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray={`${val}, 100`} strokeLinecap="round" />
+                                                </svg>
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <span className={`text-xl font-extrabold ${textColor}`}>{val.toFixed(0)}%</span>
+                                                </div>
+                                            </div>
+                                            <h3 className="font-bold text-gray-900 text-sm">{item.responden}</h3>
+                                            <p className="text-xs text-gray-500 mt-1">Rata-rata Kepuasan</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <p className="text-center text-xs text-gray-400 mt-8">Data diolah dari hasil survei kuesioner kepuasan stakeholder STIKES Hang Tuah Tanjungpinang</p>
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                            <p className="text-gray-400 font-medium">Data kepuasan stakeholder belum tersedia.</p>
                         </div>
                     )}
                 </div>
