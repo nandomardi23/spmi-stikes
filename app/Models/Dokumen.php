@@ -21,6 +21,7 @@ class Dokumen extends Model
         'file_size',
         'unit_kerja_id',
         'uploaded_by',
+        'standar_mutu_id',
         'is_public',
     ];
 
@@ -36,5 +37,10 @@ class Dokumen extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function standarMutu(): BelongsTo
+    {
+        return $this->belongsTo(StandarMutu::class);
     }
 }

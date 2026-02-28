@@ -11,8 +11,8 @@ class ProfilSpmiController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Dashboard/ProfilSPMI/Index', [
-            'spmi_visi' => Setting::getValue('spmi_visi', ''),
-            'spmi_misi' => Setting::getValue('spmi_misi', ''),
+            'visi' => Setting::getValue('visi', ''),
+            'misi' => Setting::getValue('misi', ''),
             'spmi_tujuan' => Setting::getValue('spmi_tujuan', ''),
             'spmi_struktur' => Setting::getValue('spmi_struktur', ''),
         ]);
@@ -21,13 +21,13 @@ class ProfilSpmiController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'spmi_visi' => 'nullable|string',
-            'spmi_misi' => 'nullable|string',
+            'visi' => 'nullable|string',
+            'misi' => 'nullable|string',
             'spmi_tujuan' => 'nullable|string',
             'spmi_struktur' => 'nullable|string',
         ]);
 
-        $keys = ['spmi_visi', 'spmi_misi', 'spmi_tujuan', 'spmi_struktur'];
+        $keys = ['visi', 'misi', 'spmi_tujuan', 'spmi_struktur'];
         foreach ($keys as $key) {
             if ($request->has($key)) {
                 Setting::updateOrCreate(

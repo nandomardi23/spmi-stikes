@@ -35,4 +35,19 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UnitKerja::class);
     }
+
+    public function audits()
+    {
+        return $this->hasMany(Audit::class, 'auditor_id');
+    }
+
+    public function tindakLanjuts()
+    {
+        return $this->hasMany(TindakLanjut::class);
+    }
+
+    public function rapatTinjauans()
+    {
+        return $this->hasMany(RapatTinjauan::class);
+    }
 }

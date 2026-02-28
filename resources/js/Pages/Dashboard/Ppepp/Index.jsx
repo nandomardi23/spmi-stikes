@@ -131,8 +131,8 @@ export default function Index({ ppepps, standars }) {
                                 ppepps.data.map((item) => (
                                     <tr key={item.id} className="hover:bg-gray-50/50 transition">
                                         <td className="px-6 py-4">
-                                            <div className="font-bold text-gray-900">{item.standar_mutu?.nama_standar || "-"}</div>
-                                            <div className="text-xs text-gray-500 mt-0.5">{item.standar_mutu?.kode_standar || "-"}</div>
+                                            <div className="font-bold text-gray-900">{item.standar_mutu?.nama || "-"}</div>
+                                            <div className="text-xs text-gray-500 mt-0.5">{item.standar_mutu?.kode || "-"}</div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg border uppercase tracking-tight ${BadgeColors[item.tahapan] || 'bg-gray-100 text-gray-700'}`}>
@@ -217,7 +217,7 @@ export default function Index({ ppepps, standars }) {
                                 >
                                     <option value="">Pilih Standar</option>
                                     {standars.map((std) => (
-                                        <option key={std.id} value={std.id}>{std.kode_standar} - {std.nama_standar}</option>
+                                        <option key={std.id} value={std.id}>{std.kode} - {std.nama}</option>
                                     ))}
                                 </select>
                                 {errors.standar_mutu_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.standar_mutu_id}</p>}

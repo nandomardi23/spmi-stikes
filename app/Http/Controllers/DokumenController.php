@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dokumen;
 use App\Models\UnitKerja;
+use App\Models\StandarMutu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -12,7 +13,7 @@ class DokumenController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Dokumen::with(['unitKerja', 'uploader']);
+        $query = Dokumen::with(['unitKerja', 'uploader', 'standarMutu']);
 
         if ($request->filled('search')) {
             $query->where('judul', 'like', "%{$request->search}%");
@@ -24,6 +25,7 @@ class DokumenController extends Controller
         return Inertia::render('Dashboard/Dokumen/Index', [
             'dokumens' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search', 'kategori']),
+            'standars' => StandarMutu::where('is_active', true)->get(),
         ]);
     }
 
@@ -42,6 +44,7 @@ class DokumenController extends Controller
             'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
             'file' => 'required|file|max:10240',
             'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
+            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
             'is_public' => 'boolean',
         ]);
 
@@ -56,6 +59,7 @@ class DokumenController extends Controller
             'file_name' => $file->getClientOriginalName(),
             'file_size' => $file->getSize(),
             'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
+            'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
             'uploaded_by' => auth()->id(),
             'is_public' => $validated['is_public'] ?? false,
         ]);
@@ -80,6 +84,7 @@ class DokumenController extends Controller
             'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
             'file' => 'nullable|file|max:10240',
             'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
+            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
             'is_public' => 'boolean',
         ]);
 
@@ -96,6 +101,7 @@ class DokumenController extends Controller
             'deskripsi' => $validated['deskripsi'] ?? null,
             'kategori' => $validated['kategori'],
             'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
+            'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
             'is_public' => $validated['is_public'] ?? false,
         ]);
 

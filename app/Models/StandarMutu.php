@@ -35,4 +35,9 @@ class StandarMutu extends Model
     {
         return $this->hasMany(Temuan::class);
     }
+
+    public function ppepps(): HasMany
+    {
+        return $this->hasMany(Ppepp::class);
+    }
 }

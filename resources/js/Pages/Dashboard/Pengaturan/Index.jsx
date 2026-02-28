@@ -1,10 +1,10 @@
 import { Head, useForm } from '@inertiajs/react';
 import React, { useState, useRef } from 'react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { AcademicCapIcon, CheckCircleIcon, DocumentTextIcon, GlobeAltIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, GlobeAltIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Swal from 'sweetalert2';
 
-export default function Index({ visi, misi, site_name, site_description, site_logo }) {
+export default function Index({ site_name, site_description, site_logo }) {
     const fileInputRef = useRef();
     const [logoPreview, setLogoPreview] = useState(site_logo);
 
@@ -12,9 +12,7 @@ export default function Index({ visi, misi, site_name, site_description, site_lo
         site_name: site_name || '',
         site_description: site_description || '',
         site_logo: null,
-        visi: visi || '',
-        misi: misi || '',
-        _method: 'PUT' // Use spoofing for file upload with PUT
+        _method: 'PUT'
     });
 
     const handleLogoChange = (e) => {
@@ -28,7 +26,6 @@ export default function Index({ visi, misi, site_name, site_description, site_lo
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        // Use post with _method PUT for multipart/form-data
         post('/dashboard/pengaturan', {
             forceFormData: true,
             preserveScroll: true,
@@ -61,7 +58,7 @@ export default function Index({ visi, misi, site_name, site_description, site_lo
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">Profil Website</h2>
-                                    <p className="text-sm text-gray-500 font-medium mt-1">Atur identitas utama website Anda.</p>
+                                    <p className="text-sm text-gray-500 font-medium mt-1">Atur identitas utama website Anda (nama, deskripsi, logo).</p>
                                 </div>
                             </div>
 
@@ -126,63 +123,7 @@ export default function Index({ visi, misi, site_name, site_description, site_lo
                         </div>
                     </div>
 
-                    {/* Visi & Misi Section */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-8 sm:p-10">
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="p-3 bg-primary-50 rounded-2xl">
-                                    <AcademicCapIcon className="w-8 h-8 text-primary-600" />
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">Visi & Misi Institusi</h2>
-                                    <p className="text-sm text-gray-500 font-medium mt-1">Kelola landasan filosofis dan tujuan utama institusi Anda.</p>
-                                </div>
-                            </div>
-
-                            <div className="space-y-8">
-                                {/* Visi */}
-                                <div className="relative group">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <DocumentTextIcon className="w-5 h-5 text-primary-500" />
-                                        <label className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                                            Visi Utama <span className="text-danger-500">*</span>
-                                        </label>
-                                    </div>
-                                    <textarea
-                                        value={data.visi}
-                                        onChange={(e) => setData('visi', e.target.value)}
-                                        className="w-full rounded-2xl border-gray-200 bg-gray-50/50 px-5 py-4 text-sm focus:border-primary-500 focus:ring-primary-500 min-h-[120px] font-medium transition duration-200 leading-relaxed"
-                                        placeholder="Masukkan Visi institusi..."
-                                        required
-                                    />
-                                    {errors.visi && <p className="mt-2 text-[10px] font-bold text-danger-500 uppercase tracking-tight">{errors.visi}</p>}
-                                </div>
-
-                                {/* Misi */}
-                                <div>
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircleIcon className="w-5 h-5 text-success-500" />
-                                            <label className="text-sm font-bold text-gray-900 uppercase tracking-wider">
-                                                Misi Strategis <span className="text-danger-500">*</span>
-                                            </label>
-                                        </div>
-                                        <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded-lg font-bold uppercase">Tips: Tekan Enter untuk poin baru</span>
-                                    </div>
-                                    <textarea
-                                        value={data.misi}
-                                        onChange={(e) => setData('misi', e.target.value)}
-                                        className="w-full rounded-2xl border-gray-200 bg-gray-50/50 px-5 py-4 text-sm focus:border-primary-500 focus:ring-primary-500 min-h-[250px] font-medium transition duration-200 leading-relaxed"
-                                        placeholder="1. Meningkatkan kualitas...&#10;2. Menyelenggarakan..."
-                                        required
-                                    />
-                                    {errors.misi && <p className="mt-2 text-[10px] font-bold text-danger-500 uppercase tracking-tight">{errors.misi}</p>}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Fixed Submit Button Area */}
+                    {/* Submit */}
                     <div className="flex justify-end sticky bottom-8 z-10">
                         <button
                             type="submit"
@@ -200,7 +141,7 @@ export default function Index({ visi, misi, site_name, site_description, site_lo
                             ) : (
                                 <>
                                     <CheckCircleIcon className="w-6 h-6" />
-                                    Simpan Semua Perubahan
+                                    Simpan Pengaturan
                                 </>
                             )}
                         </button>
