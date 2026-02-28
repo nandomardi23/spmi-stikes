@@ -1,5 +1,5 @@
 import { Link, usePage, router } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import clsx from "clsx";
 import Swal from "sweetalert2";
 

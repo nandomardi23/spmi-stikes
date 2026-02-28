@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef , memo} from 'react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { CheckCircleIcon, GlobeAltIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Swal from 'sweetalert2';

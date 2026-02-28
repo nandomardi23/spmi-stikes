@@ -1,6 +1,6 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Head, useForm, router } from "@inertiajs/react";
-import { useState } from "react";
+import { useState , memo} from "react";
 import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
