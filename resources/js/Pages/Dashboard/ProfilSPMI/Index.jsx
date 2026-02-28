@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Head, useForm } from "@inertiajs/react";
 import Swal from "sweetalert2";
 import { AcademicCapIcon, DocumentTextIcon, CheckCircleIcon, BuildingOffice2Icon } from "@heroicons/react/24/outline";
 
-export default function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
+function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
     const { data, setData, post, processing, errors } = useForm({
         visi: visi || "",
         misi: misi || "",
@@ -151,3 +152,5 @@ export default function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

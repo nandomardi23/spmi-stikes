@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
 const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
 
-export default function Show({ temuan, tindakLanjuts }) {
+function Show({ temuan, tindakLanjuts }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         temuan_id: temuan.id, deskripsi: '', bukti_file: null, status: 'in_progress',
     });
@@ -93,3 +94,4 @@ export default function Show({ temuan, tindakLanjuts }) {
     );
 }
 
+export default memo(Show);

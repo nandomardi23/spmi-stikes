@@ -16,7 +16,7 @@ const BadgeColors = {
     Peningkatan: "bg-green-100 text-green-700 border-green-200",
 };
 
-export default function Index({ ppepps, standars }) {
+function Index({ ppepps, standars }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
@@ -298,3 +298,5 @@ export default function Index({ ppepps, standars }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
 import Pagination from '@/Components/Pagination';
@@ -32,7 +32,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [] }) {
+function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [] }) {
     const [selectedGaleri, setSelectedGaleri] = useState(null);
 
     return (
@@ -530,3 +530,4 @@ export default function Index({ standarMutu, dokumenPublik, berita, galeri, visi
     );
 }
 
+export default memo(Index);

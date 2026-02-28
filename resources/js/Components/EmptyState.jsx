@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function EmptyState({ icon, title, message, description, asDiv = false }) {
+function EmptyState({ icon, title, message, description, asDiv = false }) {
     const content = (
         <div className="flex flex-col items-center justify-center max-w-sm mx-auto text-center py-16 px-6">
             <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 text-gray-400">
@@ -17,3 +17,5 @@ export default function EmptyState({ icon, title, message, description, asDiv = 
 
     return content;
 }
+
+export default memo(EmptyState);

@@ -7,7 +7,7 @@ import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-export default function Index({ instrumens, standars }) {
+function Index({ instrumens, standars }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
@@ -234,3 +234,5 @@ export default function Index({ instrumens, standars }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

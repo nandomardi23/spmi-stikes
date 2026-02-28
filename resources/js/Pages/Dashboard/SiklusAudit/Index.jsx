@@ -1,13 +1,13 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
-export default function Index({ siklusAudit }) {
+function Index({ siklusAudit }) {
     const statusColors = { perencanaan: 'bg-blue-100 text-blue-700', pelaksanaan: 'bg-amber-100 text-amber-700', pelaporan: 'bg-purple-100 text-purple-700', selesai: 'bg-green-100 text-green-700' };
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -385,3 +385,4 @@ export default function Index({ siklusAudit }) {
     );
 }
 
+export default memo(Index);

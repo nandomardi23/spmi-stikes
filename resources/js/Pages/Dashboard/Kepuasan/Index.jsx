@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Head, Link } from "@inertiajs/react";
 import { 
@@ -28,7 +29,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function Index({ chartData = [], trendData = [] }) {
+function Index({ chartData = [], trendData = [] }) {
     // Format numeric data correctly for Recharts
     const formattedChartData = chartData.map(item => ({
         ...item,
@@ -156,3 +157,5 @@ export default function Index({ chartData = [], trendData = [] }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

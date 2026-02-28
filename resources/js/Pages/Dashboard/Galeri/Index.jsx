@@ -1,13 +1,13 @@
 import EmptyState from '@/Components/EmptyState';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import Swal from 'sweetalert2';
 import { MagnifyingGlassIcon, PhotoIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-export default function Index({ galeris, filters }) {
+function Index({ galeris, filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -393,3 +393,5 @@ export default function Index({ galeris, filters }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

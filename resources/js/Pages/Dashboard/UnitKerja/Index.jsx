@@ -1,13 +1,13 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
-export default function Index({ unitKerjas, users }) {
+function Index({ unitKerjas, users }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -337,3 +337,4 @@ export default function Index({ unitKerjas, users }) {
     );
 }
 
+export default memo(Index);

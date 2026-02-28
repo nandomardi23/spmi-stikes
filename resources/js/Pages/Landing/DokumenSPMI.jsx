@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { Head, Link } from "@inertiajs/react";
 import React from "react";
 
-export default function DokumenSPMI({ dokumen }) {
+function DokumenSPMI({ dokumen }) {
     return (
         <div>
             <Head title="Dokumen SPMI" />
@@ -27,3 +28,5 @@ export default function DokumenSPMI({ dokumen }) {
         </div>
     );
 }
+
+export default memo(DokumenSPMI);

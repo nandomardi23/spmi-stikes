@@ -1,11 +1,11 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Pagination from '@/Components/Pagination';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 
 const kategoriOptions = [{ value: 'laporan', label: 'Laporan' }, { value: 'bukti', label: 'Bukti Pelaksanaan' }, { value: 'sop', label: 'SOP Unit' }, { value: 'lainnya', label: 'Lainnya' }];
 
-export default function Dokumen({ dokumens, unitKerja }) {
+function Dokumen({ dokumens, unitKerja }) {
     const [showUpload, setShowUpload] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm({ judul: '', kategori: 'bukti', file: null, deskripsi: '' });
 
@@ -78,3 +78,4 @@ export default function Dokumen({ dokumens, unitKerja }) {
     );
 }
 
+export default memo(Dokumen);

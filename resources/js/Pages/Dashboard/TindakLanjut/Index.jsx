@@ -13,7 +13,7 @@ const statusColors = {
     ditolak: "bg-red-50 text-red-700 border-red-200",
 };
 
-export default function Index({ items, temuan = [] }) {
+function Index({ items, temuan = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
@@ -236,3 +236,5 @@ export default function Index({ items, temuan = [] }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

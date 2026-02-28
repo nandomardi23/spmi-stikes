@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
@@ -9,7 +9,7 @@ import Pagination from '@/Components/Pagination';
 
 const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
 
-export default function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filters }) {
+function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filters }) {
     const [status, setStatus] = useState(filters.status || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -316,3 +316,4 @@ export default function Index({ audits, siklusAudit = [], unitKerja = [], audito
     );
 }
 
+export default memo(Index);

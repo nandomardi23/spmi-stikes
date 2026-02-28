@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { Link } from '@inertiajs/react';
 
-export default function Pagination({ 
+function Pagination({ 
     links, 
     meta = null, 
     onPerPageChange = null,
@@ -96,3 +97,5 @@ export default function Pagination({
         </div>
     );
 }
+
+export default memo(Pagination);

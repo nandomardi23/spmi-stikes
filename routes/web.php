@@ -21,6 +21,8 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/berita/{slug}', [LandingController::class, 'beritaDetail'])->name('berita.detail');
 Route::get('/profil-spmi', [LandingController::class, 'profil'])->name('landing.profil');
 Route::get('/dokumen-spmi', [LandingController::class, 'dokumenPublik'])->name('landing.dokumen');
+Route::get('/kuesioner', [\App\Http\Controllers\SurveyController::class, 'publicForm'])->name('survey.form');
+Route::post('/kuesioner', [\App\Http\Controllers\SurveyController::class, 'publicSubmit'])->name('survey.submit');
 
 // ==========================================
 // Auth
@@ -89,6 +91,14 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::put('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'update'])->name('umpan-balik.update');
     Route::delete('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'destroy'])->name('umpan-balik.destroy');
     Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
+
+    // Survey Questions Management
+    Route::get('survey-questions', [\App\Http\Controllers\SurveyController::class, 'adminIndex'])->name('survey-questions.index');
+    Route::post('survey-questions', [\App\Http\Controllers\SurveyController::class, 'adminStore'])->name('survey-questions.store');
+    Route::put('survey-questions/{survey_question}', [\App\Http\Controllers\SurveyController::class, 'adminUpdate'])->name('survey-questions.update');
+    Route::delete('survey-questions/{survey_question}', [\App\Http\Controllers\SurveyController::class, 'adminDestroy'])->name('survey-questions.destroy');
+    Route::get('survey-responses', [\App\Http\Controllers\SurveyController::class, 'adminResponses'])->name('survey-responses.index');
+    Route::delete('survey-responses/{response}', [\App\Http\Controllers\SurveyController::class, 'adminDeleteResponse'])->name('survey-responses.destroy');
 });
 
 // ==========================================

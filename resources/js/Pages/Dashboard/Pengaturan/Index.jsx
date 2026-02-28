@@ -4,7 +4,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 import { CheckCircleIcon, GlobeAltIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import Swal from 'sweetalert2';
 
-export default function Index({ site_name, site_description, site_logo }) {
+function Index({ site_name, site_description, site_logo }) {
     const fileInputRef = useRef();
     const [logoPreview, setLogoPreview] = useState(site_logo);
 
@@ -151,3 +151,5 @@ export default function Index({ site_name, site_description, site_logo }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

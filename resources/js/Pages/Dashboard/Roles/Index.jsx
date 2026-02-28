@@ -1,13 +1,13 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, UserGroupIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
-export default function Index({ roles, permissions = [], filters }) {
+function Index({ roles, permissions = [], filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -305,3 +305,5 @@ export default function Index({ roles, permissions = [], filters }) {
         </DashboardLayout>
     );
 }
+
+export default memo(Index);

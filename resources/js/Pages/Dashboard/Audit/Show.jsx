@@ -1,6 +1,6 @@
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 
@@ -8,7 +8,7 @@ const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'b
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
 const temuanStatusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
 
-export default function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
+function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const { data, setData, put, processing, errors, reset, clearErrors } = useForm({
@@ -231,3 +231,4 @@ export default function Show({ audit, siklusAudit = [], unitKerja = [], auditors
     );
 }
 
+export default memo(Show);

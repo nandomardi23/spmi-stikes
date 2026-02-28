@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { Head } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
 
-export default function BeritaDetail({ berita }) {
+function BeritaDetail({ berita }) {
     return (
         <LandingLayout>
             <Head>
@@ -35,3 +36,4 @@ export default function BeritaDetail({ berita }) {
     );
 }
 
+export default memo(BeritaDetail);

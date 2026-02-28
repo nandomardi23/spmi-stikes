@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { Head } from "@inertiajs/react";
 import React from "react";
 
-export default function ProfilSPMI({ profil }) {
+function ProfilSPMI({ profil }) {
     return (
         <div>
             <Head title="Profil SPMI" />
@@ -17,3 +18,5 @@ export default function ProfilSPMI({ profil }) {
         </div>
     );
 }
+
+export default memo(ProfilSPMI);

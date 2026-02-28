@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ChartBarSquareIcon, ClipboardDocumentCheckIcon, DocumentIcon, MagnifyingGlassIcon, UsersIcon, ExclamationTriangleIcon, ArrowPathIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { Head, Link } from '@inertiajs/react';
@@ -19,7 +20,7 @@ const jenisColors = {
     mayor: 'bg-red-100 text-red-700',
 };
 
-export default function Index({ stats, recentAudits, recentTemuan }) {
+function Index({ stats, recentAudits, recentTemuan }) {
     const statCards = [
         { label: 'Unit Kerja', value: stats.total_unit_kerja, icon: <BuildingOfficeIcon className="w-5 h-5" />, color: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/20' },
         { label: 'Standar Mutu', value: stats.total_standar, icon: <ClipboardDocumentCheckIcon className="w-5 h-5" />, color: 'from-purple-500 to-purple-600', shadow: 'shadow-purple-500/20' },
@@ -122,3 +123,4 @@ export default function Index({ stats, recentAudits, recentTemuan }) {
     );
 }
 
+export default memo(Index);

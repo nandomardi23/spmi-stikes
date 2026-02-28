@@ -1,6 +1,11 @@
+import { scan } from 'react-scan';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+
+if (typeof window !== 'undefined') {
+    scan({ enabled: import.meta.env.DEV });
+}
 
 createInertiaApp({
     title: (title) => title ? `${title} - SPMI STIKES Hang Tuah` : 'SPMI STIKES Hang Tuah',

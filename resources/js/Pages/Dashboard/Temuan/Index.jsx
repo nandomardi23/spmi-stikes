@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
@@ -10,7 +10,7 @@ import Pagination from '@/Components/Pagination';
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
 const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
 
-export default function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
+function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
@@ -306,3 +306,4 @@ export default function Index({ temuans, audits = [], standarMutu = [], filters,
     );
 }
 
+export default memo(Index);

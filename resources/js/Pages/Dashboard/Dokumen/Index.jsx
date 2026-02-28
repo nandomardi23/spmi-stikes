@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
@@ -19,7 +19,7 @@ const kategoriOptions = [
     { value: 'bukti', label: 'Bukti' }, { value: 'lainnya', label: 'Lainnya' },
 ];
 
-export default function Index({ dokumens, filters }) {
+function Index({ dokumens, filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
@@ -427,3 +427,4 @@ export default function Index({ dokumens, filters }) {
     );
 }
 
+export default memo(Index);

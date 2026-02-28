@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
@@ -9,7 +9,7 @@ import Pagination from '@/Components/Pagination';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-export default function Index({ berita, filters }) {
+function Index({ berita, filters }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
@@ -337,3 +337,4 @@ export default function Index({ berita, filters }) {
     );
 }
 
+export default memo(Index);

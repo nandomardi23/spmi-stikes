@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 
-export default function Login() {
+function Login() {
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
@@ -119,3 +119,4 @@ export default function Login() {
     );
 }
 
+export default memo(Login);

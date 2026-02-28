@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState , memo } from 'react';
 
-export default function LandingLayout({ children }) {
+function LandingLayout({ children }) {
     const { auth, settings } = usePage().props;
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -27,16 +27,22 @@ export default function LandingLayout({ children }) {
 
                         {/* Desktop Menu */}
                         <div className="hidden md:flex items-center gap-1">
-                            <a href="#beranda" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Beranda</a>
-                            <a href="#visi-misi" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Visi & Misi</a>
-                            <a href="#standar-mutu" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Standar Mutu</a>
-                            <a href="#dokumen" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Dokumen</a>
-                            <a href="#kepuasan" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Kepuasan</a>
-                            <a href="#galeri" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Galeri</a>
-                            <a href="#berita" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Berita</a>
+                            <a href="/#beranda" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Beranda</a>
+                            <a href="/#visi-misi" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Visi & Misi</a>
+                            <a href="/#standar-mutu" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Standar Mutu</a>
+                            <a href="/#dokumen" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Dokumen</a>
+                            <a href="/#kepuasan" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Kepuasan</a>
+                            <a href="/#galeri" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Galeri</a>
+                            <a href="/#berita" className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 rounded-lg hover:bg-primary-50 transition-all">Berita</a>
                         </div>
 
                         <div className="flex items-center gap-3">
+                            <a
+                                href="/kuesioner"
+                                className="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-xl transition-all"
+                            >
+                                Isi Kuesioner
+                            </a>
                             {auth.user ? (
                                 <Link
                                     href={auth.user.roles.includes('auditee') ? '/auditee' : '/dashboard'}
@@ -72,13 +78,13 @@ export default function LandingLayout({ children }) {
                     {/* Mobile Menu */}
                     {mobileMenuOpen && (
                         <div className="md:hidden pb-4 border-t border-gray-100 mt-2 pt-4 space-y-1">
-                            <a href="#beranda" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Beranda</a>
-                            <a href="#visi-misi" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Visi & Misi</a>
-                            <a href="#standar-mutu" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Standar Mutu</a>
-                            <a href="#dokumen" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Dokumen</a>
-                            <a href="#kepuasan" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Kepuasan</a>
-                            <a href="#galeri" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Galeri</a>
-                            <a href="#berita" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Berita</a>
+                            <a href="/#beranda" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Beranda</a>
+                            <a href="/#visi-misi" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Visi & Misi</a>
+                            <a href="/#standar-mutu" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Standar Mutu</a>
+                            <a href="/#dokumen" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Dokumen</a>
+                            <a href="/#kepuasan" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Kepuasan</a>
+                            <a href="/#galeri" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Galeri</a>
+                            <a href="/#berita" className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-primary-50 rounded-lg">Berita</a>
                         </div>
                     )}
                 </div>
@@ -113,13 +119,13 @@ export default function LandingLayout({ children }) {
                         <div>
                             <h4 className="text-white font-semibold mb-4">Tautan Cepat</h4>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="#beranda" className="hover:text-primary-400 transition">Beranda</a></li>
-                                <li><a href="#visi-misi" className="hover:text-primary-400 transition">Visi & Misi</a></li>
-                                <li><a href="#standar-mutu" className="hover:text-primary-400 transition">Standar Mutu</a></li>
-                                <li><a href="#dokumen" className="hover:text-primary-400 transition">Dokumen</a></li>
-                                <li><a href="#kepuasan" className="hover:text-primary-400 transition">Kepuasan</a></li>
-                                <li><a href="#galeri" className="hover:text-primary-400 transition">Galeri</a></li>
-                                <li><a href="#berita" className="hover:text-primary-400 transition">Berita</a></li>
+                                <li><a href="/#beranda" className="hover:text-primary-400 transition">Beranda</a></li>
+                                <li><a href="/#visi-misi" className="hover:text-primary-400 transition">Visi & Misi</a></li>
+                                <li><a href="/#standar-mutu" className="hover:text-primary-400 transition">Standar Mutu</a></li>
+                                <li><a href="/#dokumen" className="hover:text-primary-400 transition">Dokumen</a></li>
+                                <li><a href="/#kepuasan" className="hover:text-primary-400 transition">Kepuasan</a></li>
+                                <li><a href="/#galeri" className="hover:text-primary-400 transition">Galeri</a></li>
+                                <li><a href="/#berita" className="hover:text-primary-400 transition">Berita</a></li>
                             </ul>
                         </div>
 
@@ -147,3 +153,4 @@ export default function LandingLayout({ children }) {
     );
 }
 
+export default memo(LandingLayout);
