@@ -2,8 +2,7 @@ import { useState , memo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
 import Pagination from '@/Components/Pagination';
-import Modal from '@/Components/Modal';
-import { XMarkIcon, EyeIcon } from '@heroicons/react/24/outline';
+import GallerySection from './GallerySection';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan',
@@ -33,7 +32,7 @@ const dokumenKategoriLabels = {
 };
 
 function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [] }) {
-    const [selectedGaleri, setSelectedGaleri] = useState(null);
+    
 
     return (
         <LandingLayout>
@@ -371,106 +370,7 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
             </section>
 
             {/* Galeri */}
-            <section id="galeri" className="py-24 bg-gray-50 border-t border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Dokumentasi</span>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Galeri Kegiatan</h2>
-                        <p className="text-gray-500 mt-3 font-medium">Dokumentasi kegiatan terkait penjaminan mutu</p>
-                    </div>
-
-                    {galeri && galeri.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                            {galeri.map((g) => (
-                                <div 
-                                    key={g.id} 
-                                    className="group cursor-pointer"
-                                    onClick={() => setSelectedGaleri(g)}
-                                >
-                                    <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200 border border-gray-100 shadow-sm">
-                                        <img 
-                                            src={`/storage/${g.file_path}`} 
-                                            alt={g.judul} 
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                                            onError={(e) => {
-                                                e.target.onerror = null; 
-                                                e.target.src = `https://picsum.photos/seed/${g.id}/800/600`;
-                                            }}
-                                        />
-                                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-5">
-                                            <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                                                    <EyeIcon className="w-5 h-5" />
-                                                </div>
-                                                <h3 className="text-white font-bold text-sm line-clamp-2 leading-tight">{g.judul}</h3>
-                                                {g.deskripsi && <p className="text-white/70 text-xs mt-1.5 line-clamp-1 font-medium">{g.deskripsi}</p>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12 bg-white rounded-2xl">
-                            <p className="text-gray-400 font-medium">Belum ada dokumentasi kegiatan.</p>
-                        </div>
-                    )}
-                </div>
-
-                {/* Lightbox Modal */}
-                <Modal show={!!selectedGaleri} onClose={() => setSelectedGaleri(null)} maxWidth="5xl">
-                    {selectedGaleri && (
-                        <div className="relative bg-white overflow-hidden">
-                            <button 
-                                onClick={() => setSelectedGaleri(null)}
-                                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors backdrop-blur-sm shadow-lg"
-                            >
-                                <XMarkIcon className="w-6 h-6" />
-                            </button>
-                            <div className="flex flex-col md:flex-row">
-                                <div className="md:w-2/3 bg-black flex flex-col items-center overflow-y-auto max-h-[85vh] scrollbar-hide">
-                                    {selectedGaleri.images && selectedGaleri.images.length > 0 ? (
-                                        selectedGaleri.images.map((img) => (
-                                            <img 
-                                                key={img.id}
-                                                src={`/storage/${img.file_path}`} 
-                                                className="w-full h-auto object-contain max-h-[80vh] border-b border-gray-800"
-                                                alt={selectedGaleri.judul}
-                                                onError={(e) => {
-                                                    e.target.onerror = null; 
-                                                    e.target.src = `https://picsum.photos/seed/${selectedGaleri.id}/1200/900`;
-                                                }}
-                                            />
-                                        ))
-                                    ) : (
-                                        <div className="w-full h-[300px] flex items-center justify-center text-gray-400">
-                                            Tidak ada foto
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="md:w-1/3 p-8 flex flex-col justify-center bg-white">
-                                    <span className="text-primary-600 font-bold text-xs uppercase tracking-widest mb-3">Dokumentasi Kegiatan</span>
-                                    <h2 className="text-2xl font-extrabold text-gray-900 leading-tight mb-4">{selectedGaleri.judul}</h2>
-                                    <div className="h-1 w-12 bg-primary-500 rounded-full mb-6" />
-                                    <p className="text-gray-600 leading-relaxed text-sm mb-8 whitespace-pre-line">
-                                        {selectedGaleri.deskripsi || 'Tidak ada deskripsi tambahan untuk dokumentasi ini.'}
-                                    </p>
-                                    <div className="mt-auto pt-6 border-t border-gray-100">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-600">
-                                                <EyeIcon className="w-4 h-4" />
-                                            </div>
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                                                Dilihat Mode Pratinjau
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </Modal>
-            </section>
+            <GallerySection galeri={galeri} />
 
             {/* Berita */}
             <section id="berita" className="py-24 bg-white">
