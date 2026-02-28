@@ -39,7 +39,7 @@ function Index({ chartData = [], trendData = [] }) {
     const hasData = formattedChartData.length > 0;
 
     return (
-        <DashboardLayout title="Diagram Kepuasan">
+        <>
             <Head title="Diagram Kepuasan" />
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -154,8 +154,12 @@ function Index({ chartData = [], trendData = [] }) {
                     </div>
                 </div>
             )}
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Diagram Kepuasan">{page}</DashboardLayout>;
+export default PersistedIndex;
+

@@ -111,7 +111,7 @@ function Index({ roles, permissions = [], filters }) {
     }, {});
 
     return (
-        <DashboardLayout title="Manajemen Role">
+        <>
             <Head title="Manajemen Role" />
             
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -302,8 +302,12 @@ function Index({ roles, permissions = [], filters }) {
                     </form>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Manajemen Role">{page}</DashboardLayout>;
+export default PersistedIndex;
+

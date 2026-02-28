@@ -4,7 +4,7 @@ import LandingLayout from '@/Layouts/LandingLayout';
 
 function BeritaDetail({ berita }) {
     return (
-        <LandingLayout>
+        <>
             <Head>
                 <title>{`${berita.judul} - SPMI STIKES Hang Tuah`}</title>
                 <meta name="description" content={berita.ringkasan || berita.judul} />
@@ -32,8 +32,12 @@ function BeritaDetail({ berita }) {
                     <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: berita.konten }} />
                 </div>
             </div>
-        </LandingLayout>
+        </>
     );
 }
 
-export default memo(BeritaDetail);
+
+const PersistedBeritaDetail = memo(BeritaDetail);
+PersistedBeritaDetail.layout = page => <LandingLayout>{page}</LandingLayout>;
+export default PersistedBeritaDetail;
+

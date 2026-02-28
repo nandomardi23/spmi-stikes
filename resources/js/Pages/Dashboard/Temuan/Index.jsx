@@ -83,7 +83,7 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
     };
 
     return (
-        <DashboardLayout title="Temuan Audit">
+        <>
             <Head title="Temuan Audit" />
             
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -302,8 +302,12 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
                     </form>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Temuan Audit">{page}</DashboardLayout>;
+export default PersistedIndex;
+

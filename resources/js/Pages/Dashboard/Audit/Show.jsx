@@ -54,7 +54,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
     };
 
     return (
-        <DashboardLayout title="Detail Audit">
+        <>
             <Head title="Detail Audit" />
             <div className="mb-6"><Link href="/dashboard/audit" className="text-sm text-primary-600 hover:text-primary-700">← Kembali</Link></div>
             <div className="grid lg:grid-cols-3 gap-6">
@@ -227,8 +227,12 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                     </form>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Show);
+
+const PersistedShow = memo(Show);
+PersistedShow.layout = page => <DashboardLayout title="Detail Audit">{page}</DashboardLayout>;
+export default PersistedShow;
+

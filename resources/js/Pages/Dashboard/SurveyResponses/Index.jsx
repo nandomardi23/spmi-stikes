@@ -43,7 +43,7 @@ function Index({ questions, responses, statsByType, totalResponses }) {
     };
 
     return (
-        <DashboardLayout title="Hasil Kuesioner">
+        <>
             <Head title="Hasil Kuesioner" />
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -284,8 +284,12 @@ function Index({ questions, responses, statsByType, totalResponses }) {
                     </div>
                 )}
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Hasil Kuesioner">{page}</DashboardLayout>;
+export default PersistedIndex;
+

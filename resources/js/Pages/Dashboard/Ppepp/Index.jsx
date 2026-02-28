@@ -98,7 +98,7 @@ function Index({ ppepps, standars }) {
     };
 
     return (
-        <DashboardLayout title="Siklus PPEPP">
+        <>
             <Head title="Siklus PPEPP" />
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -295,8 +295,12 @@ function Index({ ppepps, standars }) {
                     </form>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Siklus PPEPP">{page}</DashboardLayout>;
+export default PersistedIndex;
+

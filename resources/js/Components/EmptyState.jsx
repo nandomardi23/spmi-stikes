@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 function EmptyState({ icon, title, message, description, asDiv = false }) {
     const content = (

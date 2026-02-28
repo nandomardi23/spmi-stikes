@@ -22,7 +22,7 @@ function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
     };
 
     return (
-        <DashboardLayout title="Profil SPMI">
+        <>
             <Head title="Profil SPMI" />
             
             <div className="max-w-5xl">
@@ -149,8 +149,12 @@ function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
                     </div>
                 </form>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Profil SPMI">{page}</DashboardLayout>;
+export default PersistedIndex;
+

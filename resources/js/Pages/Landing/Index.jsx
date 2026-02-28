@@ -35,7 +35,7 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
     
 
     return (
-        <LandingLayout>
+        <>
             <Head>
                 <title>Beranda - SPMI STIKES Hang Tuah</title>
                 <meta name="description" content="Sistem Penjaminan Mutu Internal (SPMI) STIKES Hang Tuah Tanjungpinang. Menjamin dan meningkatkan mutu pendidikan tinggi secara berkelanjutan." />
@@ -426,8 +426,12 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
                     )}
                 </div>
             </section>
-        </LandingLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <LandingLayout>{page}</LandingLayout>;
+export default PersistedIndex;
+

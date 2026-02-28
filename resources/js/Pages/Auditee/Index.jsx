@@ -7,14 +7,14 @@ const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'b
 function Index({ user, unitKerja, recentAudits, totalTemuanOpen, totalDokumen }) {
     if (!unitKerja) {
         return (
-            <DashboardLayout title="Portal Auditee">
+            <>
                 <div className="bg-red-50 text-red-800 p-6 rounded-2xl border border-red-200">Akun Anda belum dipetakan ke Unit Kerja manapun. Hubungi Admin.</div>
-            </DashboardLayout>
+            </>
         );
     }
 
     return (
-        <DashboardLayout title={`Portal Auditee: ${unitKerja.nama}`}>
+        <>
             <Head title="Portal Auditee" />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-linear-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white shadow-lg">
@@ -48,8 +48,12 @@ function Index({ user, unitKerja, recentAudits, totalTemuanOpen, totalDokumen })
                     )) : <p className="px-6 py-8 text-center text-gray-400">Tidak ada jadwal audit untuk unit ini.</p>}
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Portal Auditee">{page}</DashboardLayout>;
+export default PersistedIndex;
+

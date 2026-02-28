@@ -8,7 +8,7 @@ const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-1
 
 function Temuan({ temuans }) {
     return (
-        <DashboardLayout title="Temuan Audit">
+        <>
             <Head title="Temuan Audit" />
             <p className="text-sm text-gray-500 mb-6">Daftar temuan audit yang perlu ditindaklanjuti oleh unit kerja Anda.</p>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -49,8 +49,12 @@ function Temuan({ temuans }) {
                     />
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Temuan);
+
+const PersistedTemuan = memo(Temuan);
+PersistedTemuan.layout = page => <DashboardLayout title="Temuan Audit">{page}</DashboardLayout>;
+export default PersistedTemuan;
+

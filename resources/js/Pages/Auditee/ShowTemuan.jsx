@@ -19,7 +19,7 @@ function Show({ temuan, tindakLanjuts }) {
     };
 
     return (
-        <DashboardLayout title="Detail Temuan & Tindak Lanjut">
+        <>
             <Head title="Detail Temuan & Tindak Lanjut" />
             <div className="mb-6"><Link href="/auditee/temuan" className="text-sm text-primary-600">← Kembali ke Daftar Temuan</Link></div>
 
@@ -90,8 +90,12 @@ function Show({ temuan, tindakLanjuts }) {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Show);
+
+const PersistedShow = memo(Show);
+PersistedShow.layout = page => <DashboardLayout title="Detail Temuan & Tindak Lanjut">{page}</DashboardLayout>;
+export default PersistedShow;
+

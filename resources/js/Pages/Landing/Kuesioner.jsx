@@ -91,7 +91,7 @@ function Kuesioner({ questions }) {
     // Step 2: Thank you
     if (step === 2) {
         return (
-            <LandingLayout>
+            <>
                 <Head title="Terima Kasih - Kuesioner SPMI" />
                 <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary-50 to-white">
                     <div className="max-w-lg mx-auto text-center px-6">
@@ -114,14 +114,14 @@ function Kuesioner({ questions }) {
                         </div>
                     </div>
                 </div>
-            </LandingLayout>
+            </>
         );
     }
 
     const hasQuestions = kategoris.length > 0;
 
     return (
-        <LandingLayout>
+        <>
             <Head>
                 <title>Kuesioner Kepuasan - SPMI STIKES Hang Tuah</title>
                 <meta name="description" content="Isi kuesioner kepuasan stakeholder SPMI STIKES Hang Tuah Tanjungpinang" />
@@ -310,8 +310,12 @@ function Kuesioner({ questions }) {
                     )}
                 </div>
             </div>
-        </LandingLayout>
+        </>
     );
 }
 
-export default memo(Kuesioner);
+
+const PersistedKuesioner = memo(Kuesioner);
+PersistedKuesioner.layout = page => <LandingLayout>{page}</LandingLayout>;
+export default PersistedKuesioner;
+

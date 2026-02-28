@@ -111,7 +111,7 @@ function Index({ standarMutu, filters }) {
     };
 
     return (
-        <DashboardLayout title="Standar Mutu">
+        <>
             <Head title="Standar Mutu" />
             
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -391,8 +391,12 @@ function Index({ standarMutu, filters }) {
                     </div>
                 )}
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Standar Mutu">{page}</DashboardLayout>;
+export default PersistedIndex;
+

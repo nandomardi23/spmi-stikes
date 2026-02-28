@@ -15,7 +15,7 @@ function Dokumen({ dokumens, unitKerja }) {
     };
 
     return (
-        <DashboardLayout title="Dokumen Unit"><Head title="Dokumen Unit" />
+        <><Head title="Dokumen Unit" />
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-sm text-gray-500">Dokumen khusus untuk {unitKerja.nama}</h3>
                 <button onClick={() => setShowUpload(!showUpload)} className="px-5 py-2.5 bg-linear-to-r from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold shadow-lg">
@@ -74,8 +74,12 @@ function Dokumen({ dokumens, unitKerja }) {
                     />
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Dokumen);
+
+const PersistedDokumen = memo(Dokumen);
+PersistedDokumen.layout = page => <DashboardLayout title="Dokumen Unit">{page}</DashboardLayout>;
+export default PersistedDokumen;
+

@@ -87,7 +87,7 @@ function Index({ items, siklus = [] }) {
     };
 
     return (
-        <DashboardLayout title="Rapat Tinjauan Manajemen">
+        <>
             <Head title="Rapat Tinjauan Manajemen" />
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -251,8 +251,12 @@ function Index({ items, siklus = [] }) {
                     </form>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Rapat Tinjauan Manajemen">{page}</DashboardLayout>;
+export default PersistedIndex;
+

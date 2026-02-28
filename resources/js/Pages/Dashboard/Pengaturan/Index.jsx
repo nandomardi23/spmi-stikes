@@ -44,7 +44,7 @@ function Index({ site_name, site_description, site_logo }) {
     };
 
     return (
-        <DashboardLayout title="Pengaturan Website">
+        <>
             <Head title="Pengaturan Website" />
             
             <div className="max-w-5xl">
@@ -148,8 +148,12 @@ function Index({ site_name, site_description, site_logo }) {
                     </div>
                 </form>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Pengaturan Website">{page}</DashboardLayout>;
+export default PersistedIndex;
+

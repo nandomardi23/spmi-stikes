@@ -33,7 +33,7 @@ function Index({ stats, recentAudits, recentTemuan }) {
     ];
 
     return (
-        <DashboardLayout title="Dashboard Overview">
+        <>
             <Head title="Dashboard" />
 
             <div className="mb-8">
@@ -119,8 +119,12 @@ function Index({ stats, recentAudits, recentTemuan }) {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 }
 
-export default memo(Index);
+
+const PersistedIndex = memo(Index);
+PersistedIndex.layout = page => <DashboardLayout title="Dashboard Overview">{page}</DashboardLayout>;
+export default PersistedIndex;
+
