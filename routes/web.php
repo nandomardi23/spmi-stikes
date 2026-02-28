@@ -48,7 +48,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('audit', AuditController::class)->except(['create', 'edit']);
 
     // Temuan
-    Route::resource('temuan', TemuanController::class)->except(['show']);
+    Route::resource('temuan', TemuanController::class)->except(['show', 'create', 'edit']);
 
     // Dokumen
     Route::resource('dokumen', DokumenController::class)->except(['show', 'create', 'edit']);
@@ -83,12 +83,12 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('rapat-tinjauan', \App\Http\Controllers\RapatTinjauanController::class)->except(['show', 'create', 'edit']);
     Route::resource('tindak-lanjut', \App\Http\Controllers\TindakLanjutController::class)->except(['show', 'create', 'edit']);
     Route::resource('ppepp', \App\Http\Controllers\PpeppController::class)->except(['show', 'create', 'edit']);
+    Route::resource('instrumen-audit', \App\Http\Controllers\InstrumenAuditController::class)->except(['show', 'create', 'edit'])->parameters(['instrumen-audit' => 'instrumen']);
     Route::get('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'index'])->name('umpan-balik.index');
     Route::post('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('umpan-balik.store');
     Route::put('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'update'])->name('umpan-balik.update');
     Route::delete('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'destroy'])->name('umpan-balik.destroy');
     Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
-    Route::get('dokumen-publik', [\App\Http\Controllers\DokumenPublikController::class, 'index'])->name('dokumen-publik.index');
 });
 
 // ==========================================

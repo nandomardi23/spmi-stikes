@@ -24,17 +24,11 @@ class TemuanController extends Controller
         return Inertia::render('Dashboard/Temuan/Index', [
             'temuans' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['status', 'jenis']),
+            'audits' => Audit::with('unitKerja')->get(),
+            'standarMutu' => StandarMutu::where('is_active', true)->get(),
         ]);
     }
 
-    public function create(Request $request)
-    {
-        return Inertia::render('Dashboard/Temuan/Create', [
-            'audits' => Audit::with('unitKerja')->get(),
-            'standarMutu' => StandarMutu::where('is_active', true)->get(),
-            'audit_id' => $request->audit_id,
-        ]);
-    }
 
     public function store(Request $request)
     {
@@ -53,14 +47,6 @@ class TemuanController extends Controller
             ->with('success', 'Temuan berhasil ditambahkan.');
     }
 
-    public function edit(Temuan $temuan)
-    {
-        return Inertia::render('Dashboard/Temuan/Edit', [
-            'temuan' => $temuan->load(['audit.unitKerja', 'standarMutu', 'tindakLanjuts']),
-            'audits' => Audit::with('unitKerja')->get(),
-            'standarMutu' => StandarMutu::where('is_active', true)->get(),
-        ]);
-    }
 
     public function update(Request $request, Temuan $temuan)
     {
