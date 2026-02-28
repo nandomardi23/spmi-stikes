@@ -70,17 +70,22 @@ class RolePermissionSeeder extends Seeder
             'auditee.upload-dokumen',
             'auditee.view-temuan',
             'auditee.tindak-lanjut',
+            // PPEPP
+            'ppepp.view',
+            'ppepp.create',
+            'ppepp.edit',
+            'ppepp.delete',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Super Admin - gets all permissions via Gate::before
-        $superAdmin = Role::create(['name' => 'super-admin']);
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin']);
 
         // Admin Mutu
-        $adminMutu = Role::create(['name' => 'admin-mutu']);
+        $adminMutu = Role::firstOrCreate(['name' => 'admin-mutu']);
         $adminMutu->givePermissionTo([
             'standar-mutu.view',
             'standar-mutu.create',
@@ -117,10 +122,14 @@ class RolePermissionSeeder extends Seeder
             'instrumen.edit',
             'instrumen.delete',
             'users.view',
+            'ppepp.view',
+            'ppepp.create',
+            'ppepp.edit',
+            'ppepp.delete',
         ]);
 
         // Auditor
-        $auditor = Role::create(['name' => 'auditor']);
+        $auditor = Role::firstOrCreate(['name' => 'auditor']);
         $auditor->givePermissionTo([
             'audit.view',
             'audit.edit',
@@ -136,7 +145,7 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         // Auditee
-        $auditee = Role::create(['name' => 'auditee']);
+        $auditee = Role::firstOrCreate(['name' => 'auditee']);
         $auditee->givePermissionTo([
             'auditee.dashboard',
             'auditee.upload-dokumen',

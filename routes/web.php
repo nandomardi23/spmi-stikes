@@ -78,11 +78,15 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
     Route::put('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
 
-    // Additional Dashboard pages from reference
     Route::get('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'index'])->name('profil-spmi.index');
+    Route::post('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'update'])->name('profil-spmi.update');
     Route::resource('rapat-tinjauan', \App\Http\Controllers\RapatTinjauanController::class)->except(['show', 'create', 'edit']);
     Route::resource('tindak-lanjut', \App\Http\Controllers\TindakLanjutController::class)->except(['show', 'create', 'edit']);
+    Route::resource('ppepp', \App\Http\Controllers\PpeppController::class)->except(['show', 'create', 'edit']);
     Route::get('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'index'])->name('umpan-balik.index');
+    Route::post('umpan-balik', [\App\Http\Controllers\FeedbackController::class, 'store'])->name('umpan-balik.store');
+    Route::put('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'update'])->name('umpan-balik.update');
+    Route::delete('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'destroy'])->name('umpan-balik.destroy');
     Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
     Route::get('dokumen-publik', [\App\Http\Controllers\DokumenPublikController::class, 'index'])->name('dokumen-publik.index');
 });
