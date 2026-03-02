@@ -77,7 +77,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
                         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="font-extrabold text-gray-900">Daftar Temuan <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">{audit.temuans?.length || 0}</span></h3>
-                            <Link href={`/dashboard/temuan/create?audit_id=${audit.id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg hover:bg-primary-100 transition border border-primary-100/50">
+                            <Link href={`/dashboard/temuan?audit_id=${audit.id}`} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 text-primary-700 text-xs font-bold rounded-lg hover:bg-primary-100 transition border border-primary-100/50">
                                 <span>+ Tambah</span>
                             </Link>
                         </div>
@@ -103,7 +103,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                             <button onClick={openEditModal} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 text-indigo-700 font-bold rounded-xl hover:bg-indigo-100 transition duration-200 text-sm border border-indigo-100/50">
                                 <span>Edit Audit</span>
                             </button>
-                            <Link href={`/dashboard/temuan/create?audit_id=${audit.id}`} className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-amber-50 text-amber-700 font-bold rounded-xl hover:bg-amber-100 transition duration-200 text-sm border border-amber-100/50">
+                            <Link href={`/dashboard/temuan?audit_id=${audit.id}`} className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-amber-50 text-amber-700 font-bold rounded-xl hover:bg-amber-100 transition duration-200 text-sm border border-amber-100/50">
                                 <span>+ Tambah Temuan</span>
                             </Link>
                         </div>

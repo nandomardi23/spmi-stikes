@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState , memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
@@ -17,6 +17,13 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
         audit_id: audit_id || '', standar_mutu_id: '', jenis: 'observasi', deskripsi: '', rekomendasi: '', batas_waktu: '', status: 'open'
     });
+
+    // Auto-open create modal when navigating from Audit detail page
+    useEffect(() => {
+        if (audit_id) {
+            setIsModalOpen(true);
+        }
+    }, []);
 
     const handleDelete = (id) => {
         Swal.fire({

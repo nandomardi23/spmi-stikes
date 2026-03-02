@@ -20,12 +20,16 @@ class TemuanController extends Controller
         if ($request->filled('jenis')) {
             $query->where('jenis', $request->jenis);
         }
+        if ($request->filled('audit_id')) {
+            $query->where('audit_id', $request->audit_id);
+        }
 
         return Inertia::render('Dashboard/Temuan/Index', [
             'temuans' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['status', 'jenis']),
             'audits' => Audit::with('unitKerja')->get(),
             'standarMutu' => StandarMutu::where('is_active', true)->get(),
+            'audit_id' => $request->input('audit_id'),
         ]);
     }
 
