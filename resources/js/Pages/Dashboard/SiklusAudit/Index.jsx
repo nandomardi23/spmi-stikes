@@ -4,7 +4,7 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, EyeIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
 function Index({ siklusAudit }) {
@@ -161,6 +161,14 @@ function Index({ siklusAudit }) {
                                             >
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
+                                            <a
+                                                href={`/dashboard/export/laporan-ami/${s.id}`}
+                                                target="_blank"
+                                                className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-xl transition duration-200"
+                                                title="Cetak Laporan AMI"
+                                            >
+                                                <DocumentArrowDownIcon className="w-5 h-5" />
+                                            </a>
                                             <button 
                                                 onClick={() => openEditModal(s)} 
                                                 className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
@@ -370,13 +378,33 @@ function Index({ siklusAudit }) {
                             )}
                         </div>
 
-                        <div className="mt-6 flex justify-end">
-                            <button 
-                                onClick={closeDetailModal} 
-                                className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm shadow-sm"
-                            >
-                                Tutup
-                            </button>
+                        <div className="mt-6 flex flex-col gap-3">
+                            <div className="flex gap-2">
+                                <a 
+                                    href={`/dashboard/export/laporan-ami/${viewingData.id}`} 
+                                    target="_blank" 
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl hover:bg-emerald-100 transition text-xs border border-emerald-100/50"
+                                >
+                                    <DocumentArrowDownIcon className="w-4 h-4" />
+                                    Cetak Laporan AMI
+                                </a>
+                                <a 
+                                    href={`/dashboard/export/laporan-kinerja/${viewingData.id}`} 
+                                    target="_blank" 
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition text-xs border border-blue-100/50"
+                                >
+                                    <DocumentArrowDownIcon className="w-4 h-4" />
+                                    Cetak Kinerja SPMI
+                                </a>
+                            </div>
+                            <div className="flex justify-end">
+                                <button 
+                                    onClick={closeDetailModal} 
+                                    className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition duration-200 text-sm shadow-sm"
+                                >
+                                    Tutup
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}

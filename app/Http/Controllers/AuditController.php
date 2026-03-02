@@ -25,7 +25,9 @@ class AuditController extends Controller
 
         return Inertia::render('Dashboard/Audit/Index', [
             'audits' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
-            'siklus' => SiklusAudit::latest()->get(),
+            'siklusAudit' => SiklusAudit::latest()->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->get(),
+            'auditors' => User::role('auditor')->get(),
             'filters' => $request->only(['status', 'siklus']),
         ]);
     }

@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, TrashIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
 function Index({ items, siklus = [] }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -142,6 +142,9 @@ function Index({ items, siklus = [] }) {
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex items-center justify-center gap-1.5">
+                                                <a href={`/dashboard/export/laporan-rtm/${item.id}`} target="_blank" className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-xl transition" title="Cetak Laporan RTM">
+                                                    <DocumentArrowDownIcon className="w-5 h-5" />
+                                                </a>
                                                 <button onClick={() => openEdit(item)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition" title="Edit">
                                                     <PencilSquareIcon className="w-5 h-5" />
                                                 </button>

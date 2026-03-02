@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\ExportPdfController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SiklusAuditController;
 use App\Http\Controllers\StandarMutuController;
@@ -99,6 +100,13 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::delete('survey-questions/{survey_question}', [\App\Http\Controllers\SurveyController::class, 'adminDestroy'])->name('survey-questions.destroy');
     Route::get('survey-responses', [\App\Http\Controllers\SurveyController::class, 'adminResponses'])->name('survey-responses.index');
     Route::delete('survey-responses/{response}', [\App\Http\Controllers\SurveyController::class, 'adminDeleteResponse'])->name('survey-responses.destroy');
+
+    // Export PDF
+    Route::get('export/laporan-ami/{siklus}', [ExportPdfController::class, 'laporanAmi'])->name('export.laporan-ami');
+    Route::get('export/berita-acara/{audit}', [ExportPdfController::class, 'beritaAcara'])->name('export.berita-acara');
+    Route::get('export/surat-tugas/{audit}', [ExportPdfController::class, 'suratTugas'])->name('export.surat-tugas');
+    Route::get('export/laporan-rtm/{rapatTinjauan}', [ExportPdfController::class, 'laporanRtm'])->name('export.laporan-rtm');
+    Route::get('export/laporan-kinerja/{siklus}', [ExportPdfController::class, 'laporanKinerja'])->name('export.laporan-kinerja');
 });
 
 // ==========================================
