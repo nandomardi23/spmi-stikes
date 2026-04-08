@@ -90,7 +90,7 @@ function Index({ site_name, site_description, site_logo }) {
                                             accept="image/*"
                                         />
                                     </div>
-                                    <p className="mt-2 text-[10px] text-gray-400 font-medium italic">Format: JPG, PNG (Max 2MB)</p>
+                                    <p className="mt-2 text-[10px] text-gray-400 font-medium italic">Format: JPG, PNG, GIF (Max 2MB)</p>
                                     {errors.site_logo && <p className="mt-1 text-[10px] font-bold text-danger-500">{errors.site_logo}</p>}
                                 </div>
 
