@@ -16,7 +16,7 @@ jobs:
       - name: 🐘 Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # Sesuaikan dengan PHP di Hostinger (disarankan 8.2)
+          php-version: '8.3' # Sesuaikan dengan versi PHP project lokal Anda
           extensions: mbstring, pdo, pdo_mysql, bcmath, xml, ctype, json
           
       - name: 📦 Install Composer Dependencies
