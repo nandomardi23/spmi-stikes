@@ -132,8 +132,93 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
                 </div>
             </section>
 
+            {/* Struktur Organisasi */}
+            <section id="struktur-organisasi" className="py-24 bg-gray-50 border-y border-gray-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary-100 rounded-full blur-3xl opacity-50 z-0"></div>
+                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40 z-0"></div>
+
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+                    <div className="text-center mb-16">
+                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Tim Pengelola</span>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mt-3">Struktur Organisasi</h2>
+                        <p className="text-gray-500 mt-3 max-w-2xl mx-auto">Struktur inti kelembagaan penjaminan mutu dan pengembangan pembelajaran</p>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        {/* Level 1: Ketua */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 1).map((person, index) => (
+                            <div key={person.id || `l1-${index}`} className="flex flex-col items-center mb-8 w-full sm:w-80">
+                                <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 text-center w-full z-10 relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-linear-to-br from-primary-600 to-primary-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full mb-4 border-4 border-white shadow-sm overflow-hidden relative z-10 group-hover:border-primary-400 transition-colors flex items-center justify-center">
+                                        {person.foto ? (
+                                            <img src={`/storage/${person.foto}`} alt={person.nama} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <svg className="w-full h-full text-gray-400 group-hover:text-primary-100" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                        )}
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-white relative z-10 transition-colors">{person.nama}</h3>
+                                    <p className="text-primary-600 font-medium text-sm group-hover:text-primary-200 relative z-10 transition-colors">{person.jabatan}</p>
+                                </div>
+                                <div className="h-8 border-l-2 border-dashed border-gray-300 my-0"></div>
+                            </div>
+                        ))}
+
+                        {/* Level 2: Sekretaris/Wakil */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 2).map((person, index) => (
+                            <div key={person.id || `l2-${index}`} className="flex flex-col items-center mb-8 w-full sm:w-80">
+                                <div className="bg-white rounded-2xl p-5 shadow-lg shadow-gray-200/40 border border-gray-100 text-center w-full z-10 group hover:border-primary-200 transition-colors relative">
+                                    <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full mb-3 border-2 border-gray-100 overflow-hidden text-gray-400 flex items-center justify-center">
+                                        {person.foto ? (
+                                            <img src={`/storage/${person.foto}`} alt={person.nama} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                        )}
+                                    </div>
+                                    <h3 className="text-base font-bold text-gray-800">{person.nama}</h3>
+                                    <p className="text-gray-500 font-medium text-xs">{person.jabatan}</p>
+                                </div>
+                                <div className="h-8 border-l-2 border-dashed border-gray-300 my-0"></div>
+                            </div>
+                        ))}
+
+                        {/* Horizontal Line Connector (Only if there are level 3 people) */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 3).length > 0 && (
+                            <div className="w-0 sm:w-full max-w-4xl border-t-2 border-dashed border-gray-300 hidden sm:block relative top-[1px]"></div>
+                        )}
+
+                        {/* Bottom Tier: Koordinator/Staff */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl mt-0 sm:mt-8">
+                            {pengelolas && pengelolas.filter(p => p.tingkat === 3).map((person, index) => (
+                                <div key={person.id || `l3-${index}`} className="relative flex flex-col items-center">
+                                    <div className="absolute -top-8 left-1/2 h-8 border-l-2 border-dashed border-gray-300 hidden sm:block"></div>
+                                    <div className="absolute -top-8 left-1/2 h-8 border-l-2 border-dashed border-gray-300 sm:hidden"></div>
+
+                                    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 text-center w-full relative z-10 group cursor-default">
+                                        <div className="w-14 h-14 mx-auto bg-primary-50 rounded-full mb-3 border border-primary-100 flex items-center justify-center text-primary-600 group-hover:bg-primary-600 group-hover:text-white transition-colors overflow-hidden">
+                                            {person.foto ? (
+                                                <img src={`/storage/${person.foto}`} alt={person.nama} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                                            )}
+                                        </div>
+                                        <h3 className="text-sm font-bold text-gray-900 mb-1">{person.nama}</h3>
+                                        <p className="text-xs text-primary-600 font-medium px-2">{person.jabatan}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        {/* Fallback info when empty */}
+                        {(!pengelolas || pengelolas.length === 0) && (
+                            <div className="text-gray-400 text-sm mt-4 italic">Struktur organisasi sedang diperbarui.</div>
+                        )}
+                    </div>
+                </div>
+            </section>
+
             {/* PPPEP Cycle */}
-            <section className="py-24 bg-gray-50">
+            <section className="py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Siklus Mutu</span>
@@ -149,7 +234,7 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
                             { step: 'P', title: 'Pengendalian', desc: 'Mengendalikan pelaksanaan agar sesuai standar', color: 'from-purple-500 to-purple-600', icon: '🔍' },
                             { step: 'P', title: 'Peningkatan', desc: 'Meningkatkan standar mutu secara berkelanjutan', color: 'from-rose-500 to-rose-600', icon: '🚀' },
                         ].map((item, i) => (
-                            <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center">
+                            <div key={i} className="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center">
                                 <div className={`w-16 h-16 bg-linear-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
                                     <span className="text-2xl">{item.icon}</span>
                                 </div>
@@ -162,7 +247,7 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
             </section>
 
             {/* Standar Mutu */}
-            <section id="standar-mutu" className="py-24 bg-white">
+            <section id="standar-mutu" className="py-24 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Jaminan Kualitas</span>

@@ -1,0 +1,79 @@
+name: Deploy to Hostinger SPMI
+
+on:
+  push:
+    branches:
+      - main # Akan berjalan saat ada Push ke branch 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Sesuaikan dengan PHP di Hostinger (disarankan 8.2)
+          extensions: mbstring, pdo, pdo_mysql, bcmath, xml, ctype, json
+          
+      - name: 📦 Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 🛠️ Build Frontend Assets (Vite)
+        run: |
+          npm install
+          npm run build
+
+      - name: 🗄️ Zip Project Payload
+        # Mengompresi file agar transfer ke Hostinger sangat cepat & tidak putus di tengah jalan
+        run: |
+          rm -rf node_modules
+          rm -rf tests
+          rm -rf .git
+          rm -rf .github
+          tar -czf deployment.tar.gz ./* .env.example
+
+      - name: 📤 Transfer via SCP to Hostinger
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.HOST_PORT }}
+          source: "deployment.tar.gz"
+          target: "/home/u442572223/domains/stikesht-tpi.ac.id/public_html/pejaminan-mutu-internal"
+
+      - name: ⚙️ Extract & Execute Artisan Commands Via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.HOST_PORT }}
+          script: |
+            cd /home/u442572223/domains/stikesht-tpi.ac.id/public_html/pejaminan-mutu-internal
+            
+            # Hapus folder hasil build lama di server agar tidak ada file sisa/menumpuk
+            rm -rf public/build
+            
+            # Ekstrak file zip payload yang berisi build baru
+            tar -xzf deployment.tar.gz
+            rm deployment.tar.gz
+            
+            # Buat storage link jika belum ada
+            php artisan storage:link || true
+            
+            # Optimasi cache
+            php artisan optimize:clear
+            
+            # Eksekusi database migration secara otomatis tanpa paksa minta input (force)
+            php artisan migrate --force

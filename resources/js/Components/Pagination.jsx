@@ -76,7 +76,8 @@ function Pagination({
                             <Link
                                 key={i}
                                 href={link.url || '#'}
-                                preserveScroll={preserveScroll}
+                                preserveState={true}
+                                preserveScroll={true}
                                 className={`
                                     inline-flex items-center justify-center h-[36px] text-xs font-bold rounded-xl transition-all duration-200 border
                                     ${link.active 

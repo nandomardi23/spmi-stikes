@@ -40,6 +40,8 @@ class LandingController extends Controller
                 ->get();
         }
 
+        $pengelolas = \App\Models\Pengelola::orderBy('tingkat')->orderBy('urutan')->get();
+
         return Inertia::render('Landing/Index', [
             'visi' => $visi,
             'misi' => empty($misi) ? [
@@ -54,6 +56,7 @@ class LandingController extends Controller
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
             'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
             'kepuasanData' => $surveyData,
+            'pengelolas' => $pengelolas,
         ]);
     }
 
