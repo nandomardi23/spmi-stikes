@@ -31,7 +31,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [] }) {
+function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [], pengelolas = [] }) {
     
 
     return (
