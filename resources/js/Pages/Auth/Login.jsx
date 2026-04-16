@@ -110,7 +110,7 @@ function Login() {
                         </form>
 
                         <p className="mt-6 text-center text-sm text-gray-400">
-                            &copy; {new Date().getFullYear()} STIKES Hang Tuah Tanjungpinang. Presented by Fernando Mardi Nurzaman
+                            &copy; {new Date().getFullYear()} STIKES Hang Tuah Tanjungpinang. Presented by <a href="https://www.linkedin.com/in/fernandomardinurzaman/" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 transition-colors">Fernando Mardi Nurzaman</a>
                         </p>
                     </div>
                 </div>
