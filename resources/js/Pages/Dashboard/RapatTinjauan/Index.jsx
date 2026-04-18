@@ -70,7 +70,7 @@ function Index({ items, siklus = [] }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: "Hapus rapat ini?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Dokumen yang dilampirkan sebagai hasil rapat tinjauan juga akan terdampak.</span>",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#ef4444",

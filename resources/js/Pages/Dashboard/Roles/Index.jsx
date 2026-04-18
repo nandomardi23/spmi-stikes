@@ -30,8 +30,7 @@ function Index({ roles, permissions = [], filters }) {
 
         Swal.fire({
             title: 'Hapus Role?',
-            text: `Hapus role ${role.name}?`,
-            icon: 'warning',
+            html: `Hapus peran ${role.name}? Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: User yang memiliki Role ini akan kehilangan semua hak akses yang berhubungan.</span>`,
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',

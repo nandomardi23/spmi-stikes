@@ -22,7 +22,7 @@ function Index({ siklusAudit }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Siklus Audit?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Seluruh Audit yang dijadwalkan pada siklus ini akan terkena dampaknya.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

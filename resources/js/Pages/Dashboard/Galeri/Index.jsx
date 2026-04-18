@@ -24,7 +24,7 @@ function Index({ galeris, filters }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Galeri?',
-            text: "Seluruh foto dan data kegiatan ini akan dihapus permanen!",
+            html: "Seluruh foto dan data kegiatan ini akan dihapus permanen!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Kegiatan ini tidak akan muncul lagi di halaman galeri publik.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

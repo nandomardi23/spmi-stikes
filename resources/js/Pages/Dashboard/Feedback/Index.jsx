@@ -70,7 +70,7 @@ function Index({ feedbacks }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: "Hapus data ini?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Umpan balik yang dihapus tidak dapat direstorasi dan akan memengaruhi diagram kepuasan.</span>",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#ef4444",

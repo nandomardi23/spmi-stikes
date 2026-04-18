@@ -28,7 +28,7 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Temuan?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Tindak Lanjut dan Bukti Pendukung yang diajukan untuk temuan ini juga akan terhapus.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

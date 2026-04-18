@@ -72,7 +72,7 @@ function Index({ items, temuan = [] }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: "Hapus tindak lanjut?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Berkas bukti dokumen yang dilampirkan juga akan ikut terhapus permanen dari server.</span>",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#ef4444",

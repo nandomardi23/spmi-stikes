@@ -35,7 +35,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
 
         Swal.fire({
             title: 'Hapus Pengguna?',
-            text: `Hapus pengguna ${user.name}? Data yang dihapus tidak dapat dikembalikan!`,
+            html: `Hapus pengguna ${user.name}? Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Semua peran dan Audit yang ditugaskan kepada user ini akan terpengaruh.</span>`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

@@ -72,7 +72,7 @@ function Index({ instrumens, standars }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: "Hapus instrumen ini?",
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Pertanyaan audit ini tidak akan muncul lagi di instrumen pengisian saat pelaksanaan audit.</span>",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#ef4444",

@@ -39,7 +39,7 @@ function Index({ dokumens, filters }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Dokumen?',
-            text: "File dokumen juga akan dihapus permanen!",
+            html: "File dokumen juga akan dihapus permanen!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Jika dokumen ini dibagikan ke publik atau terkait aktivitas lain, tautannya akan terputus.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

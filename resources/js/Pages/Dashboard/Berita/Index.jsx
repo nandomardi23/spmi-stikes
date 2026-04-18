@@ -26,7 +26,7 @@ function Index({ berita, filters }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Berita?',
-            text: "Berita yang dihapus tidak dapat dikembalikan!",
+            html: "Berita yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Berita ini akan hilang secara permanen dari halaman landing page publik.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

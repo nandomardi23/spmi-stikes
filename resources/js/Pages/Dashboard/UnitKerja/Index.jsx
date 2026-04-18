@@ -20,7 +20,7 @@ function Index({ unitKerjas, users }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Unit Kerja?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Menghapus Unit Kerja ini akan memengaruhi Data Audit, User, dan Dokumen terkait (jika ada).</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',

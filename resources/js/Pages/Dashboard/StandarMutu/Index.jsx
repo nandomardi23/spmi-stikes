@@ -40,7 +40,7 @@ function Index({ standarMutu, filters }) {
     const handleDelete = (id) => {
         Swal.fire({
             title: 'Hapus Standar Mutu?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Standar Mutu yang dihapus akan memengaruhi Temuan dan Instrumen Audit yang menggunakannya.</span>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
