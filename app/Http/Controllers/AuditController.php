@@ -38,8 +38,8 @@ class AuditController extends Controller
         return Inertia::render('Dashboard/Audit/Index', [
             'audits' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'siklusAudit' => SiklusAudit::latest()->get(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-            'auditors' => User::role('auditor')->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
+            'auditors' => User::role('auditor')->latest()->get(),
             'filters' => $request->only(['status', 'siklus', 'search']),
         ]);
     }
@@ -48,8 +48,8 @@ class AuditController extends Controller
     {
         return Inertia::render('Dashboard/Audit/Create', [
             'siklusAudit' => SiklusAudit::latest()->get(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-            'auditors' => User::role('auditor')->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
+            'auditors' => User::role('auditor')->latest()->get(),
         ]);
     }
 
@@ -68,8 +68,8 @@ class AuditController extends Controller
         return Inertia::render('Dashboard/Audit/Show', [
             'audit' => $audit->load(['siklusAudit', 'unitKerja', 'auditor', 'temuans.standarMutu']),
             'siklusAudit' => SiklusAudit::latest()->get(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-            'auditors' => User::role('auditor')->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
+            'auditors' => User::role('auditor')->latest()->get(),
         ]);
     }
 
@@ -80,8 +80,8 @@ class AuditController extends Controller
         return Inertia::render('Dashboard/Audit/Edit', [
             'audit' => $audit,
             'siklusAudit' => SiklusAudit::latest()->get(),
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
-            'auditors' => User::role('auditor')->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
+            'auditors' => User::role('auditor')->latest()->get(),
         ]);
     }
 

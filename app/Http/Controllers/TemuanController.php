@@ -34,8 +34,8 @@ class TemuanController extends Controller
         return Inertia::render('Dashboard/Temuan/Index', [
             'temuans' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['status', 'jenis', 'search']),
-            'audits' => Audit::with('unitKerja')->get(),
-            'standarMutu' => StandarMutu::where('is_active', true)->get(),
+            'audits' => Audit::with('unitKerja')->latest()->get(),
+            'standarMutu' => StandarMutu::where('is_active', true)->latest()->get(),
             'audit_id' => $request->input('audit_id'),
         ]);
     }

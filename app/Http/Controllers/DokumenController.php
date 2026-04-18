@@ -30,14 +30,14 @@ class DokumenController extends Controller
         return Inertia::render('Dashboard/Dokumen/Index', [
             'dokumens' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'filters' => $request->only(['search', 'kategori']),
-            'standars' => StandarMutu::where('is_active', true)->get(),
+            'standars' => StandarMutu::where('is_active', true)->latest()->get(),
         ]);
     }
 
     public function create()
     {
         return Inertia::render('Dashboard/Dokumen/Create', [
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
         ]);
     }
 
@@ -73,7 +73,7 @@ class DokumenController extends Controller
 
         return Inertia::render('Dashboard/Dokumen/Edit', [
             'dokumen' => $dokumen,
-            'unitKerja' => UnitKerja::where('is_active', true)->get(),
+            'unitKerja' => UnitKerja::where('is_active', true)->latest()->get(),
         ]);
     }
 

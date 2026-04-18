@@ -14,7 +14,7 @@ class InstrumenAuditController extends Controller
         $instrumens = InstrumenAudit::with('standarMutu')
             ->orderBy('urutan')
             ->paginate(15);
-        $standars = StandarMutu::where('is_active', true)->get();
+        $standars = StandarMutu::where('is_active', true)->latest()->get();
 
         return Inertia::render('Dashboard/InstrumenAudit/Index', [
             'instrumens' => $instrumens,

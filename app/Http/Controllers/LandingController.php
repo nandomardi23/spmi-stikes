@@ -51,7 +51,7 @@ class LandingController extends Controller
                 'Mengembangkan tata kelola institusi yang transparan dan akuntabel',
                 'Menjalin kerjasama strategis dengan stakeholder',
             ] : array_values($misi),
-            'standarMutu' => StandarMutu::where('is_active', true)->paginate($request->input('per_page_standar', 10), ['*'], 'page_standar')->withQueryString(),
+            'standarMutu' => StandarMutu::where('is_active', true)->latest()->paginate($request->input('per_page_standar', 10), ['*'], 'page_standar')->withQueryString(),
             'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
             'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
