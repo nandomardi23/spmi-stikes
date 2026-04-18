@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAuditRequest;
+use App\Http\Requests\UpdateAuditRequest;
 use App\Models\Audit;
 use App\Models\SiklusAudit;
 use App\Models\UnitKerja;
@@ -13,6 +15,8 @@ class AuditController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Audit::class);
+
         $query = Audit::with(['siklusAudit', 'unitKerja', 'auditor']);
 
         if ($request->filled('status')) {
@@ -23,12 +27,20 @@ class AuditController extends Controller
             $query->where('siklus_audit_id', $request->siklus);
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('unitKerja', fn($q) => $q->where('nama', 'like', "%{$search}%"))
+                  ->orWhereHas('auditor', fn($q) => $q->where('name', 'like', "%{$search}%"));
+            });
+        }
+
         return Inertia::render('Dashboard/Audit/Index', [
             'audits' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
             'siklusAudit' => SiklusAudit::latest()->get(),
             'unitKerja' => UnitKerja::where('is_active', true)->get(),
             'auditors' => User::role('auditor')->get(),
-            'filters' => $request->only(['status', 'siklus']),
+            'filters' => $request->only(['status', 'siklus', 'search']),
         ]);
     }
 
@@ -41,18 +53,9 @@ class AuditController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreAuditRequest $request)
     {
-        $validated = $request->validate([
-            'siklus_audit_id' => 'required|exists:siklus_audit,id',
-            'unit_kerja_id' => 'required|exists:unit_kerja,id',
-            'auditor_id' => 'nullable|exists:users,id',
-            'tanggal_audit' => 'nullable|date',
-            'status' => 'required|in:dijadwalkan,berlangsung,selesai,dibatalkan',
-            'catatan' => 'nullable|string',
-        ]);
-
-        Audit::create($validated);
+        Audit::create($request->validated());
 
         return redirect()->route('dashboard.audit.index')
             ->with('success', 'Audit berhasil dijadwalkan.');
@@ -60,6 +63,8 @@ class AuditController extends Controller
 
     public function show(Audit $audit)
     {
+        $this->authorize('view', $audit);
+
         return Inertia::render('Dashboard/Audit/Show', [
             'audit' => $audit->load(['siklusAudit', 'unitKerja', 'auditor', 'temuans.standarMutu']),
             'siklusAudit' => SiklusAudit::latest()->get(),
@@ -70,6 +75,8 @@ class AuditController extends Controller
 
     public function edit(Audit $audit)
     {
+        $this->authorize('update', $audit);
+
         return Inertia::render('Dashboard/Audit/Edit', [
             'audit' => $audit,
             'siklusAudit' => SiklusAudit::latest()->get(),
@@ -78,19 +85,9 @@ class AuditController extends Controller
         ]);
     }
 
-    public function update(Request $request, Audit $audit)
+    public function update(UpdateAuditRequest $request, Audit $audit)
     {
-        $validated = $request->validate([
-            'siklus_audit_id' => 'required|exists:siklus_audit,id',
-            'unit_kerja_id' => 'required|exists:unit_kerja,id',
-            'auditor_id' => 'nullable|exists:users,id',
-            'tanggal_audit' => 'nullable|date',
-            'status' => 'required|in:dijadwalkan,berlangsung,selesai,dibatalkan',
-            'catatan' => 'nullable|string',
-            'skor' => 'nullable|numeric|min:0|max:100',
-        ]);
-
-        $audit->update($validated);
+        $audit->update($request->validated());
 
         return redirect()->route('dashboard.audit.index')
             ->with('success', 'Audit berhasil diperbarui.');
@@ -98,6 +95,8 @@ class AuditController extends Controller
 
     public function destroy(Audit $audit)
     {
+        $this->authorize('delete', $audit);
+
         $audit->delete();
 
         return redirect()->route('dashboard.audit.index')

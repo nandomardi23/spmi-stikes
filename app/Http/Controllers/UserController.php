@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UnitKerja;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -14,6 +15,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', User::class);
+
         $query = User::with(['roles', 'unitKerja']);
 
         if ($request->filled('search')) {
@@ -34,51 +37,41 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'roles' => 'required|array|min:1',
-            'roles.*' => 'exists:roles,name',
-            'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
-        ]);
+        $validated = $request->validated();
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
-        ]);
+        DB::transaction(function () use ($validated) {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
+            ]);
 
-        $user->assignRole($validated['roles']);
+            $user->assignRole($validated['roles']);
+        });
 
         return redirect()->route('dashboard.users.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-            'roles' => 'required|array|min:1',
-            'roles.*' => 'exists:roles,name',
-            'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
-        ]);
+        $validated = $request->validated();
 
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->unit_kerja_id = $validated['unit_kerja_id'] ?? null;
+        DB::transaction(function () use ($validated, $user) {
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            $user->unit_kerja_id = $validated['unit_kerja_id'] ?? null;
 
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-        }
+            if (!empty($validated['password'])) {
+                $user->password = Hash::make($validated['password']);
+            }
 
-        $user->save();
-        $user->syncRoles($validated['roles']);
+            $user->save();
+            $user->syncRoles($validated['roles']);
+        });
 
         return redirect()->route('dashboard.users.index')
             ->with('success', 'User berhasil diperbarui.');
@@ -86,9 +79,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id()) {
-            return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
-        }
+        $this->authorize('delete', $user);
 
         $user->delete();
 

@@ -7,6 +7,7 @@ use App\Models\Dokumen;
 use App\Models\Temuan;
 use App\Models\TindakLanjut;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -110,22 +111,24 @@ class AuditeeController extends Controller
             'bukti_file' => 'nullable|file|max:10240',
         ]);
 
-        $data = [
-            'temuan_id' => $temuan->id,
-            'user_id' => auth()->id(),
-            'deskripsi' => $validated['deskripsi'],
-        ];
+        DB::transaction(function () use ($request, $validated, $temuan) {
+            $data = [
+                'temuan_id' => $temuan->id,
+                'user_id' => auth()->id(),
+                'deskripsi' => $validated['deskripsi'],
+            ];
 
-        if ($request->hasFile('bukti_file')) {
-            $data['bukti_file'] = $request->file('bukti_file')->store('tindak-lanjut', 'public');
-        }
+            if ($request->hasFile('bukti_file')) {
+                $data['bukti_file'] = $request->file('bukti_file')->store('tindak-lanjut', 'public');
+            }
 
-        TindakLanjut::create($data);
+            TindakLanjut::create($data);
 
-        // Update temuan status to in_progress
-        if ($temuan->status === 'open') {
-            $temuan->update(['status' => 'in_progress']);
-        }
+            // Update temuan status to in_progress
+            if ($temuan->status === 'open') {
+                $temuan->update(['status' => 'in_progress']);
+            }
+        });
 
         return back()->with('success', 'Tindak lanjut berhasil diajukan.');
     }

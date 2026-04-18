@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -69,24 +70,26 @@ class BeritaController extends Controller
             'status' => 'required|in:draft,published',
         ]);
 
-        $berita->judul = $validated['judul'];
-        $berita->slug = Str::slug($validated['judul']);
-        $berita->ringkasan = $validated['ringkasan'] ?? null;
-        $berita->konten = $validated['konten'];
-        $berita->status = $validated['status'];
+        DB::transaction(function () use ($request, $validated, $berita) {
+            $berita->judul = $validated['judul'];
+            $berita->slug = Str::slug($validated['judul']);
+            $berita->ringkasan = $validated['ringkasan'] ?? null;
+            $berita->konten = $validated['konten'];
+            $berita->status = $validated['status'];
 
-        if ($validated['status'] === 'published' && !$berita->published_at) {
-            $berita->published_at = \Illuminate\Support\Carbon::now();
-        }
-
-        if ($request->hasFile('gambar')) {
-            if ($berita->gambar) {
-                Storage::disk('public')->delete($berita->gambar);
+            if ($validated['status'] === 'published' && !$berita->published_at) {
+                $berita->published_at = \Illuminate\Support\Carbon::now();
             }
-            $berita->gambar = $request->file('gambar')->store('berita', 'public');
-        }
 
-        $berita->save();
+            if ($request->hasFile('gambar')) {
+                if ($berita->gambar) {
+                    Storage::disk('public')->delete($berita->gambar);
+                }
+                $berita->gambar = $request->file('gambar')->store('berita', 'public');
+            }
+
+            $berita->save();
+        });
 
         return redirect()->route('dashboard.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
@@ -94,10 +97,12 @@ class BeritaController extends Controller
 
     public function destroy(Berita $berita)
     {
-        if ($berita->gambar) {
-            Storage::disk('public')->delete($berita->gambar);
-        }
-        $berita->delete();
+        DB::transaction(function () use ($berita) {
+            if ($berita->gambar) {
+                Storage::disk('public')->delete($berita->gambar);
+            }
+            $berita->delete();
+        });
 
         return redirect()->route('dashboard.berita.index')
             ->with('success', 'Berita berhasil dihapus.');

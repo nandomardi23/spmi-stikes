@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDokumenRequest;
+use App\Http\Requests\UpdateDokumenRequest;
 use App\Models\Dokumen;
 use App\Models\UnitKerja;
 use App\Models\StandarMutu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -13,6 +16,8 @@ class DokumenController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Dokumen::class);
+
         $query = Dokumen::with(['unitKerja', 'uploader', 'standarMutu']);
 
         if ($request->filled('search')) {
@@ -36,33 +41,27 @@ class DokumenController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreDokumenRequest $request)
     {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
-            'file' => 'required|file|max:10240',
-            'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
-            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
-            'is_public' => 'boolean',
-        ]);
-
+        $validated = $request->validated();
         $file = $request->file('file');
-        $path = $file->store('dokumen', 'public');
 
-        Dokumen::create([
-            'judul' => $validated['judul'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'kategori' => $validated['kategori'],
-            'file_path' => $path,
-            'file_name' => $file->getClientOriginalName(),
-            'file_size' => $file->getSize(),
-            'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
-            'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
-            'uploaded_by' => auth()->id(),
-            'is_public' => $validated['is_public'] ?? false,
-        ]);
+        DB::transaction(function () use ($validated, $file) {
+            $path = $file->store('dokumen', 'public');
+
+            Dokumen::create([
+                'judul' => $validated['judul'],
+                'deskripsi' => $validated['deskripsi'] ?? null,
+                'kategori' => $validated['kategori'],
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'file_size' => $file->getSize(),
+                'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
+                'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
+                'uploaded_by' => auth()->id(),
+                'is_public' => $validated['is_public'] ?? false,
+            ]);
+        });
 
         return redirect()->route('dashboard.dokumen.index')
             ->with('success', 'Dokumen berhasil diupload.');
@@ -70,40 +69,36 @@ class DokumenController extends Controller
 
     public function edit(Dokumen $dokumen)
     {
+        $this->authorize('update', $dokumen);
+
         return Inertia::render('Dashboard/Dokumen/Edit', [
             'dokumen' => $dokumen,
             'unitKerja' => UnitKerja::where('is_active', true)->get(),
         ]);
     }
 
-    public function update(Request $request, Dokumen $dokumen)
+    public function update(UpdateDokumenRequest $request, Dokumen $dokumen)
     {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
-            'file' => 'nullable|file|max:10240',
-            'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
-            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
-            'is_public' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
-        if ($request->hasFile('file')) {
-            Storage::disk('public')->delete($dokumen->file_path);
-            $file = $request->file('file');
-            $dokumen->file_path = $file->store('dokumen', 'public');
-            $dokumen->file_name = $file->getClientOriginalName();
-            $dokumen->file_size = $file->getSize();
-        }
+        DB::transaction(function () use ($request, $validated, $dokumen) {
+            if ($request->hasFile('file')) {
+                Storage::disk('public')->delete($dokumen->file_path);
+                $file = $request->file('file');
+                $dokumen->file_path = $file->store('dokumen', 'public');
+                $dokumen->file_name = $file->getClientOriginalName();
+                $dokumen->file_size = $file->getSize();
+            }
 
-        $dokumen->update([
-            'judul' => $validated['judul'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'kategori' => $validated['kategori'],
-            'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
-            'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
-            'is_public' => $validated['is_public'] ?? false,
-        ]);
+            $dokumen->update([
+                'judul' => $validated['judul'],
+                'deskripsi' => $validated['deskripsi'] ?? null,
+                'kategori' => $validated['kategori'],
+                'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
+                'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
+                'is_public' => $validated['is_public'] ?? false,
+            ]);
+        });
 
         return redirect()->route('dashboard.dokumen.index')
             ->with('success', 'Dokumen berhasil diperbarui.');
@@ -111,8 +106,12 @@ class DokumenController extends Controller
 
     public function destroy(Dokumen $dokumen)
     {
-        Storage::disk('public')->delete($dokumen->file_path);
-        $dokumen->delete();
+        $this->authorize('delete', $dokumen);
+
+        DB::transaction(function () use ($dokumen) {
+            Storage::disk('public')->delete($dokumen->file_path);
+            $dokumen->delete();
+        });
 
         return redirect()->route('dashboard.dokumen.index')
             ->with('success', 'Dokumen berhasil dihapus.');
@@ -121,7 +120,6 @@ class DokumenController extends Controller
     public function download(Dokumen $dokumen)
     {
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-        //masih belum bisa download
         $disk = Storage::disk('public');
 
         return $disk->download($dokumen->file_path, $dokumen->file_name);

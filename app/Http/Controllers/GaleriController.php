@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Galeri;
 use App\Models\GaleriImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -37,23 +38,25 @@ class GaleriController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $galeri = Galeri::create([
-            'judul' => $validated['judul'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'is_active' => $request->has('is_active') ? $validated['is_active'] : true,
-            'uploaded_by' => auth()->id(),
-        ]);
+        DB::transaction(function () use ($request, $validated) {
+            $galeri = Galeri::create([
+                'judul' => $validated['judul'],
+                'deskripsi' => $validated['deskripsi'] ?? null,
+                'is_active' => $request->has('is_active') ? $validated['is_active'] : true,
+                'uploaded_by' => auth()->id(),
+            ]);
 
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $path = $file->store('galeri', 'public');
-                $galeri->images()->create([
-                    'file_path' => $path,
-                    'file_name' => $file->getClientOriginalName(),
-                    'file_size' => $file->getSize(),
-                ]);
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $path = $file->store('galeri', 'public');
+                    $galeri->images()->create([
+                        'file_path' => $path,
+                        'file_name' => $file->getClientOriginalName(),
+                        'file_size' => $file->getSize(),
+                    ]);
+                }
             }
-        }
+        });
 
         return redirect()->route('dashboard.galeri.index')
             ->with('success', 'Galeri berhasil ditambahkan.');
@@ -104,14 +107,16 @@ class GaleriController extends Controller
 
     public function destroy(Galeri $galeri)
     {
-        // Delete all associated image files from storage
-        foreach ($galeri->images as $image) {
-            if ($image->file_path) {
-                Storage::disk('public')->delete($image->file_path);
+        DB::transaction(function () use ($galeri) {
+            // Delete all associated image files from storage
+            foreach ($galeri->images as $image) {
+                if ($image->file_path) {
+                    Storage::disk('public')->delete($image->file_path);
+                }
             }
-        }
 
-        $galeri->delete();
+            $galeri->delete();
+        });
 
         return redirect()->route('dashboard.galeri.index')
             ->with('success', 'Galeri berhasil dihapus.');

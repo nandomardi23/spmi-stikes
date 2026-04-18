@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTemuanRequest;
+use App\Http\Requests\UpdateTemuanRequest;
 use App\Models\Audit;
 use App\Models\StandarMutu;
 use App\Models\Temuan;
@@ -12,6 +14,8 @@ class TemuanController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Temuan::class);
+
         $query = Temuan::with(['audit.unitKerja', 'standarMutu']);
 
         if ($request->filled('status')) {
@@ -23,10 +27,13 @@ class TemuanController extends Controller
         if ($request->filled('audit_id')) {
             $query->where('audit_id', $request->audit_id);
         }
+        if ($request->filled('search')) {
+            $query->where('deskripsi', 'like', "%{$request->search}%");
+        }
 
         return Inertia::render('Dashboard/Temuan/Index', [
             'temuans' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
-            'filters' => $request->only(['status', 'jenis']),
+            'filters' => $request->only(['status', 'jenis', 'search']),
             'audits' => Audit::with('unitKerja')->get(),
             'standarMutu' => StandarMutu::where('is_active', true)->get(),
             'audit_id' => $request->input('audit_id'),
@@ -34,37 +41,18 @@ class TemuanController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreTemuanRequest $request)
     {
-        $validated = $request->validate([
-            'audit_id' => 'required|exists:audit,id',
-            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
-            'jenis' => 'required|in:observasi,minor,mayor',
-            'deskripsi' => 'required|string',
-            'rekomendasi' => 'nullable|string',
-            'batas_waktu' => 'nullable|date',
-        ]);
-
-        Temuan::create($validated);
+        Temuan::create($request->validated());
 
         return redirect()->route('dashboard.temuan.index')
             ->with('success', 'Temuan berhasil ditambahkan.');
     }
 
 
-    public function update(Request $request, Temuan $temuan)
+    public function update(UpdateTemuanRequest $request, Temuan $temuan)
     {
-        $validated = $request->validate([
-            'audit_id' => 'required|exists:audit,id',
-            'standar_mutu_id' => 'nullable|exists:standar_mutu,id',
-            'jenis' => 'required|in:observasi,minor,mayor',
-            'deskripsi' => 'required|string',
-            'rekomendasi' => 'nullable|string',
-            'status' => 'required|in:open,in_progress,closed,verified',
-            'batas_waktu' => 'nullable|date',
-        ]);
-
-        $temuan->update($validated);
+        $temuan->update($request->validated());
 
         return redirect()->route('dashboard.temuan.index')
             ->with('success', 'Temuan berhasil diperbarui.');
@@ -72,6 +60,8 @@ class TemuanController extends Controller
 
     public function destroy(Temuan $temuan)
     {
+        $this->authorize('delete', $temuan);
+
         $temuan->delete();
 
         return redirect()->route('dashboard.temuan.index')

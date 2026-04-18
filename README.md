@@ -1,59 +1,166 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/logo.gif" alt="SPMI STIKES Logo" width="120">
 </p>
 
-## About Laravel
+<h1 align="center">SPMI — Sistem Penjaminan Mutu Internal</h1>
+<h3 align="center">STIKES Hang Tuah Tanjungpinang</h3>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  Aplikasi web untuk mengelola siklus penjaminan mutu internal, audit, temuan, tindak lanjut, dan pelaporan secara terintegrasi.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Tech Stack
 
-## Learning Laravel
+| Layer | Teknologi |
+|-------|-----------|
+| **Backend** | Laravel 12, PHP 8.2+ |
+| **Frontend** | React 19 (Inertia.js), Tailwind CSS 4 |
+| **Database** | MySQL / MariaDB |
+| **Auth & Roles** | Spatie Laravel Permission |
+| **Charts** | Recharts |
+| **PDF Export** | Barryvdh DomPDF |
+| **Activity Log** | Spatie Laravel Activitylog |
+| **Build Tool** | Vite 7 |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📋 Fitur Utama
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🏛️ Manajemen Penjaminan Mutu
+- **Standar Mutu** — CRUD standar mutu dengan kategori (pendidikan, penelitian, pengabdian, dll)
+- **Siklus PPEPP** — Penetapan, Pelaksanaan, Evaluasi, Pengendalian, Peningkatan
+- **Dokumen SPMI** — Upload & pengelolaan dokumen kebijakan, manual, SOP, formulir
+- **Profil SPMI** — Informasi profil lembaga penjaminan mutu
 
-## Laravel Sponsors
+### 🔍 Audit Mutu Internal (AMI)
+- **Siklus Audit** — Perencanaan siklus audit per tahun/semester
+- **Instrumen Audit** — Daftar pertanyaan audit dengan bobot & standar mutu
+- **Pelaksanaan Audit** — Penjadwalan, penugasan auditor, pelaksanaan, dan penilaian
+- **Temuan Audit** — Pencatatan temuan (mayor, minor, observasi) dengan batas waktu
+- **Tindak Lanjut** — Penyelesaian temuan oleh auditee dengan bukti upload
+- **Rapat Tinjauan Manajemen** — Notulen & keputusan rapat tinjauan
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📊 Evaluasi & Monitoring
+- **Dashboard Analytics** — Grafik temuan per siklus, distribusi jenis/status, progress tindak lanjut
+- **Umpan Balik Kuesioner** — Kuesioner publik untuk pengukuran kepuasan
+- **Diagram Kepuasan** — Visualisasi data kepuasan stakeholder
+- **Activity Log** — Audit trail untuk semua perubahan data
 
-### Premium Partners
+### 📄 Pelaporan & Export PDF
+- Laporan AMI per siklus audit
+- Berita Acara Audit per unit kerja
+- Surat Tugas Auditor
+- Laporan Rapat Tinjauan Manajemen
+- Laporan Kinerja SPMI
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 🌐 Landing Page Publik
+- Informasi umum SPMI
+- Berita & galeri
+- Dokumen publik
+- Kuesioner kepuasan online
 
-## Contributing
+### 🔐 Portal Auditee
+- Dashboard khusus auditee per unit kerja
+- Lihat temuan & upload tindak lanjut
+- Upload dokumen unit
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 👥 Roles & Permissions
 
-## Code of Conduct
+| Role | Akses |
+|------|-------|
+| **Super Admin** | Akses penuh ke seluruh sistem |
+| **Admin Mutu** | Kelola standar, audit, temuan, dokumen, user, berita |
+| **Auditor** | Lihat & edit audit yang ditugaskan, buat temuan |
+| **Auditee** | Portal khusus — lihat temuan, upload tindak lanjut & dokumen |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ⚡ Instalasi
 
-## Security Vulnerabilities
+### Prasyarat
+- PHP 8.2+
+- Composer
+- Node.js 18+ & npm
+- MySQL / MariaDB
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Langkah-langkah
 
-## License
+```bash
+# 1. Clone repository
+git clone https://github.com/your-repo/spmi-stikes.git
+cd spmi-stikes
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 2. Install PHP dependencies
+composer install
+
+# 3. Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# 4. Konfigurasi database di .env
+# DB_DATABASE=spmi_stikes
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# 5. Jalankan migrasi & seeder
+php artisan migrate
+php artisan db:seed
+
+# 6. Buat storage link
+php artisan storage:link
+
+# 7. Install JS dependencies & build
+npm install
+npm run dev
+
+# 8. Jalankan server
+php artisan serve
+```
+
+Atau gunakan shortcut:
+```bash
+composer dev
+```
+Perintah ini menjalankan Laravel server, queue worker, dan Vite secara bersamaan.
+
+### 🔑 Default Login
+
+| Role | Email | Password |
+|------|-------|----------|
+| Super Admin | admin@spmi.test | password |
+
+> ⚠️ Ubah password default setelah instalasi pertama!
+
+## 📁 Struktur Folder Penting
+
+```
+app/
+├── Http/
+│   ├── Controllers/     # Business logic
+│   ├── Middleware/       # Inertia handling
+│   ├── Requests/        # Form Request validation
+│   └── ...
+├── Models/              # Eloquent models
+├── Policies/            # Authorization policies
+resources/
+├── js/
+│   ├── Layouts/         # DashboardLayout, LandingLayout
+│   └── Pages/
+│       ├── Auth/        # Login page
+│       ├── Auditee/     # Portal auditee
+│       ├── Dashboard/   # Admin dashboard pages
+│       └── Landing/     # Public pages
+├── views/
+│   └── pdf/             # Blade templates untuk PDF export
+database/
+├── migrations/          # Schema database
+└── seeders/             # Data awal (roles, permissions, unit kerja)
+```
+
+## 📝 Lisensi
+
+Project ini dikembangkan untuk keperluan internal STIKES Hang Tuah Tanjungpinang.
+
+---
+
+<p align="center">
+  Developed by <a href="https://www.linkedin.com/in/fernandomardinurzaman/">Fernando Mardi Nurzaman</a>
+</p>

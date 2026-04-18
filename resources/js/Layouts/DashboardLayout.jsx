@@ -109,6 +109,11 @@ const menuSections = [
         label: "Konten & Media",
         items: [
             {
+                name: "Berita",
+                href: "/dashboard/berita",
+                icon: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z",
+            },
+            {
                 name: "Galeri",
                 href: "/dashboard/galeri",
                 icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
@@ -135,6 +140,12 @@ const menuSections = [
                 href: "/dashboard/permissions",
                 icon: "M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z",
                 roles: ["super-admin"],
+            },
+            {
+                name: "Activity Log",
+                href: "/dashboard/activity-log",
+                icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+                roles: ["super-admin", "admin-mutu"],
             },
             {
                 name: "Pengaturan",
@@ -323,11 +334,15 @@ function DashboardLayout({ children, title }) {
                                     {userRoles[0]?.replace("-", " ")}
                                 </p>
                             </div>
-                            <div className="w-9 h-9 bg-linear-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center">
+                            <Link
+                                href="/dashboard/profil"
+                                className="w-9 h-9 bg-linear-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center hover:shadow-lg hover:scale-105 transition-all duration-200"
+                                title="Profil Saya"
+                            >
                                 <span className="text-white font-semibold text-sm">
                                     {auth.user?.name?.charAt(0)?.toUpperCase()}
                                 </span>
-                            </div>
+                            </Link>
                             <button
                                 onClick={() => router.post("/logout")}
                                 className="p-2 text-gray-400 hover:text-danger-500 rounded-lg hover:bg-danger-50 transition"

@@ -7,12 +7,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Audit extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $table = 'audit';
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['siklus_audit_id', 'unit_kerja_id', 'auditor_id', 'tanggal_audit', 'status', 'catatan', 'skor'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "Audit telah di-{$eventName}");
+    }
 
     protected $fillable = [
         'siklus_audit_id',

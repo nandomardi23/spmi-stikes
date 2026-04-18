@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\ExportPdfController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiklusAuditController;
 use App\Http\Controllers\StandarMutuController;
 use App\Http\Controllers\TemuanController;
@@ -30,7 +31,7 @@ Route::post('/kuesioner', [\App\Http\Controllers\SurveyController::class, 'publi
 // ==========================================
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -95,6 +96,14 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::put('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'update'])->name('umpan-balik.update');
     Route::delete('umpan-balik/{feedback}', [\App\Http\Controllers\FeedbackController::class, 'destroy'])->name('umpan-balik.destroy');
     Route::get('diagram-kepuasan', [\App\Http\Controllers\KepuasanController::class, 'index'])->name('diagram-kepuasan.index');
+
+    // Profile
+    Route::get('profil', [ProfileController::class, 'index'])->name('profil.index');
+    Route::put('profil', [ProfileController::class, 'update'])->name('profil.update');
+    Route::put('profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password');
+
+    // Activity Log
+    Route::get('activity-log', [\App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-log.index');
 
     // Survey Questions Management
     Route::get('survey-questions', [\App\Http\Controllers\SurveyController::class, 'adminIndex'])->name('survey-questions.index');
