@@ -47,7 +47,7 @@ class DashboardController extends Controller
 
         // Temuan per siklus audit (bar chart)
         $siklusList = SiklusAudit::latest()->take(6)->get();
-        $temuanPerSiklus = $siklusList->map(function ($siklus) {
+        $temuanPerSiklus = $siklusList->map(function (SiklusAudit $siklus) {
             $auditIds = $siklus->audits()->pluck('id');
             return [
                 'name' => $siklus->nama,

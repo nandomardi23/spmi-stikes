@@ -58,7 +58,7 @@ function ProfileIndex({ user }) {
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
                                     activeTab === tab.id
-                                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                        ? 'bg-linear-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20'
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                             >
@@ -71,7 +71,7 @@ function ProfileIndex({ user }) {
                     {/* User Info Card */}
                     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 mt-4">
                         <div className="flex flex-col items-center text-center">
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-blue-500/20">
+                            <div className="w-20 h-20 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-blue-500/20">
                                 {user.name?.charAt(0)?.toUpperCase()}
                             </div>
                             <h3 className="mt-4 font-extrabold text-gray-900 text-sm">{user.name}</h3>
@@ -126,7 +126,7 @@ function ProfileIndex({ user }) {
                                     <button
                                         type="submit"
                                         disabled={profileForm.processing}
-                                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {profileForm.processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                     </button>
@@ -185,7 +185,7 @@ function ProfileIndex({ user }) {
                                     <button
                                         type="submit"
                                         disabled={passwordForm.processing}
-                                        className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-6 py-3 bg-linear-to-r from-amber-500 to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-orange-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {passwordForm.processing ? 'Menyimpan...' : 'Ubah Password'}
                                     </button>
