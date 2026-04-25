@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Sistem Penjaminan Mutu Internal - STIKES Hang Tuah Tanjungpinang">
     <title inertia>{{ config('app.name', 'SPMI STIKES') }}</title>
+    @php
+        $siteLogo = \App\Models\Setting::getValue('site_logo');
+        $faviconUrl = $siteLogo ? asset('storage/' . $siteLogo) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet" />
     @viteReactRefresh
