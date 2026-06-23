@@ -56,30 +56,34 @@ function Index({ dokumens, filters }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingData) {
-            // Gunakan router.post langsung agar is_public selalu terkirim dengan benar
-            const formData = new FormData();
-            formData.append('_method', 'put');
-            formData.append('judul', data.judul);
-            formData.append('deskripsi', data.deskripsi || '');
-            formData.append('kategori', data.kategori);
-            formData.append('nomor_dokumen', data.nomor_dokumen || '');
-            formData.append('tanggal_dokumen', data.tanggal_dokumen || '');
-            formData.append('is_public', data.is_public ? '1' : '0');
-            if (data.file) {
-                formData.append('file', data.file);
-            }
-
-            router.post(`/dashboard/dokumen/${editingData.id}`, formData, {
+            transform((formData) => {
+                const payload = {
+                    _method: 'put',
+                    judul: formData.judul,
+                    deskripsi: formData.deskripsi || '',
+                    kategori: formData.kategori,
+                    nomor_dokumen: formData.nomor_dokumen || '',
+                    tanggal_dokumen: formData.tanggal_dokumen || '',
+                    is_public: formData.is_public ? '1' : '0',
+                };
+                // Hanya kirim file jika user pilih file baru
+                if (formData.file) {
+                    payload.file = formData.file;
+                }
+                return payload;
+            });
+            post(`/dashboard/dokumen/${editingData.id}`, {
                 forceFormData: true,
                 onSuccess: () => {
                     closeModal();
                     Swal.fire('Berhasil!', 'Dokumen telah diperbarui.', 'success');
                 },
+                onFinish: () => transform((data) => data),
             });
         } else {
-            transform((data) => ({
-                ...data,
-                is_public: data.is_public ? '1' : '0',
+            transform((formData) => ({
+                ...formData,
+                is_public: formData.is_public ? '1' : '0',
             }));
             post('/dashboard/dokumen', {
                 forceFormData: true,
