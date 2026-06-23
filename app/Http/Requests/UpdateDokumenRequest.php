@@ -17,6 +17,8 @@ class UpdateDokumenRequest extends FormRequest
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
+            'nomor_dokumen' => 'nullable|string|max:255',
+            'tanggal_dokumen' => 'nullable|date',
             'file' => 'nullable|file|max:10240',
             'unit_kerja_id' => 'nullable|exists:unit_kerja,id',
             'standar_mutu_id' => 'nullable|exists:standar_mutu,id',

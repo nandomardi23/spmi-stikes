@@ -27,6 +27,8 @@ class Dokumen extends Model
         'judul',
         'deskripsi',
         'kategori',
+        'nomor_dokumen',
+        'tanggal_dokumen',
         'file_path',
         'file_name',
         'file_size',
