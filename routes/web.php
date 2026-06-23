@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('temuan', TemuanController::class)->except(['show', 'create', 'edit']);
 
     // Dokumen
-    Route::resource('dokumen', DokumenController::class)->except(['show', 'create', 'edit']);
+    Route::resource('dokumen', DokumenController::class)->parameters(['dokumen' => 'dokumen'])->except(['show', 'create', 'edit']);
     Route::get('dokumen/{dokumen}/download', [DokumenController::class, 'download'])->name('dokumen.download');
 
     // Unit Kerja

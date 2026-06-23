@@ -84,10 +84,6 @@ class DokumenController extends Controller
         $validated = $request->validated();
 
         DB::transaction(function () use ($request, $validated, $dokumen) {
-            \Illuminate\Support\Facades\Log::info('Editing dokumen ID: ' . $dokumen->id);
-            \Illuminate\Support\Facades\Log::info('Request All: ', $request->all());
-            \Illuminate\Support\Facades\Log::info('Validated: ', $validated);
-
             if ($request->hasFile('file')) {
                 Storage::disk('public')->delete($dokumen->file_path);
                 $file = $request->file('file');
@@ -97,20 +93,17 @@ class DokumenController extends Controller
             }
 
             $is_public = filter_var($validated['is_public'] ?? false, FILTER_VALIDATE_BOOLEAN);
-            \Illuminate\Support\Facades\Log::info('Parsed is_public to: ' . ($is_public ? 'true' : 'false'));
 
             $dokumen->update([
                 'judul' => $validated['judul'],
-                'deskripsi' => $validated['deskripsi'] ?? null,
+                'deskripsi' => $validated['deskripsi'] ?? $dokumen->deskripsi,
                 'kategori' => $validated['kategori'],
-                'nomor_dokumen' => $validated['nomor_dokumen'] ?? null,
-                'tanggal_dokumen' => $validated['tanggal_dokumen'] ?? null,
-                'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
-                'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
+                'nomor_dokumen' => $validated['nomor_dokumen'] ?? $dokumen->nomor_dokumen,
+                'tanggal_dokumen' => $validated['tanggal_dokumen'] ?? $dokumen->tanggal_dokumen,
+                'unit_kerja_id' => array_key_exists('unit_kerja_id', $validated) ? $validated['unit_kerja_id'] : $dokumen->unit_kerja_id,
+                'standar_mutu_id' => array_key_exists('standar_mutu_id', $validated) ? $validated['standar_mutu_id'] : $dokumen->standar_mutu_id,
                 'is_public' => $is_public,
             ]);
-
-            \Illuminate\Support\Facades\Log::info('Dokumen updated, is_public in DB: ' . $dokumen->fresh()->is_public);
         });
 
         return redirect()->route('dashboard.dokumen.index')
