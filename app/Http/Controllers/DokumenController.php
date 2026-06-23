@@ -59,7 +59,7 @@ class DokumenController extends Controller
                 'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
                 'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
                 'uploaded_by' => auth()->id(),
-                'is_public' => $validated['is_public'] ?? false,
+                'is_public' => filter_var($validated['is_public'] ?? false, FILTER_VALIDATE_BOOLEAN),
             ]);
         });
 
@@ -96,7 +96,7 @@ class DokumenController extends Controller
                 'kategori' => $validated['kategori'],
                 'unit_kerja_id' => $validated['unit_kerja_id'] ?? null,
                 'standar_mutu_id' => $validated['standar_mutu_id'] ?? null,
-                'is_public' => $validated['is_public'] ?? false,
+                'is_public' => filter_var($validated['is_public'] ?? false, FILTER_VALIDATE_BOOLEAN),
             ]);
         });
 

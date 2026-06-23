@@ -56,22 +56,38 @@ function Index({ dokumens, filters }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingData) {
-            transform((data) => ({ ...data, _method: 'put' }));
-            post(`/dashboard/dokumen/${editingData.id}`, {
+            // Gunakan router.post langsung agar is_public selalu terkirim dengan benar
+            const formData = new FormData();
+            formData.append('_method', 'put');
+            formData.append('judul', data.judul);
+            formData.append('deskripsi', data.deskripsi || '');
+            formData.append('kategori', data.kategori);
+            formData.append('nomor_dokumen', data.nomor_dokumen || '');
+            formData.append('tanggal_dokumen', data.tanggal_dokumen || '');
+            formData.append('is_public', data.is_public ? '1' : '0');
+            if (data.file) {
+                formData.append('file', data.file);
+            }
+
+            router.post(`/dashboard/dokumen/${editingData.id}`, formData, {
                 forceFormData: true,
                 onSuccess: () => {
                     closeModal();
                     Swal.fire('Berhasil!', 'Dokumen telah diperbarui.', 'success');
                 },
-                onFinish: () => transform((data) => data), // reset transform
             });
         } else {
+            transform((data) => ({
+                ...data,
+                is_public: data.is_public ? '1' : '0',
+            }));
             post('/dashboard/dokumen', {
                 forceFormData: true,
                 onSuccess: () => {
                     closeModal();
                     Swal.fire('Berhasil!', 'Dokumen telah diupload.', 'success');
-                }
+                },
+                onFinish: () => transform((data) => data),
             });
         }
     };
