@@ -8,12 +8,13 @@ function Index({ site_name, site_description, site_logo }) {
     const fileInputRef = useRef();
     const [logoPreview, setLogoPreview] = useState(site_logo);
 
-    const { data, setData, post, processing, errors } = useForm({
+    const initialData = {
         site_name: site_name || '',
         site_description: site_description || '',
         site_logo: null,
         _method: 'PUT'
-    });
+    };
+    const { data, setData, post, processing, errors } = useForm(initialData);
 
     const handleLogoChange = (e) => {
         const file = e.target.files[0];

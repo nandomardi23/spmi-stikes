@@ -14,9 +14,10 @@ function Index({ berita, filters }) {
     const [editingData, setEditingData] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         judul: '', ringkasan: '', konten: '', gambar: null, status: 'draft'
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleSearch = e => { 
         e.preventDefault(); 
@@ -71,6 +72,7 @@ function Index({ berita, filters }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -93,6 +95,7 @@ function Index({ berita, filters }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

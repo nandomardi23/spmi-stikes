@@ -11,7 +11,7 @@ const temuanStatusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-a
 function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    const { data, setData, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         siklus_audit_id: audit.siklus_audit_id || '', 
         unit_kerja_id: audit.unit_kerja_id || '', 
         auditor_id: audit.auditor_id || '',
@@ -19,7 +19,8 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
         status: audit.status || 'dijadwalkan', 
         catatan: audit.catatan || '',
         skor: audit.skor || ''
-    });
+    };
+    const { data, setData, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const openEditModal = () => {
         clearErrors();
@@ -39,6 +40,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
         setIsEditModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
         }, 150);
     };

@@ -11,16 +11,18 @@ function Index({ items, siklus = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm({
+    const initialData = {
         judul: "",
         tanggal: "",
         notulen: "",
         keputusan: "",
         siklus_audit_id: "",
-    });
+    };
+    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
 
     const openCreate = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditing(null);
         setIsOpen(true);
@@ -43,6 +45,7 @@ function Index({ items, siklus = [] }) {
         setIsOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditing(null);
         }, 150);

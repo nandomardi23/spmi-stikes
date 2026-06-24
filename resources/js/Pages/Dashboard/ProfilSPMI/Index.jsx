@@ -5,12 +5,13 @@ import Swal from "sweetalert2";
 import { AcademicCapIcon, DocumentTextIcon, CheckCircleIcon, BuildingOffice2Icon } from "@heroicons/react/24/outline";
 
 function Index({ visi, misi, spmi_tujuan, spmi_struktur }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const initialData = {
         visi: visi || "",
         misi: misi || "",
         spmi_tujuan: spmi_tujuan || "",
         spmi_struktur: spmi_struktur || "",
-    });
+    };
+    const { data, setData, post, processing, errors } = useForm(initialData);
 
     const submit = (e) => {
         e.preventDefault();

@@ -14,10 +14,11 @@ function Index({ siklusAudit }) {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [viewingData, setViewingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         nama: '', tahun: new Date().getFullYear(), semester: 1,
         tanggal_mulai: '', tanggal_selesai: '', status: 'perencanaan', deskripsi: '',
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -57,6 +58,7 @@ function Index({ siklusAudit }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -77,6 +79,7 @@ function Index({ siklusAudit }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

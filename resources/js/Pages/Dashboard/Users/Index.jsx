@@ -13,9 +13,10 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         name: '', email: '', password: '', password_confirmation: '', roles: [], unit_kerja_id: ''
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleFilter = (e) => {
         e.preventDefault();
@@ -83,6 +84,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -106,6 +108,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

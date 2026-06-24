@@ -11,17 +11,19 @@ function Index({ instrumens, standars }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm({
+    const initialData = {
         standar_mutu_id: "",
         pertanyaan: "",
         deskripsi: "",
         bobot: "",
         urutan: "",
         is_active: true,
-    });
+    };
+    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
 
     const openCreate = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditing(null);
         setIsOpen(true);
@@ -45,6 +47,7 @@ function Index({ instrumens, standars }) {
         setIsOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditing(null);
         }, 150);

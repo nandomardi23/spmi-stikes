@@ -29,12 +29,13 @@ function Index({ questions, totalResponses }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         kategori: 'pengajaran',
         pertanyaan: '',
         urutan: 0,
         is_active: true,
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -67,7 +68,8 @@ function Index({ questions, totalResponses }) {
     };
 
     const openCreateModal = () => {
-        reset(); clearErrors(); setEditingData(null); setIsModalOpen(true);
+        reset();
+        setData(initialData); clearErrors(); setEditingData(null); setIsModalOpen(true);
     };
 
     const openEditModal = (item) => {
@@ -83,7 +85,8 @@ function Index({ questions, totalResponses }) {
 
     const closeModal = () => {
         setIsModalOpen(false);
-        setTimeout(() => { reset(); clearErrors(); setEditingData(null); }, 150);
+        setTimeout(() => { reset();
+        setData(initialData); clearErrors(); setEditingData(null); }, 150);
     };
 
     return (

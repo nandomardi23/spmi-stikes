@@ -12,9 +12,10 @@ function Index({ galeris, filters }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         judul: '', deskripsi: '', files: [], is_active: true,
-    });
+    };
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -99,6 +100,7 @@ function Index({ galeris, filters }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -120,6 +122,7 @@ function Index({ galeris, filters }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

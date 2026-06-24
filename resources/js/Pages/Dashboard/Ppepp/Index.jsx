@@ -20,16 +20,18 @@ function Index({ ppepps, standars }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm({
+    const initialData = {
         standar_mutu_id: "",
         tahapan: "",
         deskripsi: "",
         dokumen_link: "",
         tanggal_pelaksanaan: "",
-    });
+    };
+    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
 
     const openCreate = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditing(null);
         setIsOpen(true);
@@ -52,6 +54,7 @@ function Index({ ppepps, standars }) {
         setIsOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditing(null);
         }, 150);

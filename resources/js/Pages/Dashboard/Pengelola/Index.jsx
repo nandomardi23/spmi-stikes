@@ -9,13 +9,14 @@ export default function Index({ pengelolas }) {
     const [editingId, setEditingId] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
 
-    const { data, setData, post, put, delete: destroy, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         nama: '',
         jabatan: '',
         tingkat: '3',
         urutan: '0',
         foto: null,
-    });
+    };
+    const { data, setData, post, put, delete: destroy, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const openModal = (pengelola = null) => {
         clearErrors();
@@ -32,6 +33,7 @@ export default function Index({ pengelolas }) {
         } else {
             setEditingId(null);
             reset();
+        setData(initialData);
             setImagePreview(null);
         }
         setIsModalOpen(true);
@@ -40,6 +42,7 @@ export default function Index({ pengelolas }) {
     const closeModal = () => {
         setIsModalOpen(false);
         reset();
+        setData(initialData);
         clearErrors();
         setImagePreview(null);
     };

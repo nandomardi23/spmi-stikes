@@ -14,9 +14,10 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         audit_id: audit_id || '', standar_mutu_id: '', jenis: 'observasi', deskripsi: '', rekomendasi: '', batas_waktu: '', status: 'open'
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     // Auto-open create modal when navigating from Audit detail page
     useEffect(() => {
@@ -63,6 +64,7 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -84,6 +86,7 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

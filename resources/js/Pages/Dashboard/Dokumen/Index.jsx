@@ -26,10 +26,11 @@ function Index({ dokumens, filters }) {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [viewingData, setViewingData] = useState(null);
 
-    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm({
+    const initialData = {
         judul: '', deskripsi: '', kategori: 'kebijakan', nomor_dokumen: '',
         tanggal_dokumen: '', file: null, is_public: false,
-    });
+    };
+    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm(initialData);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -98,6 +99,7 @@ function Index({ dokumens, filters }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -118,6 +120,7 @@ function Index({ dokumens, filters }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

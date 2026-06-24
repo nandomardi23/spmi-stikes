@@ -17,14 +17,16 @@ function Index({ items, temuan = [] }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
 
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm({
+    const initialData = {
         temuan_id: "",
         deskripsi: "",
         status: "diajukan",
-    });
+    };
+    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
 
     const openCreate = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditing(null);
         setIsOpen(true);
@@ -45,6 +47,7 @@ function Index({ items, temuan = [] }) {
         setIsOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditing(null);
         }, 150);

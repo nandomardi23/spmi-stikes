@@ -14,9 +14,10 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         siklus_audit_id: '', unit_kerja_id: '', auditor_id: '', tanggal_audit: '', status: 'dijadwalkan', catatan: '',
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleFilter = (val) => { setStatus(val); router.get('/dashboard/audit', { status: val, siklus: filters.siklus }, { preserveState: true }); };
 
@@ -58,6 +59,7 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -77,6 +79,7 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

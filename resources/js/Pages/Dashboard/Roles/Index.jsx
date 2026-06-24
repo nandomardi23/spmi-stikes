@@ -12,10 +12,11 @@ function Index({ roles, permissions = [], filters }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm({
+    const initialData = {
         name: '',
         permissions: []
-    });
+    };
+    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleFilter = (e) => {
         e.preventDefault();
@@ -77,6 +78,7 @@ function Index({ roles, permissions = [], filters }) {
 
     const openCreateModal = () => {
         reset();
+        setData(initialData);
         clearErrors();
         setEditingData(null);
         setIsModalOpen(true);
@@ -96,6 +98,7 @@ function Index({ roles, permissions = [], filters }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
+        setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);
