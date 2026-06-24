@@ -69,8 +69,10 @@ jobs:
             tar -xzf deployment.tar.gz
             rm deployment.tar.gz
             
-            # Buat storage link jika belum ada
-            php artisan storage:link || true
+            # Buat storage link secara native (karena fungsi exec() PHP dinonaktifkan Hostinger)
+            if [ ! -L "public/storage" ] && [ ! -d "public/storage" ]; then
+              ln -s $(pwd)/storage/app/public $(pwd)/public/storage
+            fi
             
             # Optimasi cache
             php artisan optimize:clear

@@ -52,7 +52,20 @@ class LandingController extends Controller
                 'Menjalin kerjasama strategis dengan stakeholder',
             ] : array_values($misi),
             'standarMutu' => StandarMutu::where('is_active', true)->latest()->paginate($request->input('per_page_standar', 10), ['*'], 'page_standar')->withQueryString(),
-            'dokumenPublik' => Dokumen::where('is_public', true)->latest()->take(6)->get(),
+            'dokumenPublik' => Dokumen::where('is_public', true)
+                ->when($request->input('search_dokumen'), function ($query, $search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('judul', 'like', "%{$search}%")
+                          ->orWhere('kategori', 'like', "%{$search}%")
+                          ->orWhere('nomor_dokumen', 'like', "%{$search}%");
+                    });
+                })
+                ->latest()
+                ->paginate($request->input('per_page_dokumen', 10), ['*'], 'page_dokumen')
+                ->withQueryString(),
+            'dokumenFilters' => [
+                'search' => $request->input('search_dokumen', ''),
+            ],
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
             'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
             'kepuasanData' => $surveyData,
@@ -82,9 +95,23 @@ class LandingController extends Controller
 
     public function dokumenPublik(Request $request)
     {
-        $dokumen = Dokumen::where('is_public', true)->latest()->paginate(12);
+        $dokumen = Dokumen::where('is_public', true)
+            ->when($request->input('search'), function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                      ->orWhere('kategori', 'like', "%{$search}%")
+                      ->orWhere('nomor_dokumen', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate($request->input('per_page', 10))
+            ->withQueryString();
+
         return Inertia::render('Landing/DokumenSPMI', [
             'dokumen' => $dokumen,
+            'filters' => [
+                'search' => $request->input('search', ''),
+            ],
         ]);
     }
 }

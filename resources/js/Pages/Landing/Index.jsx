@@ -1,4 +1,4 @@
-import { useState , memo } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import LandingLayout from '@/Layouts/LandingLayout';
 import Pagination from '@/Components/Pagination';
@@ -31,8 +31,26 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasanData = [], pengelolas = [] }) {
-    
+function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri, visi, misi, kepuasanData = [], pengelolas = [] }) {
+    const [searchDokumen, setSearchDokumen] = useState(dokumenFilters.search || '');
+
+    const handleSearchDokumen = useCallback((e) => {
+        e.preventDefault();
+        router.get('/', { search_dokumen: searchDokumen }, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['dokumenPublik', 'dokumenFilters'],
+        });
+    }, [searchDokumen]);
+
+    const handleClearSearchDokumen = useCallback(() => {
+        setSearchDokumen('');
+        router.get('/', { search_dokumen: '' }, {
+            preserveState: true,
+            preserveScroll: true,
+            only: ['dokumenPublik', 'dokumenFilters'],
+        });
+    }, []);
 
     return (
         <>
@@ -82,7 +100,7 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
                         {[
                             { label: 'Standar Mutu', value: standarMutu.total || standarMutu.length },
-                            { label: 'Dokumen Publik', value: dokumenPublik.length || 0 },
+                            { label: 'Dokumen Publik', value: dokumenPublik.total || 0 },
                             { label: 'Galeri', value: galeri?.length || 0 },
                             { label: 'Berita', value: berita.total || berita.length },
                         ].map((stat, i) => (
@@ -342,71 +360,155 @@ function Index({ standarMutu, dokumenPublik, berita, galeri, visi, misi, kepuasa
                         <p className="text-gray-500 mt-3">Dokumen mutu yang dapat diakses oleh publik</p>
                     </div>
 
-                    {dokumenPublik.length > 0 ? (
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="bg-gray-50/50 border-b border-gray-100">
-                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider w-1/2">Nama Dokumen</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap hidden sm:table-cell">Kategori</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap hidden md:table-cell">Ukuran</th>
-                                            <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right w-24">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-50">
-                                        {dokumenPublik.map((doc) => (
-                                            <tr key={doc.id} className="hover:bg-gray-50/50 transition-colors group">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-start gap-4">
-                                                        <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">
-                                                            <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                                            </svg>
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{doc.judul}</p>
-                                                            {doc.deskripsi && <p className="text-sm text-gray-500 mt-1 line-clamp-1">{doc.deskripsi}</p>}
-                                                            {/* Mobile metadata */}
-                                                            <div className="flex items-center gap-3 mt-2 sm:hidden">
-                                                                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-medium rounded">
-                                                                    {dokumenKategoriLabels[doc.kategori] || doc.kategori}
-                                                                </span>
-                                                                <span className="text-xs text-gray-400">{(doc.file_size / 1024).toFixed(0)} KB</span>
+                    <div className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
+                        {/* Search Bar */}
+                        <div className="px-6 sm:px-8 py-5 border-b border-gray-100 bg-gray-50/30">
+                            <form onSubmit={handleSearchDokumen} className="flex items-center gap-3">
+                                <div className="relative flex-1 max-w-md">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={searchDokumen}
+                                        onChange={(e) => setSearchDokumen(e.target.value)}
+                                        placeholder="Cari dokumen berdasarkan judul, kategori, atau nomor..."
+                                        className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="px-5 py-2.5 bg-primary-600 text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors shadow-sm"
+                                >
+                                    Cari
+                                </button>
+                                {dokumenFilters.search && (
+                                    <button
+                                        type="button"
+                                        onClick={handleClearSearchDokumen}
+                                        className="px-4 py-2.5 bg-gray-100 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                                    >
+                                        Reset
+                                    </button>
+                                )}
+                            </form>
+                            {dokumenFilters.search && (
+                                <p className="text-xs text-gray-500 mt-2">
+                                    Menampilkan hasil pencarian untuk: <span className="font-semibold text-gray-700">"{dokumenFilters.search}"</span>
+                                    <span className="ml-1">({dokumenPublik.total} dokumen ditemukan)</span>
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Table */}
+                        {(dokumenPublik.data || []).length > 0 ? (
+                            <>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-gray-50/50 border-b border-gray-100">
+                                                <th className="px-6 sm:px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Judul & Informasi</th>
+                                                <th className="px-6 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center hidden sm:table-cell">Kategori</th>
+                                                <th className="px-6 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center hidden md:table-cell">Ukuran</th>
+                                                <th className="px-6 sm:px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50">
+                                            {dokumenPublik.data.map((doc) => (
+                                                <tr key={doc.id} className="hover:bg-primary-50/30 transition-colors group">
+                                                    <td className="px-6 sm:px-8 py-5">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center shrink-0 border border-primary-100 group-hover:bg-white transition-colors">
+                                                                <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                                </svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{doc.judul}</p>
+                                                                <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-400">
+                                                                    <span className="uppercase tracking-wide">{doc.nomor_dokumen || 'Tanpa Nomor'}</span>
+                                                                    <span>·</span>
+                                                                    <span>{(doc.file_size / 1024).toFixed(0)} KB</span>
+                                                                </div>
+                                                                {/* Mobile metadata */}
+                                                                <div className="flex items-center gap-2 mt-2 sm:hidden">
+                                                                    <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-md uppercase">
+                                                                        {dokumenKategoriLabels[doc.kategori] || doc.kategori}
+                                                                    </span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 hidden sm:table-cell align-middle">
-                                                    <span className="inline-flex px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg">
-                                                        {dokumenKategoriLabels[doc.kategori] || doc.kategori}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 hidden md:table-cell align-middle text-sm text-gray-500">
-                                                    {(doc.file_size / 1024).toFixed(0)} KB
-                                                </td>
-                                                <td className="px-6 py-4 text-right align-middle">
-                                                    <a
-                                                        href={`/dashboard/dokumen/${doc.id}/download`}
-                                                        className="inline-flex items-center justify-center p-2 text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors group/btn"
-                                                        title="Download Dokumen"
-                                                    >
-                                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                                        </svg>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                                    </td>
+                                                    <td className="px-6 py-5 text-center hidden sm:table-cell align-middle">
+                                                        <span className="inline-flex px-3 py-1 text-xs font-bold rounded-xl uppercase tracking-tight bg-gray-100 text-gray-600">
+                                                            {dokumenKategoriLabels[doc.kategori] || doc.kategori}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-5 hidden md:table-cell align-middle text-center">
+                                                        <span className="text-sm font-medium text-gray-500">{(doc.file_size / 1024).toFixed(0)} KB</span>
+                                                    </td>
+                                                    <td className="px-6 sm:px-8 py-5 text-right align-middle">
+                                                        <a
+                                                            href={`/dashboard/dokumen/${doc.id}/download`}
+                                                            className="inline-flex items-center justify-center w-9 h-9 text-primary-600 hover:text-white hover:bg-primary-600 rounded-xl border border-gray-100 hover:border-primary-600 transition-all duration-200 shadow-sm"
+                                                            title="Download Dokumen"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                            </svg>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Pagination */}
+                                {dokumenPublik.links && (
+                                    <div className="px-6 sm:px-8 py-4 border-t border-gray-100 bg-gray-50/30 flex justify-end">
+                                        <Pagination
+                                            links={dokumenPublik.links}
+                                            meta={{
+                                                from: dokumenPublik.from,
+                                                to: dokumenPublik.to,
+                                                total: dokumenPublik.total,
+                                                per_page: dokumenPublik.per_page
+                                            }}
+                                            preserveScroll={true}
+                                            onPerPageChange={(per_page) => {
+                                                router.get('/#dokumen', { per_page_dokumen: per_page, search_dokumen: dokumenFilters.search }, { preserveState: true, preserveScroll: true });
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="text-center py-16">
+                                <div className="w-16 h-16 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center mb-4">
+                                    <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <p className="text-gray-400 font-medium">
+                                    {dokumenFilters.search
+                                        ? `Tidak ada dokumen yang cocok dengan "${dokumenFilters.search}"`
+                                        : 'Belum ada dokumen publik yang tersedia.'
+                                    }
+                                </p>
+                                {dokumenFilters.search && (
+                                    <button
+                                        onClick={handleClearSearchDokumen}
+                                        className="mt-3 text-sm text-primary-600 hover:text-primary-700 font-medium"
+                                    >
+                                        Hapus pencarian
+                                    </button>
+                                )}
                             </div>
-                        </div>
-                    ) : (
-                        <div className="text-center py-12 bg-white rounded-2xl">
-                            <p className="text-gray-400">Belum ada dokumen publik yang tersedia.</p>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </section>
 
