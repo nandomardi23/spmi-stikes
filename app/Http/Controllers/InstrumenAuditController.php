@@ -9,6 +9,14 @@ use Inertia\Inertia;
 
 class InstrumenAuditController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:instrumen.view')->only(['index']);
+        $this->middleware('permission:instrumen.create')->only(['store']);
+        $this->middleware('permission:instrumen.edit')->only(['update']);
+        $this->middleware('permission:instrumen.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $instrumens = InstrumenAudit::with('standarMutu')

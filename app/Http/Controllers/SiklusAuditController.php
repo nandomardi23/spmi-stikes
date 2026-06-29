@@ -8,6 +8,14 @@ use Inertia\Inertia;
 
 class SiklusAuditController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:siklus-audit.view')->only(['index', 'edit']);
+        $this->middleware('permission:siklus-audit.create')->only(['store']);
+        $this->middleware('permission:siklus-audit.edit')->only(['update']);
+        $this->middleware('permission:siklus-audit.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         return Inertia::render('Dashboard/SiklusAudit/Index', [

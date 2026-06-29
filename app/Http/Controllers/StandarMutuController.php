@@ -8,6 +8,14 @@ use Inertia\Inertia;
 
 class StandarMutuController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:standar-mutu.view')->only(['index', 'edit']);
+        $this->middleware('permission:standar-mutu.create')->only(['store']);
+        $this->middleware('permission:standar-mutu.edit')->only(['update']);
+        $this->middleware('permission:standar-mutu.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = StandarMutu::query();

@@ -17,11 +17,13 @@ const menuSections = [
                 name: "Profil SPMI",
                 href: "/dashboard/profil-spmi",
                 icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4",
+                permission: "profil-spmi.view",
             },
             {
                 name: "Tim Pengelola",
                 href: "/dashboard/pengelola",
                 icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+                permission: "pengelola.view",
             },
         ],
     },
@@ -32,16 +34,19 @@ const menuSections = [
                 name: "Standar Mutu",
                 href: "/dashboard/standar-mutu",
                 icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+                permission: "standar-mutu.view",
             },
             {
                 name: "Siklus PPEPP",
                 href: "/dashboard/ppepp",
                 icon: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
+                permission: "ppepp.view",
             },
             {
                 name: "Dokumen SPMI",
                 href: "/dashboard/dokumen",
                 icon: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z",
+                permission: "dokumen.view",
             },
         ],
     },
@@ -52,31 +57,37 @@ const menuSections = [
                 name: "Siklus Audit",
                 href: "/dashboard/siklus-audit",
                 icon: "M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V11a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
+                permission: "siklus-audit.view",
             },
             {
                 name: "Instrumen Audit",
                 href: "/dashboard/instrumen-audit",
                 icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
+                permission: "instrumen.view",
             },
             {
                 name: "Pelaksanaan Audit",
                 href: "/dashboard/audit",
                 icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01",
+                permission: "audit.view",
             },
             {
                 name: "Temuan Audit",
                 href: "/dashboard/temuan",
                 icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z",
+                permission: "temuan.view",
             },
             {
                 name: "Tindak Lanjut",
                 href: "/dashboard/tindak-lanjut",
                 icon: "M4 6h16M4 10h10M4 14h16M4 18h10",
+                permission: "tindak-lanjut.view",
             },
             {
                 name: "Rapat Tinjauan",
                 href: "/dashboard/rapat-tinjauan",
                 icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+                permission: "rapat-tinjauan.view",
             },
         ],
     },
@@ -87,21 +98,25 @@ const menuSections = [
                 name: "Umpan Balik",
                 href: "/dashboard/umpan-balik",
                 icon: "M7 8h10M7 12h6M21 12v6a2 2 0 01-2 2H7l-4 4V6a2 2 0 012-2h12a2 2 0 012 2v6z",
+                permission: "feedback.view",
             },
             {
                 name: "Diagram Kepuasan",
                 href: "/dashboard/diagram-kepuasan",
                 icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+                permission: "kepuasan.view",
             },
             {
                 name: "Kelola Pertanyaan",
                 href: "/dashboard/survey-questions",
                 icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+                permission: "survey-questions.view",
             },
             {
                 name: "Hasil Kuesioner",
                 href: "/dashboard/survey-responses",
                 icon: "M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+                permission: "survey-responses.view",
             },
         ],
     },
@@ -112,11 +127,13 @@ const menuSections = [
                 name: "Berita",
                 href: "/dashboard/berita",
                 icon: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z",
+                permission: "berita.view",
             },
             {
                 name: "Galeri",
                 href: "/dashboard/galeri",
                 icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+                permission: "galeri.view",
             },
         ],
     },
@@ -127,30 +144,31 @@ const menuSections = [
                 name: "Users",
                 href: "/dashboard/users",
                 icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
-                roles: ["super-admin", "admin-mutu"],
+                permission: "users.view",
             },
             {
                 name: "Roles",
                 href: "/dashboard/roles",
                 icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z",
-                roles: ["super-admin"],
+                permission: "roles.view",
             },
             {
                 name: "Permissions",
                 href: "/dashboard/permissions",
                 icon: "M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z",
-                roles: ["super-admin"],
+                permission: "permissions.view",
             },
             {
                 name: "Activity Log",
                 href: "/dashboard/activity-log",
                 icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-                roles: ["super-admin", "admin-mutu"],
+                permission: "activity-log.view",
             },
             {
                 name: "Pengaturan",
                 href: "/dashboard/pengaturan",
                 icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
+                permission: "settings.view",
             },
         ],
     },
@@ -165,16 +183,19 @@ const auditeeMenuSections = [
                 name: "Dashboard",
                 href: "/auditee",
                 icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+                permission: "auditee.dashboard",
             },
             {
                 name: "Dokumen Unit",
                 href: "/auditee/dokumen",
                 icon: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z",
+                permission: "auditee.upload-dokumen",
             },
             {
                 name: "Temuan Audit",
                 href: "/auditee/temuan",
                 icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z",
+                permission: "auditee.view-temuan",
             },
         ],
     },
@@ -186,20 +207,31 @@ function DashboardLayout({ children, title }) {
     const currentUrl = usePage().url;
 
     const userRoles = auth.user?.roles || [];
+    const userPermissions = auth.user?.permissions || [];
     const isAuditee = userRoles.includes("auditee");
 
-    // Filter items per section based on roles
+    // Filter items per section based on permissions
     const filteredSections = menuSections
         .map((section) => ({
             ...section,
             items: section.items.filter((item) => {
-                if (!item.roles) return true;
-                return item.roles.some((role) => userRoles.includes(role));
+                if (!item.permission) return true;
+                return userPermissions.includes(item.permission);
             }),
         }))
         .filter((section) => section.items.length > 0);
 
-    const activeSections = isAuditee ? auditeeMenuSections : filteredSections;
+    const activeSections = isAuditee 
+        ? auditeeMenuSections
+            .map((section) => ({
+                ...section,
+                items: section.items.filter((item) => {
+                    if (!item.permission) return true;
+                    return userPermissions.includes(item.permission);
+                }),
+            }))
+            .filter((section) => section.items.length > 0)
+        : filteredSections;
 
     useEffect(() => {
         const Toast = Swal.mixin({

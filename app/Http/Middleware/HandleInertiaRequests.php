@@ -25,7 +25,9 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'roles' => $request->user()->getRoleNames(),
-                    'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+                    'permissions' => $request->user()->hasRole('super-admin') 
+                        ? \Spatie\Permission\Models\Permission::pluck('name') 
+                        : $request->user()->getAllPermissions()->pluck('name'),
                     'unit_kerja' => $request->user()->unitKerja,
                 ] : null,
             ],

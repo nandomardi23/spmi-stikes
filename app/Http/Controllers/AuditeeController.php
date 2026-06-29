@@ -40,7 +40,7 @@ class AuditeeController extends Controller
     {
         $unitKerjaId = $request->user()->unit_kerja_id;
 
-        return Inertia::render('Auditee/Dokumen/Index', [
+        return Inertia::render('Auditee/Dokumen', [
             'dokumens' => Dokumen::where('unit_kerja_id', $unitKerjaId)
                 ->latest()->paginate($request->input('per_page', 10))->withQueryString(),
         ]);
@@ -81,7 +81,7 @@ class AuditeeController extends Controller
             ->latest()
             ->paginate($request->input('per_page', 10))->withQueryString();
 
-        return Inertia::render('Auditee/Temuan/Index', [
+        return Inertia::render('Auditee/Temuan', [
             'temuans' => $temuans,
         ]);
     }
@@ -93,7 +93,7 @@ class AuditeeController extends Controller
         // Ensure the temuan belongs to the auditee's unit
         abort_unless($temuan->audit->unit_kerja_id === $unitKerjaId, 403);
 
-        return Inertia::render('Auditee/Temuan/Show', [
+        return Inertia::render('Auditee/ShowTemuan', [
             'temuan' => $temuan->load(['audit.siklusAudit', 'standarMutu', 'tindakLanjuts.user']),
         ]);
     }

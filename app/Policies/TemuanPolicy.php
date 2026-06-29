@@ -17,33 +17,38 @@ class TemuanPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin-mutu', 'auditor']);
+        return $user->hasPermissionTo('temuan.view');
     }
 
     public function view(User $user, Temuan $temuan): bool
     {
-        if ($user->hasRole('admin-mutu')) {
-            return true;
+        if ($user->hasPermissionTo('temuan.view')) {
+            if ($user->hasRole('admin-mutu')) {
+                return true;
+            }
+            return $temuan->audit->auditor_id === $user->id;
         }
-        // Auditor hanya bisa lihat temuan dari audit yang ditugaskan
-        return $user->hasRole('auditor') && $temuan->audit->auditor_id === $user->id;
+        return false;
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['admin-mutu', 'auditor']);
+        return $user->hasPermissionTo('temuan.create');
     }
 
     public function update(User $user, Temuan $temuan): bool
     {
-        if ($user->hasRole('admin-mutu')) {
-            return true;
+        if ($user->hasPermissionTo('temuan.edit')) {
+            if ($user->hasRole('admin-mutu')) {
+                return true;
+            }
+            return $temuan->audit->auditor_id === $user->id;
         }
-        return $user->hasRole('auditor') && $temuan->audit->auditor_id === $user->id;
+        return false;
     }
 
     public function delete(User $user, Temuan $temuan): bool
     {
-        return $user->hasRole('admin-mutu');
+        return $user->hasPermissionTo('temuan.delete');
     }
 }

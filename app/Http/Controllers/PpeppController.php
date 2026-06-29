@@ -10,6 +10,14 @@ use Inertia\Inertia;
 
 class PpeppController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:ppepp.view')->only(['index', 'edit']);
+        $this->middleware('permission:ppepp.create')->only(['store']);
+        $this->middleware('permission:ppepp.edit')->only(['update']);
+        $this->middleware('permission:ppepp.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $ppepps = Ppepp::with('standarMutu')->latest('tanggal_pelaksanaan')->paginate(10);

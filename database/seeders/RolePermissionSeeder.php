@@ -75,18 +75,67 @@ class RolePermissionSeeder extends Seeder
             'ppepp.create',
             'ppepp.edit',
             'ppepp.delete',
+            // Profil SPMI
+            'profil-spmi.view',
+            'profil-spmi.edit',
+            // Pengelola
+            'pengelola.view',
+            'pengelola.create',
+            'pengelola.edit',
+            'pengelola.delete',
+            // Rapat Tinjauan
+            'rapat-tinjauan.view',
+            'rapat-tinjauan.create',
+            'rapat-tinjauan.edit',
+            'rapat-tinjauan.delete',
+            // Feedback
+            'feedback.view',
+            'feedback.create',
+            'feedback.edit',
+            'feedback.delete',
+            // Kepuasan
+            'kepuasan.view',
+            // Survey Questions
+            'survey-questions.view',
+            'survey-questions.create',
+            'survey-questions.edit',
+            'survey-questions.delete',
+            // Survey Responses
+            'survey-responses.view',
+            'survey-responses.delete',
+            // Galeri
+            'galeri.view',
+            'galeri.create',
+            'galeri.edit',
+            'galeri.delete',
+            // Roles
+            'roles.view',
+            'roles.create',
+            'roles.edit',
+            'roles.delete',
+            // Permissions
+            'permissions.view',
+            'permissions.create',
+            'permissions.edit',
+            'permissions.delete',
+            // Activity Log
+            'activity-log.view',
+            // Settings
+            'settings.view',
+            'settings.edit',
         ];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Super Admin - gets all permissions via Gate::before
+        // Super Admin - gets all permissions
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin']);
+        $superAdmin->syncPermissions(Permission::all());
 
         // Admin Mutu
         $adminMutu = Role::firstOrCreate(['name' => 'admin-mutu']);
-        $adminMutu->givePermissionTo([
+        $adminMutu->syncPermissions([
             'standar-mutu.view',
             'standar-mutu.create',
             'standar-mutu.edit',
@@ -104,7 +153,9 @@ class RolePermissionSeeder extends Seeder
             'temuan.edit',
             'temuan.delete',
             'tindak-lanjut.view',
+            'tindak-lanjut.create',
             'tindak-lanjut.edit',
+            'tindak-lanjut.delete',
             'dokumen.view',
             'dokumen.create',
             'dokumen.edit',
@@ -122,15 +173,46 @@ class RolePermissionSeeder extends Seeder
             'instrumen.edit',
             'instrumen.delete',
             'users.view',
+            'users.create',
+            'users.edit',
+            'users.delete',
             'ppepp.view',
             'ppepp.create',
             'ppepp.edit',
             'ppepp.delete',
+            'profil-spmi.view',
+            'profil-spmi.edit',
+            'pengelola.view',
+            'pengelola.create',
+            'pengelola.edit',
+            'pengelola.delete',
+            'rapat-tinjauan.view',
+            'rapat-tinjauan.create',
+            'rapat-tinjauan.edit',
+            'rapat-tinjauan.delete',
+            'feedback.view',
+            'feedback.create',
+            'feedback.edit',
+            'feedback.delete',
+            'kepuasan.view',
+            'survey-questions.view',
+            'survey-questions.create',
+            'survey-questions.edit',
+            'survey-questions.delete',
+            'survey-responses.view',
+            'survey-responses.delete',
+            'galeri.view',
+            'galeri.create',
+            'galeri.edit',
+            'galeri.delete',
+            'activity-log.view',
+            'settings.view',
+            'settings.edit',
         ]);
 
         // Auditor
         $auditor = Role::firstOrCreate(['name' => 'auditor']);
-        $auditor->givePermissionTo([
+        $auditor->syncPermissions([
             'audit.view',
             'audit.edit',
             'temuan.view',
@@ -142,11 +224,19 @@ class RolePermissionSeeder extends Seeder
             'instrumen.view',
             'dokumen.view',
             'unit-kerja.view',
+            'rapat-tinjauan.view',
+            'ppepp.view',
+            'profil-spmi.view',
+            'pengelola.view',
+            'berita.view',
+            'galeri.view',
+            'feedback.view',
+            'kepuasan.view',
         ]);
 
         // Auditee
         $auditee = Role::firstOrCreate(['name' => 'auditee']);
-        $auditee->givePermissionTo([
+        $auditee->syncPermissions([
             'auditee.dashboard',
             'auditee.upload-dokumen',
             'auditee.view-temuan',

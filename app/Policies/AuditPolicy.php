@@ -20,34 +20,38 @@ class AuditPolicy
 
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['admin-mutu', 'auditor']);
+        return $user->hasPermissionTo('audit.view');
     }
 
     public function view(User $user, Audit $audit): bool
     {
-        if ($user->hasRole('admin-mutu')) {
-            return true;
+        if ($user->hasPermissionTo('audit.view')) {
+            if ($user->hasRole('admin-mutu')) {
+                return true;
+            }
+            return $audit->auditor_id === $user->id;
         }
-        // Auditor hanya bisa lihat audit yang ditugaskan
-        return $user->hasRole('auditor') && $audit->auditor_id === $user->id;
+        return false;
     }
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin-mutu');
+        return $user->hasPermissionTo('audit.create');
     }
 
     public function update(User $user, Audit $audit): bool
     {
-        if ($user->hasRole('admin-mutu')) {
-            return true;
+        if ($user->hasPermissionTo('audit.edit')) {
+            if ($user->hasRole('admin-mutu')) {
+                return true;
+            }
+            return $audit->auditor_id === $user->id;
         }
-        // Auditor hanya bisa update audit yang ditugaskan
-        return $user->hasRole('auditor') && $audit->auditor_id === $user->id;
+        return false;
     }
 
     public function delete(User $user, Audit $audit): bool
     {
-        return $user->hasRole('admin-mutu');
+        return $user->hasPermissionTo('audit.delete');
     }
 }

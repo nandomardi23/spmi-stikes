@@ -73,9 +73,11 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
     Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 
-    // Roles & Permissions (Super Admin only)
-    Route::middleware('role:super-admin')->group(function () {
+    // Roles & Permissions (controlled by Spatie permissions)
+    Route::middleware('permission:roles.view')->group(function () {
         Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show', 'create', 'edit']);
+    });
+    Route::middleware('permission:permissions.view')->group(function () {
         Route::resource('permissions', \App\Http\Controllers\PermissionController::class)->except(['show', 'create', 'edit']);
     });
 
