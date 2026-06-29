@@ -71,6 +71,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
 
     // Users
     Route::resource('users', UserController::class)->except(['show', 'create', 'edit']);
+    Route::put('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 
     // Roles & Permissions (Super Admin only)
     Route::middleware('role:super-admin')->group(function () {

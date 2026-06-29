@@ -20,7 +20,7 @@ function Index({ user, unitKerja, recentAudits, totalTemuanOpen, totalDokumen })
                 <div className="bg-linear-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white shadow-lg">
                     <p className="text-primary-200 text-sm mb-1">Unit Kerja</p>
                     <h3 className="text-xl font-bold mb-4">{unitKerja.nama}</h3>
-                    <div className="flex items-center gap-2 text-sm text-primary-100"><span className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">👤</span>{unitKerja.kepala_unit?.name || 'Belum di set'}</div>
+                    <div className="flex items-center gap-2 text-sm text-primary-100"><span className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">👤</span>{unitKerja.kepala_unit?.name || unitKerja.kepala_unit || 'Belum di set'}</div>
                 </div>
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
                     <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl">⚠️</div>

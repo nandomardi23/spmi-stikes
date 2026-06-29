@@ -4,7 +4,7 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, UserCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 
 function Index({ users, roles = [], unitKerja = [], filters, auth }) {
@@ -48,6 +48,27 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                 router.delete(`/dashboard/users/${user.id}`, {
                     onSuccess: () => {
                         Swal.fire('Terhapus!', 'Pengguna telah berhasil dihapus.', 'success');
+                    }
+                });
+            }
+        });
+    };
+
+    const handleResetPassword = (user) => {
+        Swal.fire({
+            title: 'Reset Password?',
+            html: `Password <b>${user.name}</b> akan direset ke:<br><br><code style="background:#f3f4f6;padding:4px 12px;border-radius:8px;font-size:14px;font-weight:bold">${user.email}</code>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#f59e0b',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Reset!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.put(`/dashboard/users/${user.id}/reset-password`, {}, {
+                    onSuccess: () => {
+                        Swal.fire('Berhasil!', `Password telah direset ke email pengguna.`, 'success');
                     }
                 });
             }
@@ -192,6 +213,13 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                                                 title="Edit"
                                             >
                                                 <PencilSquareIcon className="w-5 h-5" />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleResetPassword(u)} 
+                                                className="p-2 text-amber-500 hover:bg-amber-50 rounded-xl transition duration-200"
+                                                title="Reset Password"
+                                            >
+                                                <ArrowPathIcon className="w-5 h-5" />
                                             </button>
                                             <button 
                                                 onClick={() => handleDelete(u)} 

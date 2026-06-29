@@ -77,6 +77,17 @@ class UserController extends Controller
             ->with('success', 'User berhasil diperbarui.');
     }
 
+    public function resetPassword(User $user)
+    {
+        $this->authorize('update', $user);
+
+        $user->password = Hash::make($user->email);
+        $user->save();
+
+        return redirect()->route('dashboard.users.index')
+            ->with('success', "Password {$user->name} berhasil direset ke email pengguna.");
+    }
+
     public function destroy(User $user)
     {
         $this->authorize('delete', $user);

@@ -30,12 +30,9 @@ class AuditeeController extends Controller
 
         return Inertia::render('Auditee/Index', [
             'unitKerja' => $request->user()->unitKerja,
-            'audits' => $audits,
-            'stats' => [
-                'total_audit' => $audits->count(),
-                'temuan_open' => $temuanOpen,
-                'total_dokumen' => $dokumenCount,
-            ],
+            'recentAudits' => $audits,
+            'totalTemuanOpen' => $temuanOpen,
+            'totalDokumen' => $dokumenCount,
         ]);
     }
 
