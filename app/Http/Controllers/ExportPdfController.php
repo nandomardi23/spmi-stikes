@@ -8,6 +8,7 @@ use App\Models\RapatTinjauan;
 use App\Models\Ppepp;
 use App\Models\Setting;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 class ExportPdfController extends Controller
 {
@@ -55,7 +56,8 @@ class ExportPdfController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download("Laporan-AMI-{$siklus->nama}.pdf");
+        $safeName = Str::slug($siklus->nama);
+        return $pdf->download("Laporan-AMI-{$safeName}.pdf");
     }
 
     /**
@@ -77,7 +79,7 @@ class ExportPdfController extends Controller
         ]);
 
         $pdf->setPaper('A4', 'portrait');
-        $unitName = str_replace(' ', '-', $audit->unitKerja->nama ?? 'Unit');
+        $unitName = Str::slug($audit->unitKerja->nama ?? 'Unit');
 
         return $pdf->download("Berita-Acara-{$unitName}.pdf");
     }
@@ -97,7 +99,8 @@ class ExportPdfController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download("Surat-Tugas-Auditor-{$audit->auditor->name}.pdf");
+        $auditorName = Str::slug($audit->auditor->name ?? 'Auditor');
+        return $pdf->download("Surat-Tugas-Auditor-{$auditorName}.pdf");
     }
 
     /**
@@ -113,7 +116,7 @@ class ExportPdfController extends Controller
         ]);
 
         $pdf->setPaper('A4', 'portrait');
-        $judul = str_replace(' ', '-', substr($rapatTinjauan->judul, 0, 40));
+        $judul = Str::slug(substr($rapatTinjauan->judul, 0, 40));
 
         return $pdf->download("Laporan-RTM-{$judul}.pdf");
     }
@@ -157,6 +160,7 @@ class ExportPdfController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download("Laporan-Kinerja-SPMI-{$siklus->nama}.pdf");
+        $safeName = Str::slug($siklus->nama);
+        return $pdf->download("Laporan-Kinerja-SPMI-{$safeName}.pdf");
     }
 }
