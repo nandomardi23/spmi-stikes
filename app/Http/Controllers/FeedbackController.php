@@ -8,6 +8,14 @@ use App\Models\Feedback;
 
 class FeedbackController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:feedback.view')->only(['index']);
+        $this->middleware('permission:feedback.create')->only(['store']);
+        $this->middleware('permission:feedback.edit')->only(['update']);
+        $this->middleware('permission:feedback.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $feedbacks = Feedback::latest()->paginate(10);

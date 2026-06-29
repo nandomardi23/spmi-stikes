@@ -9,6 +9,14 @@ use Inertia\Inertia;
 
 class PengelolaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:pengelola.view')->only(['index']);
+        $this->middleware('permission:pengelola.create')->only(['store']);
+        $this->middleware('permission:pengelola.edit')->only(['update']);
+        $this->middleware('permission:pengelola.delete')->only(['destroy']);
+    }
+
     public function index()
     {
         $pengelolas = Pengelola::orderBy('tingkat')->orderBy('urutan')->paginate(10);

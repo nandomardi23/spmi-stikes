@@ -9,6 +9,14 @@ use App\Models\Temuan;
 
 class TindakLanjutController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:tindak-lanjut.view')->only(['index']);
+        $this->middleware('permission:tindak-lanjut.create')->only(['store']);
+        $this->middleware('permission:tindak-lanjut.edit')->only(['update']);
+        $this->middleware('permission:tindak-lanjut.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $items = TindakLanjut::with('temuan')->latest()->paginate(15);

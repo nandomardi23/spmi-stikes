@@ -11,6 +11,14 @@ use Inertia\Inertia;
 
 class GaleriController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:galeri.view')->only(['index']);
+        $this->middleware('permission:galeri.create')->only(['store']);
+        $this->middleware('permission:galeri.edit')->only(['update']);
+        $this->middleware('permission:galeri.delete')->only(['destroy', 'destroyImage']);
+    }
+
     /**
      * Display a listing of the resource.
      */

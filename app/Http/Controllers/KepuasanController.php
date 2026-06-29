@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class KepuasanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:kepuasan.view');
+    }
+
     public function index(Request $request)
     {
         // Get average satisfaction per responden

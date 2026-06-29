@@ -9,6 +9,12 @@ use Inertia\Inertia;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:settings.view')->only(['index']);
+        $this->middleware('permission:settings.edit')->only(['update']);
+    }
+
     public function index()
     {
         return Inertia::render('Dashboard/Pengaturan/Index', [

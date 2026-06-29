@@ -9,6 +9,16 @@ use App\Models\SurveyResponse;
 
 class SurveyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:survey-questions.view')->only(['adminIndex']);
+        $this->middleware('permission:survey-questions.create')->only(['adminStore']);
+        $this->middleware('permission:survey-questions.edit')->only(['adminUpdate']);
+        $this->middleware('permission:survey-questions.delete')->only(['adminDestroy']);
+        $this->middleware('permission:survey-responses.view')->only(['adminResponses']);
+        $this->middleware('permission:survey-responses.delete')->only(['adminDeleteResponse']);
+    }
+
     // ===========================
     // PUBLIC (no auth required)
     // ===========================

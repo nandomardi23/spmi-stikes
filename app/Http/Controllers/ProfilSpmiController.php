@@ -8,6 +8,12 @@ use App\Models\Setting;
 
 class ProfilSpmiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:profil-spmi.view')->only(['index']);
+        $this->middleware('permission:profil-spmi.edit')->only(['update']);
+    }
+
     public function index(Request $request)
     {
         return Inertia::render('Dashboard/ProfilSPMI/Index', [

@@ -8,6 +8,11 @@ use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:activity-log.view');
+    }
+
     public function index(Request $request)
     {
         $query = Activity::with('causer')->latest();

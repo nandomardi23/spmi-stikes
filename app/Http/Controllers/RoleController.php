@@ -9,6 +9,14 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:roles.view')->only(['index']);
+        $this->middleware('permission:roles.create')->only(['store']);
+        $this->middleware('permission:roles.edit')->only(['update']);
+        $this->middleware('permission:roles.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = Role::with('permissions');

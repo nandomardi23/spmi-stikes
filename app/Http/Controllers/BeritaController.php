@@ -11,6 +11,14 @@ use Inertia\Inertia;
 
 class BeritaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:berita.view')->only(['index']);
+        $this->middleware('permission:berita.create')->only(['store']);
+        $this->middleware('permission:berita.edit')->only(['update']);
+        $this->middleware('permission:berita.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = Berita::with('author');

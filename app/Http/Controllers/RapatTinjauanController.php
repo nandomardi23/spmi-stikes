@@ -12,6 +12,14 @@ use Illuminate\Database\QueryException;
 
 class RapatTinjauanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:rapat-tinjauan.view')->only(['index']);
+        $this->middleware('permission:rapat-tinjauan.create')->only(['store']);
+        $this->middleware('permission:rapat-tinjauan.edit')->only(['update']);
+        $this->middleware('permission:rapat-tinjauan.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         try {
