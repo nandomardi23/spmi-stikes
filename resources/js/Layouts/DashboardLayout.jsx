@@ -156,12 +156,37 @@ const menuSections = [
     },
 ];
 
+// Menu structure for auditee portal
+const auditeeMenuSections = [
+    {
+        label: "Portal Auditee",
+        items: [
+            {
+                name: "Dashboard",
+                href: "/auditee",
+                icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+            },
+            {
+                name: "Dokumen Unit",
+                href: "/auditee/dokumen",
+                icon: "M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z",
+            },
+            {
+                name: "Temuan Audit",
+                href: "/auditee/temuan",
+                icon: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z",
+            },
+        ],
+    },
+];
+
 function DashboardLayout({ children, title }) {
     const { auth, flash, settings } = usePage().props;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const currentUrl = usePage().url;
 
     const userRoles = auth.user?.roles || [];
+    const isAuditee = userRoles.includes("auditee");
 
     // Filter items per section based on roles
     const filteredSections = menuSections
@@ -173,6 +198,8 @@ function DashboardLayout({ children, title }) {
             }),
         }))
         .filter((section) => section.items.length > 0);
+
+    const activeSections = isAuditee ? auditeeMenuSections : filteredSections;
 
     useEffect(() => {
         const Toast = Swal.mixin({
@@ -237,13 +264,13 @@ function DashboardLayout({ children, title }) {
                             {settings?.site_name || "SPMI"}
                         </h1>
                         <p className="text-[9px] text-gray-400 uppercase tracking-widest truncate">
-                            Dashboard Admin
+                            {isAuditee ? "Portal Auditee" : "Dashboard Admin"}
                         </p>
                     </div>
                 </div>
 
                 <nav className="px-3 py-4 overflow-y-auto h-[calc(100%-4rem)] space-y-5">
-                    {filteredSections.map((section) => (
+                    {activeSections.map((section) => (
                         <div key={section.label}>
                             <p className="px-3 pb-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                                 {section.label}
@@ -251,8 +278,8 @@ function DashboardLayout({ children, title }) {
                             <div className="space-y-0.5">
                                 {section.items.map((item) => {
                                     const isActive =
-                                        item.href === "/dashboard"
-                                            ? currentUrl === "/dashboard"
+                                        item.href === "/dashboard" || item.href === "/auditee"
+                                            ? currentUrl === item.href
                                             : currentUrl === item.href ||
                                               currentUrl.startsWith(item.href + "/");
                                     return (
