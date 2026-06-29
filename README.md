@@ -40,6 +40,32 @@
 - **Tindak Lanjut** — Penyelesaian temuan oleh auditee dengan bukti upload
 - **Rapat Tinjauan Manajemen** — Notulen & keputusan rapat tinjauan
 
+### 🔄 Alur Audit Mutu Internal (AMI)
+
+Aplikasi ini dirancang mengikuti siklus **PPEPP** (Penetapan, Pelaksanaan, Evaluasi, Pengendalian, Peningkatan) sesuai dengan Permendikbudristek tentang Standar Nasional Pendidikan Tinggi:
+
+1. **Persiapan (Penetapan)**
+   - **Admin Mutu** mendefinisikan Standar Mutu dan membuat **Siklus Audit** untuk periode tertentu (misal: Tahun Akademik 2024/2025).
+   - **Admin Mutu** menyusun **Instrumen Audit** (pertanyaan/borang) yang mengacu pada standar mutu yang telah ditetapkan.
+
+2. **Perencanaan Audit (Pelaksanaan)**
+   - **Admin Mutu** membuat jadwal Pelaksanaan Audit, memilih **Unit Kerja (Auditee)** yang akan diaudit, dan menunjuk **Auditor**.
+   - Sistem secara otomatis dapat mencetak **Surat Tugas Auditor**.
+
+3. **Pelaksanaan Audit (Pelaksanaan & Evaluasi)**
+   - **Auditor** melakukan visitasi / proses audit lapangan ke unit kerja.
+   - **Auditor** mencatat hasil audit ke dalam sistem, menginput skor instrumen, dan mencatat **Temuan Audit** (Kategori: Mayor, Minor, atau Observasi).
+   - Dokumen hasil dapat diexport menjadi **Berita Acara Audit** yang akan ditandatangani oleh Auditor dan Auditee.
+
+4. **Tindak Lanjut (Pengendalian)**
+   - **Auditee** login ke **Portal Auditee** dan melihat daftar temuan yang dibebankan kepada unit kerjanya.
+   - **Auditee** menginput Rencana Tindak Lanjut, Tindakan Pencegahan, serta mengunggah dokumen/bukti penyelesaian.
+   - **Auditor** atau **Admin Mutu** memverifikasi bukti perbaikan. Jika dinilai sudah memadai, status temuan diubah menjadi *Closed/Verified*.
+
+5. **Pelaporan & RTM (Peningkatan)**
+   - **Admin Mutu** mencetak **Laporan AMI** dan rekapitulasi **Laporan Kinerja SPMI** dalam format PDF.
+   - Temuan yang bersifat strategis atau tidak dapat diselesaikan di tingkat unit, diangkat ke **Rapat Tinjauan Manajemen (RTM)**.
+   - Keputusan RTM dicatat di sistem sebagai dasar perbaikan dan peningkatan standar mutu untuk siklus audit berikutnya.
 ### 📊 Evaluasi & Monitoring
 - **Dashboard Analytics** — Grafik temuan per siklus, distribusi jenis/status, progress tindak lanjut
 - **Umpan Balik Kuesioner** — Kuesioner publik untuk pengukuran kepuasan
