@@ -52,7 +52,7 @@ class AuditeeController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'kategori' => 'required|in:kebijakan,manual,standar,formulir,sop,laporan,bukti,lainnya',
-            'file' => 'required|file|max:10240',
+            'file' => 'required|file|max:151200', // ~150MB
         ]);
 
         $file = $request->file('file');
@@ -105,7 +105,7 @@ class AuditeeController extends Controller
 
         $validated = $request->validate([
             'deskripsi' => 'required|string',
-            'bukti_file' => 'nullable|file|max:10240',
+            'bukti_file' => 'nullable|file|max:151200', // ~150MB
         ]);
 
         DB::transaction(function () use ($request, $validated, $temuan) {
