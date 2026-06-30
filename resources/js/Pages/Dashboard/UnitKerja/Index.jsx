@@ -41,14 +41,12 @@ function Index({ unitKerjas, users }) {
             put(`/dashboard/unit-kerja/${editingData.id}`, {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Data unit kerja telah diperbarui.', 'success');
                 },
             });
         } else {
             post('/dashboard/unit-kerja', {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Unit kerja baru telah ditambahkan.', 'success');
                 },
             });
         }
