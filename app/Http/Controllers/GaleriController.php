@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class GaleriController extends Controller
 {
@@ -57,6 +59,19 @@ class GaleriController extends Controller
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $path = $file->store('galeri', 'public');
+                    
+                    // Create thumbnail directory if it doesn't exist
+                    $thumbnailDir = storage_path('app/public/galeri/thumbnails');
+                    if (!file_exists($thumbnailDir)) {
+                        mkdir($thumbnailDir, 0755, true);
+                    }
+
+                    // Generate Thumbnail
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->read(storage_path('app/public/' . $path));
+                    $image->scaleDown(width: 600);
+                    $image->save(storage_path('app/public/galeri/thumbnails/' . basename($path)), quality: 80);
+
                     $galeri->images()->create([
                         'file_path' => $path,
                         'file_name' => $file->getClientOriginalName(),
@@ -101,6 +116,19 @@ class GaleriController extends Controller
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $path = $file->store('galeri', 'public');
+                
+                // Create thumbnail directory if it doesn't exist
+                $thumbnailDir = storage_path('app/public/galeri/thumbnails');
+                if (!file_exists($thumbnailDir)) {
+                    mkdir($thumbnailDir, 0755, true);
+                }
+
+                // Generate Thumbnail
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read(storage_path('app/public/' . $path));
+                $image->scaleDown(width: 600);
+                $image->save(storage_path('app/public/galeri/thumbnails/' . basename($path)), quality: 80);
+
                 $galeri->images()->create([
                     'file_path' => $path,
                     'file_name' => $file->getClientOriginalName(),
@@ -120,6 +148,7 @@ class GaleriController extends Controller
             foreach ($galeri->images as $image) {
                 if ($image->file_path) {
                     Storage::disk('public')->delete($image->file_path);
+                    Storage::disk('public')->delete('galeri/thumbnails/' . basename($image->file_path));
                 }
             }
 
@@ -134,6 +163,7 @@ class GaleriController extends Controller
     {
         if ($image->file_path) {
             Storage::disk('public')->delete($image->file_path);
+            Storage::disk('public')->delete('galeri/thumbnails/' . basename($image->file_path));
         }
 
         $image->delete();
