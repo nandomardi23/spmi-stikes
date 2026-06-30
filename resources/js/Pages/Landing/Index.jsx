@@ -165,7 +165,7 @@ function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri
                     <div className="flex flex-col items-center">
                         {/* Level 1: Ketua */}
                         {pengelolas && pengelolas.filter(p => p.tingkat === 1).map((person, index) => (
-                            <div key={person.id || `l1-${index}`} className="flex flex-col items-center mb-8 w-full sm:w-80">
+                            <div key={person.id || `l1-${index}`} className="flex flex-col items-center w-full sm:w-80">
                                 <div className="bg-white rounded-3xl p-6 shadow-xl shadow-gray-200/50 border border-gray-100 text-center w-full z-10 relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-linear-to-br from-primary-600 to-primary-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full mb-4 border-4 border-white shadow-sm overflow-hidden relative z-10 group-hover:border-primary-400 transition-colors flex items-center justify-center">
@@ -178,39 +178,62 @@ function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri
                                     <h3 className="text-lg font-bold text-gray-900 group-hover:text-white relative z-10 transition-colors">{person.nama}</h3>
                                     <p className="text-primary-600 font-medium text-sm group-hover:text-primary-200 relative z-10 transition-colors">{person.jabatan}</p>
                                 </div>
-                                <div className="h-8 border-l-2 border-dashed border-gray-300 my-0"></div>
                             </div>
                         ))}
 
-                        {/* Level 2: Sekretaris/Wakil */}
-                        {pengelolas && pengelolas.filter(p => p.tingkat === 2).map((person, index) => (
-                            <div key={person.id || `l2-${index}`} className="flex flex-col items-center mb-8 w-full sm:w-80">
-                                <div className="bg-white rounded-2xl p-5 shadow-lg shadow-gray-200/40 border border-gray-100 text-center w-full z-10 group hover:border-primary-200 transition-colors relative">
-                                    <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full mb-3 border-2 border-gray-100 overflow-hidden text-gray-400 flex items-center justify-center">
-                                        {person.foto ? (
-                                            <img src={`/storage/${person.foto}`} alt={person.nama} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                                        )}
-                                    </div>
-                                    <h3 className="text-base font-bold text-gray-800">{person.nama}</h3>
-                                    <p className="text-gray-500 font-medium text-xs">{person.jabatan}</p>
-                                </div>
-                                <div className="h-8 border-l-2 border-dashed border-gray-300 my-0"></div>
+                        {/* Connector: Level 1 ke Level 2 (tree branch) */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 2).length > 0 && (
+                            <div className="flex flex-col items-center w-full">
+                                {/* Garis vertikal dari Ketua ke cabang */}
+                                <div className="h-8 border-l-2 border-dashed border-gray-300"></div>
+                                {/* Garis horizontal (cabang kiri-kanan) — hanya tampil di sm+ */}
+                                {pengelolas.filter(p => p.tingkat === 2).length > 1 && (
+                                    <div className="hidden sm:block w-full max-w-xl border-t-2 border-dashed border-gray-300"></div>
+                                )}
                             </div>
-                        ))}
-
-                        {/* Horizontal Line Connector (Only if there are level 3 people) */}
-                        {pengelolas && pengelolas.filter(p => p.tingkat === 3).length > 0 && (
-                            <div className="w-0 sm:w-full max-w-4xl border-t-2 border-dashed border-gray-300 hidden sm:block relative top-[1px]"></div>
                         )}
 
-                        {/* Bottom Tier: Koordinator/Staff */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl mt-0 sm:mt-8">
+                        {/* Level 2: Anggota — berdampingan kiri & kanan */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 2).length > 0 && (
+                            <div className={`grid grid-cols-1 ${pengelolas.filter(p => p.tingkat === 2).length >= 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-1'} gap-6 w-full max-w-xl`}>
+                                {pengelolas.filter(p => p.tingkat === 2).map((person, index) => (
+                                    <div key={person.id || `l2-${index}`} className="relative flex flex-col items-center">
+                                        {/* Garis vertikal dari cabang ke card */}
+                                        <div className="hidden sm:block h-8 border-l-2 border-dashed border-gray-300"></div>
+                                        <div className="sm:hidden h-4 border-l-2 border-dashed border-gray-300"></div>
+
+                                        <div className="bg-white rounded-2xl p-5 shadow-lg shadow-gray-200/40 border border-gray-100 text-center w-full z-10 group hover:border-primary-200 transition-colors relative">
+                                            <div className="w-16 h-16 mx-auto bg-gray-50 rounded-full mb-3 border-2 border-gray-100 overflow-hidden text-gray-400 flex items-center justify-center">
+                                                {person.foto ? (
+                                                    <img src={`/storage/${person.foto}`} alt={person.nama} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <svg className="w-full h-full" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                                )}
+                                            </div>
+                                            <h3 className="text-base font-bold text-gray-800">{person.nama}</h3>
+                                            <p className="text-gray-500 font-medium text-xs">{person.jabatan}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Connector: Level 2 ke Level 3 */}
+                        {pengelolas && pengelolas.filter(p => p.tingkat === 3).length > 0 && (
+                            <div className="flex flex-col items-center w-full mt-4">
+                                <div className="h-8 border-l-2 border-dashed border-gray-300"></div>
+                                {pengelolas.filter(p => p.tingkat === 3).length > 1 && (
+                                    <div className="hidden sm:block w-full max-w-4xl border-t-2 border-dashed border-gray-300"></div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Bottom Tier: Koordinator/Staff (Level 3) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl mt-0 sm:mt-0">
                             {pengelolas && pengelolas.filter(p => p.tingkat === 3).map((person, index) => (
                                 <div key={person.id || `l3-${index}`} className="relative flex flex-col items-center">
-                                    <div className="absolute -top-8 left-1/2 h-8 border-l-2 border-dashed border-gray-300 hidden sm:block"></div>
-                                    <div className="absolute -top-8 left-1/2 h-8 border-l-2 border-dashed border-gray-300 sm:hidden"></div>
+                                    <div className="hidden sm:block h-8 border-l-2 border-dashed border-gray-300"></div>
+                                    <div className="sm:hidden h-4 border-l-2 border-dashed border-gray-300"></div>
 
                                     <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 text-center w-full relative z-10 group cursor-default">
                                         <div className="w-14 h-14 mx-auto bg-primary-50 rounded-full mb-3 border border-primary-100 flex items-center justify-center text-primary-600 group-hover:bg-primary-600 group-hover:text-white transition-colors overflow-hidden">
