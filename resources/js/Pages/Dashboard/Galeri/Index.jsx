@@ -15,7 +15,13 @@ function Index({ galeris, filters }) {
     const initialData = {
         judul: '', deskripsi: '', files: [], is_active: true,
     };
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm(initialData);
+    const { data, setData, post, processing, errors, reset, clearErrors, transform } = useForm(initialData);
+
+    transform((data) => ({
+        ...data,
+        is_active: data.is_active ? 1 : 0,
+    }));
+
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -332,6 +338,12 @@ function Index({ galeris, filters }) {
                                 </label>
                             </div>
                             {errors.files && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.files}</p>}
+                            {Object.keys(errors).map(key => {
+                                if (key.startsWith('files.')) {
+                                    return <p key={key} className="mt-1.5 text-[10px] font-bold text-danger-500">{errors[key]}</p>;
+                                }
+                                return null;
+                            })}
                             
                             {/* Preview Queue */}
                             {data.files.length > 0 && (
@@ -372,6 +384,7 @@ function Index({ galeris, filters }) {
                                 <label htmlFor="is_active" className="text-sm font-bold text-gray-700 cursor-pointer">Tampilkan di Halaman Galeri Publik</label>
                             </div>
                             <p className="ml-8 mt-1 text-[10px] text-gray-400 font-medium">Jika dicentang, seluruh foto di kegiatan ini akan langsung terbit.</p>
+                            {errors.is_active && <p className="mt-1.5 ml-8 text-[10px] font-bold text-danger-500">{errors.is_active}</p>}
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

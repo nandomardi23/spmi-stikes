@@ -42,7 +42,7 @@ class GaleriController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'files' => 'required|array',
-            'files.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'files.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
             'is_active' => 'boolean',
         ]);
 
@@ -88,7 +88,7 @@ class GaleriController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'files' => 'nullable|array',
-            'files.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'files.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
             'is_active' => 'boolean',
         ]);
 
