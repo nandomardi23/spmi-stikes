@@ -51,7 +51,13 @@ const customSelectStyles = {
         zIndex: 50,
     })
 };
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import PageHeader from "@/Components/PageHeader";
+import TableActions from "@/Components/TableActions";
+import StatusBadge from "@/Components/StatusBadge";
+import InputLabel from "@/Components/InputLabel";
+import TextInput from "@/Components/TextInput";
+import TextArea from "@/Components/TextArea";
+import InputError from "@/Components/InputError";
 
 function Index({ instrumens, standars }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -146,18 +152,12 @@ function Index({ instrumens, standars }) {
         <>
             <Head title="Instrumen Audit" />
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div>
-                    <h3 className="text-lg font-bold text-gray-900 tracking-tight">Instrumen Audit</h3>
-                    <p className="text-sm text-gray-500 mt-1">Kelola daftar pertanyaan/checklist untuk pelaksanaan Audit Mutu Internal.</p>
-                </div>
-                <button
-                    onClick={openCreate}
-                    className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25 shrink-0"
-                >
-                    + Tambah Instrumen
-                </button>
-            </div>
+            <PageHeader 
+                title="Instrumen Audit"
+                description="Kelola daftar pertanyaan/checklist untuk pelaksanaan Audit Mutu Internal."
+                onAdd={openCreate}
+                addText="+ Tambah Instrumen"
+            />
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
@@ -190,19 +190,13 @@ function Index({ instrumens, standars }) {
                                         </td>
                                         <td className="px-6 py-4 text-center font-bold text-gray-900">{item.bobot}</td>
                                         <td className="px-6 py-4 text-center">
-                                            <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg border uppercase tracking-tight ${item.is_active ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500 border-gray-200'}`}>
-                                                {item.is_active ? "Aktif" : "Nonaktif"}
-                                            </span>
+                                            <StatusBadge active={item.is_active} activeText="Aktif" inactiveText="Nonaktif" />
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            <div className="flex items-center justify-center gap-1.5">
-                                                <button onClick={() => openEdit(item)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition" title="Edit">
-                                                    <PencilSquareIcon className="w-5 h-5" />
-                                                </button>
-                                                <button onClick={() => handleDelete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition" title="Hapus">
-                                                    <TrashIcon className="w-5 h-5" />
-                                                </button>
-                                            </div>
+                                            <TableActions 
+                                                onEdit={() => openEdit(item)}
+                                                onDelete={() => handleDelete(item.id)}
+                                            />
                                         </td>
                                     </tr>
                                 ))
@@ -233,7 +227,7 @@ function Index({ instrumens, standars }) {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Standar Mutu <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Standar Mutu" required />
                             <Select 
                                 options={standarOptions}
                                 value={standarOptions.find(option => option.value === data.standar_mutu_id) || null}
@@ -243,31 +237,51 @@ function Index({ instrumens, standars }) {
                                 isClearable
                                 noOptionsMessage={() => "Standar mutu tidak ditemukan"}
                             />
-                            {errors.standar_mutu_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.standar_mutu_id}</p>}
+                            <InputError message={errors.standar_mutu_id} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Pertanyaan / Checklist <span className="text-danger-500">*</span></label>
-                            <textarea rows={3} value={data.pertanyaan} onChange={(e) => setData("pertanyaan", e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700" placeholder="e.g. Apakah dokumen kurikulum tersedia dan terdokumentasi?" />
-                            {errors.pertanyaan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.pertanyaan}</p>}
+                            <InputLabel value="Pertanyaan / Checklist" required />
+                            <TextArea 
+                                rows={3} 
+                                value={data.pertanyaan} 
+                                onChange={(e) => setData("pertanyaan", e.target.value)} 
+                                placeholder="e.g. Apakah dokumen kurikulum tersedia dan terdokumentasi?" 
+                            />
+                            <InputError message={errors.pertanyaan} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi / Panduan</label>
-                            <textarea rows={2} value={data.deskripsi} onChange={(e) => setData("deskripsi", e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700" placeholder="Opsional: panduan penilaian untuk auditor..." />
-                            {errors.deskripsi && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.deskripsi}</p>}
+                            <InputLabel value="Deskripsi / Panduan" />
+                            <TextArea 
+                                rows={2} 
+                                value={data.deskripsi} 
+                                onChange={(e) => setData("deskripsi", e.target.value)} 
+                                placeholder="Opsional: panduan penilaian untuk auditor..." 
+                            />
+                            <InputError message={errors.deskripsi} />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Bobot <span className="text-danger-500">*</span></label>
-                                <input type="number" min="1" max="100" value={data.bobot} onChange={(e) => setData("bobot", e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700" placeholder="e.g. 10" />
-                                {errors.bobot && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.bobot}</p>}
+                                <InputLabel value="Bobot" required />
+                                <TextInput 
+                                    type="number" min="1" max="100" 
+                                    value={data.bobot} 
+                                    onChange={(e) => setData("bobot", e.target.value)} 
+                                    placeholder="e.g. 10" 
+                                />
+                                <InputError message={errors.bobot} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Urutan <span className="text-danger-500">*</span></label>
-                                <input type="number" min="1" value={data.urutan} onChange={(e) => setData("urutan", e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700" placeholder="e.g. 1" />
-                                {errors.urutan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.urutan}</p>}
+                                <InputLabel value="Urutan" required />
+                                <TextInput 
+                                    type="number" min="1" 
+                                    value={data.urutan} 
+                                    onChange={(e) => setData("urutan", e.target.value)} 
+                                    placeholder="e.g. 1" 
+                                />
+                                <InputError message={errors.urutan} />
                             </div>
                             <div className="flex items-end pb-1">
                                 <label className="flex items-center gap-2.5 cursor-pointer">

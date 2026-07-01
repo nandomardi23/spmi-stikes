@@ -4,8 +4,14 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import PageHeader from '@/Components/PageHeader';
+import TableActions from '@/Components/TableActions';
+import StatusBadge from '@/Components/StatusBadge';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import TextArea from '@/Components/TextArea';
+import InputError from '@/Components/InputError';
 
 const kategoriLabels = {
     pendidikan: 'Pendidikan', penelitian: 'Penelitian', pengabdian: 'Pengabdian',
@@ -165,34 +171,14 @@ function Index({ standarMutu, filters }) {
                                     </td>
                                     <td className="px-6 py-4 text-center font-medium text-gray-600">{kategoriLabels[s.kategori] || s.kategori}</td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg ${s.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                            {s.is_active ? 'AKTIF' : 'NON-AKTIF'}
-                                        </span>
+                                        <StatusBadge active={s.is_active} activeText="AKTIF" inactiveText="NON-AKTIF" />
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openDetailModal(s)} 
-                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
-                                                title="Detail"
-                                            >
-                                                <EyeIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => openEditModal(s)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
-                                                title="Edit"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(s.id)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
-                                                title="Hapus"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions 
+                                            onView={() => openDetailModal(s)}
+                                            onEdit={() => openEditModal(s)}
+                                            onDelete={() => handleDelete(s.id)}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -231,22 +217,21 @@ function Index({ standarMutu, filters }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kode Standar <span className="text-danger-500">*</span></label>
-                                <input 
-                                    type="text" 
+                                <InputLabel value="Kode Standar" required />
+                                <TextInput 
                                     value={data.kode} 
                                     onChange={(e) => setData('kode', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold" 
                                     placeholder="SM-01" 
+                                    className="font-bold"
                                 />
-                                {errors.kode && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.kode}</p>}
+                                <InputError message={errors.kode} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori Standar <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Kategori Standar" required />
                                 <select 
                                     value={data.kategori} 
                                     onChange={(e) => setData('kategori', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
                                 >
                                     {kategoriOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                                 </select>
@@ -254,43 +239,37 @@ function Index({ standarMutu, filters }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Standar <span className="text-danger-500">*</span></label>
-                            <input 
-                                type="text" 
+                            <InputLabel value="Nama Standar" required />
+                            <TextInput 
                                 value={data.nama} 
                                 onChange={(e) => setData('nama', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                             />
-                            {errors.nama && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.nama}</p>}
+                            <InputError message={errors.nama} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi Singkat</label>
-                            <textarea 
+                            <InputLabel value="Deskripsi Singkat" />
+                            <TextArea 
                                 rows={2} 
                                 value={data.deskripsi} 
                                 onChange={(e) => setData('deskripsi', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Indikator Kinerja</label>
-                            <textarea 
+                            <InputLabel value="Indikator Kinerja" />
+                            <TextArea 
                                 rows={2} 
                                 value={data.indikator} 
                                 onChange={(e) => setData('indikator', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Target Capaian</label>
-                            <input 
-                                type="text" 
+                            <InputLabel value="Target Capaian" />
+                            <TextInput 
                                 value={data.target} 
                                 onChange={(e) => setData('target', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                             />
                         </div>
 
@@ -339,9 +318,9 @@ function Index({ standarMutu, filters }) {
                                 <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1">Detail Standar Mutu</h2>
                                 <p className="text-sm text-gray-500">Informasi lengkap terkait standar mutu yang dipilih</p>
                             </div>
-                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg mt-1 ${viewingData.is_active ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
-                                {viewingData.is_active ? 'AKTIF' : 'NON-AKTIF'}
-                            </span>
+                            <div className="mt-1">
+                                <StatusBadge active={viewingData.is_active} activeText="AKTIF" inactiveText="NON-AKTIF" />
+                            </div>
                         </div>
 
                         <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">

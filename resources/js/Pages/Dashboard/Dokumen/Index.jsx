@@ -4,8 +4,14 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, ArrowDownTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import TableActions from '@/Components/TableActions';
+import StatusBadge from '@/Components/StatusBadge';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import TextArea from '@/Components/TextArea';
+import InputError from '@/Components/InputError';
 
 const kategoriLabels = {
     kebijakan: 'Kebijakan', manual: 'Manual', standar: 'Standar',
@@ -189,42 +195,23 @@ function Index({ dokumens, filters }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg ${d.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                            {d.is_public ? 'PUBLIK' : 'INTERNAL'}
-                                        </span>
+                                        <StatusBadge active={d.is_public} activeText="PUBLIK" inactiveText="INTERNAL" />
                                     </td>
                                     <td className="px-6 py-4 text-center text-gray-600 font-medium text-xs tracking-tight">{d.uploader?.name || '-'}</td>
                                     <td className="px-6 py-4 text-center">
                                         <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openDetailModal(d)} 
-                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
-                                                title="Detail"
-                                            >
-                                                <EyeIcon className="w-5 h-5" />
-                                            </button>
+                                            <TableActions 
+                                                onView={() => openDetailModal(d)}
+                                                onEdit={() => openEditModal(d)}
+                                                onDelete={() => handleDelete(d.id)}
+                                            />
                                             <a 
                                                 href={`/dashboard/dokumen/${d.id}/download`} 
                                                 className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition duration-200" 
                                                 title="Download"
                                             >
-
                                                 <ArrowDownTrayIcon className="w-5 h-5" />
                                             </a>
-                                            <button 
-                                                onClick={() => openEditModal(d)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
-                                                title="Edit"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(d.id)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
-                                                title="Hapus"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -266,70 +253,64 @@ function Index({ dokumens, filters }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori Dokumen <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Kategori Dokumen" required />
                                 <select 
                                     value={data.kategori} 
                                     onChange={(e) => setData('kategori', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
                                 >
                                     {kategoriOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Nomor Dokumen</label>
-                                <input 
-                                    type="text" 
+                                <InputLabel value="Nomor Dokumen" />
+                                <TextInput 
                                     value={data.nomor_dokumen} 
                                     onChange={(e) => setData('nomor_dokumen', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                                     placeholder="e.g. 001/SK/LPM/2026"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Judul Dokumen <span className="text-danger-500">*</span></label>
-                            <input 
-                                type="text" 
+                            <InputLabel value="Judul Dokumen" required />
+                            <TextInput 
                                 value={data.judul} 
                                 onChange={(e) => setData('judul', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                                 placeholder="e.g. Kebijakan Mutu STIKES Surabaya"
                             />
-                            {errors.judul && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.judul}</p>}
+                            <InputError message={errors.judul} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Ringkasan / Deskripsi</label>
-                            <textarea 
+                            <InputLabel value="Ringkasan / Deskripsi" />
+                            <TextArea 
                                 rows={3} 
                                 value={data.deskripsi} 
                                 onChange={(e) => setData('deskripsi', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                                 placeholder="Jelaskan isi singkat dokumen ini..."
                             />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Terbit</label>
-                                <input 
+                                <InputLabel value="Tanggal Terbit" />
+                                <TextInput 
                                     type="date" 
                                     value={data.tanggal_dokumen} 
                                     onChange={(e) => setData('tanggal_dokumen', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">
+                                <InputLabel>
                                     File Dokumen (PDF/DOCX) {editingData && <span className="text-[10px] font-normal text-gray-400 ml-1">(Kosongkan jika tidak ubah)</span>}
-                                </label>
+                                </InputLabel>
                                 <input 
                                     type="file" 
                                     onChange={(e) => setData('file', e.target.files[0])} 
                                     className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-extrabold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100" 
                                 />
-                                {errors.file && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.file}</p>}
+                                <InputError message={errors.file} />
                             </div>
                         </div>
 
@@ -378,9 +359,9 @@ function Index({ dokumens, filters }) {
                                 <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight mb-1">Detail Dokumen Mutu</h2>
                                 <p className="text-sm text-gray-500">Informasi lengkap dokumen yang dipilih</p>
                             </div>
-                            <span className={`px-2.5 py-1 text-[11px] font-bold rounded-lg mt-1 ${viewingData.is_public ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-700 border border-gray-200'}`}>
-                                {viewingData.is_public ? 'PUBLIK' : 'INTERNAL'}
-                            </span>
+                            <div className="mt-1">
+                                <StatusBadge active={viewingData.is_public} activeText="PUBLIK" inactiveText="INTERNAL" />
+                            </div>
                         </div>
 
                         <div className="bg-white border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">

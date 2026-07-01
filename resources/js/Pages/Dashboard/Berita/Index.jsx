@@ -4,8 +4,12 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import TableActions from '@/Components/TableActions';
+import InputLabel from '@/Components/InputLabel';
+import TextArea from '@/Components/TextArea';
+import TextInput from '@/Components/TextInput';
+import InputError from '@/Components/InputError';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -170,22 +174,10 @@ function Index({ berita, filters }) {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-center whitespace-nowrap">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openEditModal(b)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"
-                                                title="Edit Berita"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(b.id)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200"
-                                                title="Hapus Berita"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions 
+                                            onEdit={() => openEditModal(b)}
+                                            onDelete={() => handleDelete(b.id)}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -226,15 +218,13 @@ function Index({ berita, filters }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Judul Berita <span className="text-danger-500">*</span></label>
-                                <input 
-                                    type="text" 
+                                <InputLabel value="Judul Berita" required />
+                                <TextInput 
                                     value={data.judul} 
                                     onChange={e => setData('judul', e.target.value)} 
                                     placeholder="Masukkan judul yang menarik..."
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all" 
                                 />
-                                {errors.judul && <p className="mt-1.5 text-[11px] font-medium text-danger-500 ml-1">{errors.judul}</p>}
+                                <InputError message={errors.judul} />
                             </div>
 
                             <div>
@@ -257,22 +247,22 @@ function Index({ berita, filters }) {
                                     />
                                 </div>
                                 {data.gambar && <p className="mt-2 text-[11px] text-primary-600 font-bold ml-1">✓ Berkas terpilih: {data.gambar.name}</p>}
-                                {errors.gambar && <p className="mt-1.5 text-[11px] font-medium text-danger-500 ml-1">{errors.gambar}</p>}
+                                {errors.gambar && <InputError message={errors.gambar} />}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ringkasan Berita</label>
-                                <textarea 
+                                <InputLabel value="Ringkasan Berita" />
+                                <TextArea 
                                     rows={2} 
                                     value={data.ringkasan} 
                                     onChange={e => setData('ringkasan', e.target.value)} 
                                     placeholder="Penjelasan singkat konten berita..."
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all resize-none" 
+                                    className="resize-none"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Konten Utama <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Konten Utama" required />
                                 <div className="prose-sm ck-editor-container">
                                     <CKEditor
                                         editor={ClassicEditor}
@@ -298,7 +288,7 @@ function Index({ berita, filters }) {
                                         }}
                                     />
                                 </div>
-                                {errors.konten && <p className="mt-1.5 text-[11px] font-medium text-danger-500 ml-1">{errors.konten}</p>}
+                                <InputError message={errors.konten} />
                             </div>
 
                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">

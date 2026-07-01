@@ -4,8 +4,13 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import PageHeader from '@/Components/PageHeader';
+import TableActions from '@/Components/TableActions';
+import InputLabel from '@/Components/InputLabel';
+import TextInput from '@/Components/TextInput';
+import TextArea from '@/Components/TextArea';
+import InputError from '@/Components/InputError';
 
 function Index({ unitKerjas, users }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,18 +99,12 @@ function Index({ unitKerjas, users }) {
         <>
             <Head title="Unit Kerja" />
             
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div>
-                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest text-[10px]">Master Data</h3>
-                    <p className="text-xs text-gray-400 mt-0.5">Kelola unit kerja auditee dan pimpinan unit</p>
-                </div>
-                <button 
-                    onClick={openCreateModal} 
-                    className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25"
-                >
-                    + Tambah Unit
-                </button>
-            </div>
+            <PageHeader 
+                title="Master Data"
+                description="Kelola unit kerja auditee dan pimpinan unit"
+                onAdd={openCreateModal}
+                addText="+ Tambah Unit"
+            />
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
@@ -139,29 +138,11 @@ function Index({ unitKerjas, users }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openDetailModal(u)} 
-                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition duration-200" 
-                                                title="Detail"
-                                            >
-                                                <EyeIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => openEditModal(u)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" 
-                                                title="Edit"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(u.id)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
-                                                title="Hapus"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions 
+                                            onView={() => openDetailModal(u)}
+                                            onEdit={() => openEditModal(u)}
+                                            onDelete={() => handleDelete(u.id)}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -202,35 +183,32 @@ function Index({ unitKerjas, users }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Unit Kerja <span className="text-danger-500">*</span></label>
-                                <input 
-                                    type="text" 
+                                <InputLabel value="Nama Unit Kerja" required />
+                                <TextInput 
                                     value={data.nama} 
                                     onChange={e => setData('nama', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-medium" 
                                     placeholder="e.g. Prodi S1 Keperawatan" 
                                 />
-                                {errors.nama && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.nama}</p>}
+                                <InputError message={errors.nama} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kode Unit <span className="text-danger-500">*</span></label>
-                                <input 
-                                    type="text" 
+                                <InputLabel value="Kode Unit" required />
+                                <TextInput 
                                     value={data.kode} 
                                     onChange={e => setData('kode', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-bold" 
                                     placeholder="e.g. UK-01" 
+                                    className="font-bold"
                                 />
-                                {errors.kode && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.kode}</p>}
+                                <InputError message={errors.kode} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori Unit <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Kategori Unit" required />
                             <select 
                                 value={data.jenis} 
                                 onChange={e => setData('jenis', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-bold"
+                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-bold text-gray-700"
                             >
                                 <option value="prodi">Program Studi (Prodi)</option>
                                 <option value="unit">Fakultas / Pimpinan</option>
@@ -240,24 +218,21 @@ function Index({ unitKerjas, users }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Ketua / Kepala Unit</label>
-                            <input 
-                                type="text" 
+                            <InputLabel value="Nama Ketua / Kepala Unit" />
+                            <TextInput 
                                 value={data.kepala_unit} 
                                 onChange={e => setData('kepala_unit', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-medium" 
                                 placeholder="e.g. Dr. Jane Doe, M.Kep"
                             />
-                            {errors.kepala_unit && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.kepala_unit}</p>}
+                            <InputError message={errors.kepala_unit} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi Singkat</label>
-                            <textarea 
+                            <InputLabel value="Deskripsi Singkat" />
+                            <TextArea 
                                 rows={3} 
                                 value={data.deskripsi} 
                                 onChange={e => setData('deskripsi', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 font-medium" 
                                 placeholder="Berikan deskripsi singkat tentang unit kerja ini..."
                             />
                         </div>
