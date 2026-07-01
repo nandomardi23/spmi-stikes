@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import SelectInput from '@/Components/SelectInput';
+import { formatDate, formatShortDate } from '@/Utils/dateFormatter';
 
 function Index({ siklusAudit }) {
     const statusColors = { perencanaan: 'bg-blue-100 text-blue-700', pelaksanaan: 'bg-amber-100 text-amber-700', pelaporan: 'bg-purple-100 text-purple-700', selesai: 'bg-green-100 text-green-700' };
@@ -135,7 +137,7 @@ function Index({ siklusAudit }) {
                                             <div>
                                                 <p className="font-bold text-gray-900">{s.nama}</p>
                                                 <p className="text-[10px] text-gray-400 font-medium uppercase tracking-tighter mt-0.5">
-                                                    {s.tanggal_mulai ? new Date(s.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'} - {s.tanggal_selesai ? new Date(s.tanggal_selesai).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+                                                    {formatShortDate(s.tanggal_mulai)} - {formatShortDate(s.tanggal_selesai)}
                                                 </p>
                                             </div>
                                         </div>
@@ -250,14 +252,14 @@ function Index({ siklusAudit }) {
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Semester <span className="text-danger-500">*</span></label>
-                                <select 
-                                    value={data.semester} 
-                                    onChange={e => setData('semester', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
-                                >
-                                    <option value={1}>Semester Ganjil (1)</option>
-                                    <option value={2}>Semester Genap (2)</option>
-                                </select>
+                                <SelectInput 
+                                    value={data.semester}
+                                    onChange={(value) => setData('semester', value)}
+                                    options={[
+                                        { value: 1, label: 'Semester Ganjil (1)' },
+                                        { value: 2, label: 'Semester Genap (2)' }
+                                    ]}
+                                />
                             </div>
                         </div>
 
@@ -286,16 +288,16 @@ function Index({ siklusAudit }) {
 
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1.5">Status Pelaksanaan</label>
-                            <select 
-                                value={data.status} 
-                                onChange={e => setData('status', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold capitalize"
-                            >
-                                <option value="perencanaan">Perencanaan</option>
-                                <option value="pelaksanaan">Pelaksanaan</option>
-                                <option value="pelaporan">Pelaporan</option>
-                                <option value="selesai">Selesai</option>
-                            </select>
+                            <SelectInput 
+                                value={data.status}
+                                onChange={(value) => setData('status', value)}
+                                options={[
+                                    { value: 'perencanaan', label: 'Perencanaan' },
+                                    { value: 'pelaksanaan', label: 'Pelaksanaan' },
+                                    { value: 'pelaporan', label: 'Pelaporan' },
+                                    { value: 'selesai', label: 'Selesai' }
+                                ]}
+                            />
                         </div>
 
                         <div>
@@ -365,11 +367,11 @@ function Index({ siklusAudit }) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
                                     <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tanggal Mulai</h3>
-                                    <p className="text-sm font-semibold text-gray-900">{viewingData.tanggal_mulai ? new Date(viewingData.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-'}</p>
+                                    <p className="text-sm font-semibold text-gray-900">{formatDate(viewingData.tanggal_mulai)}</p>
                                 </div>
                                 <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
                                     <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tanggal Selesai</h3>
-                                    <p className="text-sm font-semibold text-gray-900">{viewingData.tanggal_selesai ? new Date(viewingData.tanggal_selesai).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-'}</p>
+                                    <p className="text-sm font-semibold text-gray-900">{formatDate(viewingData.tanggal_selesai)}</p>
                                 </div>
                             </div>
 

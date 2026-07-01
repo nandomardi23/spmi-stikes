@@ -6,6 +6,8 @@ import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import SelectInput from "@/Components/SelectInput";
+import { formatDate } from "@/Utils/dateFormatter";
 
 const statusColors = {
     diajukan: "bg-amber-50 text-amber-700 border-amber-200",
@@ -141,7 +143,7 @@ function Index({ items, temuan = [] }) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center text-xs text-gray-500 font-medium">
-                                            {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                            {formatDate(item.created_at)}
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <div className="flex items-center justify-center gap-1.5">
@@ -183,18 +185,15 @@ function Index({ items, temuan = [] }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1.5">Temuan Terkait <span className="text-danger-500">*</span></label>
-                            <select
+                            <SelectInput
                                 value={data.temuan_id}
-                                onChange={(e) => setData("temuan_id", e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
-                            >
-                                <option value="">Pilih Temuan</option>
-                                {temuan.map((t) => (
-                                    <option key={t.id} value={t.id}>
-                                        {t.deskripsi && t.deskripsi.length > 80 ? t.deskripsi.slice(0, 80) + "..." : t.deskripsi || "-"}
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={(value) => setData("temuan_id", value)}
+                                options={temuan.map((t) => ({
+                                    value: t.id,
+                                    label: t.deskripsi && t.deskripsi.length > 80 ? t.deskripsi.slice(0, 80) + "..." : t.deskripsi || "-"
+                                }))}
+                                placeholder="Pilih Temuan"
+                            />
                             {errors.temuan_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.temuan_id}</p>}
                         </div>
 
@@ -213,15 +212,16 @@ function Index({ items, temuan = [] }) {
                         {editing && (
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Status</label>
-                                <select
+                                <SelectInput
                                     value={data.status}
-                                    onChange={(e) => setData("status", e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700 capitalize"
-                                >
-                                    <option value="diajukan">Diajukan</option>
-                                    <option value="diterima">Diterima</option>
-                                    <option value="ditolak">Ditolak</option>
-                                </select>
+                                    onChange={(value) => setData("status", value)}
+                                    options={[
+                                        { value: 'diajukan', label: 'Diajukan' },
+                                        { value: 'diterima', label: 'Diterima' },
+                                        { value: 'ditolak', label: 'Ditolak' }
+                                    ]}
+                                    placeholder="Pilih Status"
+                                />
                             </div>
                         )}
 

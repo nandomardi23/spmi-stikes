@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import SelectInput from '@/Components/SelectInput';
+import { formatDate } from '@/Utils/dateFormatter';
 
 const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
 
@@ -139,7 +141,7 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
                                     </td>
                                     <td className="px-6 py-4 text-gray-600 font-medium text-center">
                                         <div className="flex flex-col items-center">
-                                            <span className="whitespace-nowrap">{a.tanggal_audit ? new Date(a.tanggal_audit).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Belum Diatur'}</span>
+                                            <span className="whitespace-nowrap">{formatDate(a.tanggal_audit)}</span>
                                             {a.tanggal_audit && <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Kalender</span>}
                                         </div>
                                     </td>
@@ -225,40 +227,34 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Siklus Audit <span className="text-danger-500">*</span></label>
-                                <select 
-                                    value={data.siklus_audit_id} 
-                                    onChange={e => setData('siklus_audit_id', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
-                                >
-                                    <option value="">Pilih Siklus</option>
-                                    {siklusAudit.map(s => <option key={s.id} value={s.id}>{s.nama}</option>)}
-                                </select>
+                                <SelectInput 
+                                    value={data.siklus_audit_id}
+                                    onChange={(value) => setData('siklus_audit_id', value)}
+                                    options={siklusAudit.map(s => ({ value: s.id, label: s.nama }))}
+                                    placeholder="Pilih Siklus"
+                                />
                                 {errors.siklus_audit_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.siklus_audit_id}</p>}
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Unit Kerja Auditee <span className="text-danger-500">*</span></label>
-                                <select 
-                                    value={data.unit_kerja_id} 
-                                    onChange={e => setData('unit_kerja_id', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
-                                >
-                                    <option value="">Pilih Unit</option>
-                                    {unitKerja.map(u => <option key={u.id} value={u.id}>{u.nama}</option>)}
-                                </select>
+                                <SelectInput 
+                                    value={data.unit_kerja_id}
+                                    onChange={(value) => setData('unit_kerja_id', value)}
+                                    options={unitKerja.map(u => ({ value: u.id, label: u.nama }))}
+                                    placeholder="Pilih Unit"
+                                />
                                 {errors.unit_kerja_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.unit_kerja_id}</p>}
                             </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1.5">Pilih Auditor</label>
-                            <select 
-                                value={data.auditor_id} 
-                                onChange={e => setData('auditor_id', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium"
-                            >
-                                <option value="">Pilih Auditor (Boleh menyusul)</option>
-                                {auditors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                            </select>
+                            <SelectInput 
+                                value={data.auditor_id}
+                                onChange={(value) => setData('auditor_id', value)}
+                                options={auditors.map(a => ({ value: a.id, label: a.name }))}
+                                placeholder="Pilih Auditor (Boleh menyusul)"
+                            />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -273,15 +269,16 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Status Audit</label>
-                                <select 
-                                    value={data.status} 
-                                    onChange={e => setData('status', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold capitalize"
-                                >
-                                    <option value="dijadwalkan">Dijadwalkan</option>
-                                    <option value="berlangsung">Berlangsung</option>
-                                    <option value="selesai">Selesai</option>
-                                </select>
+                                <SelectInput 
+                                    value={data.status}
+                                    onChange={(value) => setData('status', value)}
+                                    options={[
+                                        { value: 'dijadwalkan', label: 'Dijadwalkan' },
+                                        { value: 'berlangsung', label: 'Berlangsung' },
+                                        { value: 'selesai', label: 'Selesai' }
+                                    ]}
+                                    placeholder="Pilih Status"
+                                />
                             </div>
                         </div>
 
