@@ -6,6 +6,13 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import Select from 'react-select';
+
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
 const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
@@ -206,28 +213,86 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1.5">Pilih Jadwal Audit <span className="text-danger-500">*</span></label>
-                            <select 
-                                value={data.audit_id} 
-                                onChange={e => setData('audit_id', e.target.value)} 
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
-                            >
-                                <option value="">Pilih Audit</option>
-                                {audits.map(a => <option key={a.id} value={a.id}>{a.unit_kerja?.nama} - {a.tanggal_audit}</option>)}
-                            </select>
+                            <Select 
+                                value={audits.find(a => a.id == data.audit_id) ? { value: data.audit_id, label: `${audits.find(a => a.id == data.audit_id).unit_kerja?.nama} - ${formatDate(audits.find(a => a.id == data.audit_id).tanggal_audit)}` } : null}
+                                onChange={(selectedOption) => setData('audit_id', selectedOption ? selectedOption.value : '')}
+                                options={audits.map(a => ({
+                                    value: a.id,
+                                    label: `${a.unit_kerja?.nama} - ${formatDate(a.tanggal_audit)}`
+                                }))}
+                                placeholder="Pilih Audit"
+                                className="text-sm font-bold"
+                                styles={{
+                                    control: (base) => ({
+                                        ...base,
+                                        backgroundColor: '#f9fafb',
+                                        borderColor: '#e5e7eb',
+                                        borderRadius: '0.75rem',
+                                        padding: '0.25rem',
+                                        boxShadow: 'none',
+                                        '&:hover': {
+                                            borderColor: '#d1d5db'
+                                        }
+                                    }),
+                                    menu: (base) => ({
+                                        ...base,
+                                        borderRadius: '0.75rem',
+                                        overflow: 'hidden',
+                                        zIndex: 50
+                                    }),
+                                    option: (base, state) => ({
+                                        ...base,
+                                        backgroundColor: state.isSelected ? '#0284c7' : state.isFocused ? '#f0f9ff' : 'white',
+                                        color: state.isSelected ? 'white' : '#374151',
+                                        cursor: 'pointer'
+                                    })
+                                }}
+                                isClearable
+                                isSearchable
+                            />
                             {errors.audit_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.audit_id}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Standar Terkait</label>
-                                <select 
-                                    value={data.standar_mutu_id} 
-                                    onChange={e => setData('standar_mutu_id', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-600"
-                                >
-                                    <option value="">Pilih Standar</option>
-                                    {standarMutu.map(s => <option key={s.id} value={s.id}>{s.kode} - {s.nama}</option>)}
-                                </select>
+                                <Select 
+                                    value={standarMutu.find(s => s.id == data.standar_mutu_id) ? { value: data.standar_mutu_id, label: `${standarMutu.find(s => s.id == data.standar_mutu_id).kode} - ${standarMutu.find(s => s.id == data.standar_mutu_id).nama}` } : null}
+                                    onChange={(selectedOption) => setData('standar_mutu_id', selectedOption ? selectedOption.value : '')}
+                                    options={standarMutu.map(s => ({
+                                        value: s.id,
+                                        label: `${s.kode} - ${s.nama}`
+                                    }))}
+                                    placeholder="Pilih Standar"
+                                    className="text-sm font-medium text-gray-600"
+                                    styles={{
+                                        control: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#f9fafb',
+                                            borderColor: '#e5e7eb',
+                                            borderRadius: '0.75rem',
+                                            padding: '0.25rem',
+                                            boxShadow: 'none',
+                                            '&:hover': {
+                                                borderColor: '#d1d5db'
+                                            }
+                                        }),
+                                        menu: (base) => ({
+                                            ...base,
+                                            borderRadius: '0.75rem',
+                                            overflow: 'hidden',
+                                            zIndex: 50
+                                        }),
+                                        option: (base, state) => ({
+                                            ...base,
+                                            backgroundColor: state.isSelected ? '#0284c7' : state.isFocused ? '#f0f9ff' : 'white',
+                                            color: state.isSelected ? 'white' : '#374151',
+                                            cursor: 'pointer'
+                                        })
+                                    }}
+                                    isClearable
+                                    isSearchable
+                                />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Jenis Temuan <span className="text-danger-500">*</span></label>
