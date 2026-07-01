@@ -6,6 +6,8 @@ import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import { PencilSquareIcon, TrashIcon, DocumentArrowDownIcon, LinkIcon } from "@heroicons/react/24/outline";
+import SelectInput from "@/Components/SelectInput";
+import { formatDate } from "@/Utils/dateFormatter";
 
 // Helper color for each stage
 const BadgeColors = {
@@ -144,7 +146,7 @@ function Index({ ppepps, standars }) {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="text-gray-900 font-medium mb-1 line-clamp-2" title={item.deskripsi}>{item.deskripsi}</div>
-                                            <div className="text-[11px] text-gray-500 font-semibold">{new Date(item.tanggal_pelaksanaan).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                                            <div className="text-[11px] text-gray-500 font-semibold">{formatDate(item.tanggal_pelaksanaan)}</div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             {item.dokumen_link ? (
@@ -213,33 +215,29 @@ function Index({ ppepps, standars }) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div className="sm:col-span-2">
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Standar Mutu <span className="text-danger-500">*</span></label>
-                                <select
+                                <SelectInput
                                     value={data.standar_mutu_id}
-                                    onChange={(e) => setData("standar_mutu_id", e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
-                                >
-                                    <option value="">Pilih Standar</option>
-                                    {standars.map((std) => (
-                                        <option key={std.id} value={std.id}>{std.kode} - {std.nama}</option>
-                                    ))}
-                                </select>
+                                    onChange={(value) => setData("standar_mutu_id", value)}
+                                    options={standars.map((std) => ({ value: std.id, label: `${std.kode} - ${std.nama}` }))}
+                                    placeholder="Pilih Standar"
+                                />
                                 {errors.standar_mutu_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.standar_mutu_id}</p>}
                             </div>
                             
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-1.5">Siklus / Tahapan <span className="text-danger-500">*</span></label>
-                                <select
+                                <SelectInput
                                     value={data.tahapan}
-                                    onChange={(e) => setData("tahapan", e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
-                                >
-                                    <option value="">Pilih Tahapan</option>
-                                    <option value="Penetapan">Penetapan</option>
-                                    <option value="Pelaksanaan">Pelaksanaan</option>
-                                    <option value="Evaluasi">Evaluasi</option>
-                                    <option value="Pengendalian">Pengendalian</option>
-                                    <option value="Peningkatan">Peningkatan</option>
-                                </select>
+                                    onChange={(value) => setData("tahapan", value)}
+                                    options={[
+                                        { value: "Penetapan", label: "Penetapan" },
+                                        { value: "Pelaksanaan", label: "Pelaksanaan" },
+                                        { value: "Evaluasi", label: "Evaluasi" },
+                                        { value: "Pengendalian", label: "Pengendalian" },
+                                        { value: "Peningkatan", label: "Peningkatan" }
+                                    ]}
+                                    placeholder="Pilih Tahapan"
+                                />
                                 {errors.tahapan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.tahapan}</p>}
                             </div>
 
