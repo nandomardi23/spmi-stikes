@@ -5,10 +5,61 @@ import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
+import Select from "react-select";
+
+const customSelectStyles = {
+    control: (provided, state) => ({
+        ...provided,
+        backgroundColor: '#f9fafb',
+        borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
+        padding: '0.25rem 0',
+        borderRadius: '0.75rem',
+        boxShadow: state.isFocused ? '0 0 0 2px rgba(59, 130, 246, 0.25)' : 'none',
+        fontSize: '0.875rem',
+        fontWeight: '700',
+        color: '#374151',
+        '&:hover': {
+            borderColor: state.isFocused ? '#3b82f6' : '#d1d5db',
+        }
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        fontSize: '0.875rem',
+        backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f3f4f6' : 'white',
+        color: state.isSelected ? '#1d4ed8' : '#374151',
+        fontWeight: state.isSelected ? '700' : '500',
+    }),
+    singleValue: (provided) => ({
+        ...provided,
+        color: '#374151',
+    }),
+    input: (provided) => ({
+        ...provided,
+        color: '#374151',
+    }),
+    placeholder: (provided) => ({
+        ...provided,
+        color: '#9ca3af',
+        fontWeight: '500',
+    }),
+    menu: (provided) => ({
+        ...provided,
+        borderRadius: '0.75rem',
+        overflow: 'hidden',
+        border: '1px solid #e5e7eb',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        zIndex: 50,
+    })
+};
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 function Index({ instrumens, standars }) {
     const [isOpen, setIsOpen] = useState(false);
+    
+    const standarOptions = standars.map(std => ({
+        value: std.id,
+        label: `${std.kode} - ${std.nama}`
+    }));
     const [editing, setEditing] = useState(null);
 
     const initialData = {
@@ -183,12 +234,15 @@ function Index({ instrumens, standars }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1.5">Standar Mutu <span className="text-danger-500">*</span></label>
-                            <select value={data.standar_mutu_id} onChange={(e) => setData("standar_mutu_id", e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700">
-                                <option value="">Pilih Standar</option>
-                                {standars.map((std) => (
-                                    <option key={std.id} value={std.id}>{std.kode} - {std.nama}</option>
-                                ))}
-                            </select>
+                            <Select 
+                                options={standarOptions}
+                                value={standarOptions.find(option => option.value === data.standar_mutu_id) || null}
+                                onChange={(selectedOption) => setData("standar_mutu_id", selectedOption ? selectedOption.value : "")}
+                                styles={customSelectStyles}
+                                placeholder="Pilih atau cari standar mutu..."
+                                isClearable
+                                noOptionsMessage={() => "Standar mutu tidak ditemukan"}
+                            />
                             {errors.standar_mutu_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.standar_mutu_id}</p>}
                         </div>
 
