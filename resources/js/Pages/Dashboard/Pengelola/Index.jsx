@@ -3,6 +3,11 @@ import { Head, useForm, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
+import Swal from 'sweetalert2';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import EmptyState from '@/Components/EmptyState';
+import TableActions from '@/Components/TableActions';
 
 export default function Index({ pengelolas }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,11 +81,23 @@ export default function Index({ pengelolas }) {
     };
 
     const handleDelete = (id) => {
-        if (confirm('Apakah Anda yakin ingin menghapus anggota tim pengelola ini?')) {
-            destroy(`/dashboard/pengelola/${id}`, {
-                preserveScroll: true,
-            });
-        }
+        Swal.fire({
+            title: 'Hapus Anggota Tim?',
+            text: 'Data anggota tim pengelola ini akan dihapus permanen dari struktur organisasi.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                destroy(`/dashboard/pengelola/${id}`, {
+                    preserveScroll: true,
+                    onSuccess: () => Swal.fire('Terhapus!', 'Anggota tim telah dihapus.', 'success')
+                });
+            }
+        });
     };
 
     const tingkatLabel = (tingkat) => {
@@ -154,33 +171,17 @@ export default function Index({ pengelolas }) {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => openModal(item)}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                    title="Edit"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-danger-600 hover:bg-danger-50 rounded-lg transition-colors"
-                                                    title="Hapus"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </button>
-                                            </div>
+                                            <TableActions
+                                                onEdit={() => openModal(item)}
+                                                onDelete={() => handleDelete(item.id)}
+                                            />
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="3" className="px-6 py-12 text-center text-gray-500">
-                                        Belum ada data anggota tim pengelola.
+                                    <td colSpan="3">
+                                        <EmptyState title="Belum Ada Anggota" message="Belum ada data anggota tim pengelola. Silakan tambah anggota baru melalui tombol di atas." />
                                     </td>
                                 </tr>
                             )}
@@ -208,7 +209,7 @@ export default function Index({ pengelolas }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Nama */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Nama Lengkap & Gelar <span className="text-red-500">*</span></label>
+                                <InputLabel value="Nama Lengkap & Gelar" required />
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -223,12 +224,12 @@ export default function Index({ pengelolas }) {
                                         placeholder="Contoh: Dr. Jhon Doe, M.Kom"
                                     />
                                 </div>
-                                {errors.nama && <p className="text-red-500 text-[10px] font-bold mt-1.5 uppercase tracking-wide">{errors.nama}</p>}
+                                <InputError message={errors.nama} />
                             </div>
 
                             {/* Jabatan */}
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Nama Jabatan <span className="text-red-500">*</span></label>
+                                <InputLabel value="Nama Jabatan" required />
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -243,14 +244,14 @@ export default function Index({ pengelolas }) {
                                         placeholder="Contoh: Kepala Pusat SPMI"
                                     />
                                 </div>
-                                {errors.jabatan && <p className="text-red-500 text-[10px] font-bold mt-1.5 uppercase tracking-wide">{errors.jabatan}</p>}
+                                <InputError message={errors.jabatan} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Tingkat */}
                             <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Level Hierarki Organisasi</label>
+                                <InputLabel value="Level Hierarki Organisasi" />
                                 <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">
                                     Menentukan level posisi (Ex: 1 untuk Pimpinan tertinggi, 2 untuk Wakil/Sekretaris, dst). Semakin kecil angka, semakin tinggi posisinya.
                                 </p>
@@ -264,12 +265,12 @@ export default function Index({ pengelolas }) {
                                         placeholder="1, 2, 3..."
                                     />
                                 </div>
-                                {errors.tingkat && <p className="text-red-500 text-[10px] font-bold mt-1.5 uppercase tracking-wide">{errors.tingkat}</p>}
+                                <InputError message={errors.tingkat} />
                             </div>
 
                             {/* Urutan */}
                             <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Urutan Tampil Horizontal</label>
+                                <InputLabel value="Urutan Tampil Horizontal" />
                                 <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">
                                     Penting jika ada beberapa orang di Level Hierarki yang SAMA. Angka lebih kecil akan tampil lebih dulu (dari ujung kiri).
                                 </p>
@@ -287,7 +288,7 @@ export default function Index({ pengelolas }) {
 
                         {/* Foto */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Foto Profil (Opsional)</label>
+                            <InputLabel value="Foto Profil (Opsional)" />
                             <input
                                 type="file"
                                 id="foto"
@@ -313,7 +314,7 @@ export default function Index({ pengelolas }) {
                                     Pilih Foto
                                 </label>
                             </div>
-                            {errors.foto && <p className="text-red-500 text-xs mt-1">{errors.foto}</p>}
+                            <InputError message={errors.foto} />
                         </div>
                     </div>
 

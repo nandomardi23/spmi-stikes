@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, UserCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import SelectInput from '@/Components/SelectInput';
 
 function Index({ users, roles = [], unitKerja = [], filters, auth }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -148,14 +151,15 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                         placeholder="Cari nama/email..." 
                         className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 w-48 transition-all" 
                     />
-                    <select 
-                        value={role} 
-                        onChange={(e) => setRole(e.target.value)} 
-                        className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 w-48"
-                    >
-                        <option value="">Semua Role</option>
-                        {roles.map(r => <option key={r.id} value={r.name}>{r.name.replace('-', ' ').toUpperCase()}</option>)}
-                    </select>
+                    <div className="w-48">
+                        <SelectInput 
+                            value={role ? { value: role, label: roles.find(r => r.name === role)?.name.replace('-', ' ').toUpperCase() } : null}
+                            onChange={(opt) => setRole(opt ? opt.value : '')}
+                            options={roles.map(r => ({ value: r.name, label: r.name.replace('-', ' ').toUpperCase() }))}
+                            placeholder="Semua Role"
+                            isClearable
+                        />
+                    </div>
                     <button type="submit" className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Filter</button>
                     {filters.search || filters.role ? (
                         <Link href="/dashboard/users" className="px-5 py-2.5 text-danger-600 text-sm font-medium hover:underline">Reset</Link>
@@ -268,7 +272,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Lengkap <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Nama Lengkap" required />
                                 <input 
                                     type="text" 
                                     value={data.name} 
@@ -276,10 +280,10 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium" 
                                     placeholder="e.g. Dr. Budi Santoso"
                                 />
-                                {errors.name && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.name}</p>}
+                                <InputError message={errors.name} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Alamat Email <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Alamat Email" required />
                                 <input 
                                     type="email" 
                                     value={data.email} 
@@ -287,25 +291,29 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium" 
                                     placeholder="budi@stikessurabaya.ac.id"
                                 />
-                                {errors.email && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.email}</p>}
+                                <InputError message={errors.email} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                                    Password {editingData && <span className="text-[10px] font-normal text-gray-400 ml-1">(Kosongkan jika tidak ubah)</span>}
-                                </label>
+                                <InputLabel 
+                                    value={
+                                        <span>
+                                            Password {editingData && <span className="text-[10px] font-normal text-gray-400 ml-1">(Kosongkan jika tidak ubah)</span>}
+                                        </span>
+                                    } 
+                                />
                                 <input 
                                     type="password" 
                                     value={data.password} 
                                     onChange={e => setData('password', e.target.value)} 
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all font-medium" 
                                 />
-                                {errors.password && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.password}</p>}
+                                <InputError message={errors.password} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Konfirmasi Password</label>
+                                <InputLabel value="Konfirmasi Password" />
                                 <input 
                                     type="password" 
                                     value={data.password_confirmation} 
@@ -316,7 +324,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                         </div>
 
                         <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                            <label className="block text-sm font-extrabold text-gray-800 mb-3">Hak Akses (Role) <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Hak Akses (Role)" required />
                             <div className="flex gap-4 flex-wrap">
                                 {roles.map(r => (
                                     <label key={r.id} className="flex items-center gap-2.5 cursor-pointer group">
@@ -334,21 +342,20 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                                     </label>
                                 ))}
                             </div>
-                            {errors.roles && <p className="mt-2 text-[10px] font-bold text-danger-500">{errors.roles}</p>}
+                            <InputError message={errors.roles} />
                         </div>
 
                         {data.roles.includes('auditee') && (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Penempatan Unit Kerja <span className="text-danger-500">*</span></label>
-                                <select 
-                                    value={data.unit_kerja_id} 
-                                    onChange={e => setData('unit_kerja_id', e.target.value)} 
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500 transition-all font-bold"
-                                >
-                                    <option value="">Pilih Unit Kerja</option>
-                                    {unitKerja.map(u => <option key={u.id} value={u.id}>{u.nama}</option>)}
-                                </select>
-                                {errors.unit_kerja_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.unit_kerja_id}</p>}
+                                <InputLabel value="Penempatan Unit Kerja" required />
+                                <SelectInput 
+                                    value={data.unit_kerja_id ? { value: data.unit_kerja_id, label: unitKerja.find(u => u.id == data.unit_kerja_id)?.nama } : null}
+                                    onChange={(opt) => setData('unit_kerja_id', opt ? opt.value : '')}
+                                    options={unitKerja.map(u => ({ value: u.id, label: u.nama }))}
+                                    placeholder="Pilih Unit Kerja"
+                                    isClearable
+                                />
+                                <InputError message={errors.unit_kerja_id} />
                             </div>
                         )}
 

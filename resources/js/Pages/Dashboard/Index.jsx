@@ -3,6 +3,7 @@ import { ChartBarSquareIcon, ClipboardDocumentCheckIcon, DocumentIcon, Magnifyin
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { Head, Link } from '@inertiajs/react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { formatShortDate } from '@/Utils/dateFormatter';
 
 const statusColors = {
     dijadwalkan: 'bg-blue-100 text-blue-700',
@@ -170,7 +171,7 @@ function Index({ stats, recentAudits, recentTemuan, temuanByJenis, temuanByStatu
                                 <div className="flex items-center justify-between mb-1">
                                     <span className={`px-2 py-0.5 text-[9px] font-bold rounded uppercase tracking-tighter border ${jenisColors[temuan.jenis]?.replace('bg-', 'border-').replace('text-', 'border-').split(' ')[0]} ${jenisColors[temuan.jenis]}`}>{temuan.jenis}</span>
                                     <span className="text-[10px] text-red-500 font-bold">
-                                        ⚠ {new Date(temuan.batas_waktu).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                        ⚠ {formatShortDate(temuan.batas_waktu)}
                                     </span>
                                 </div>
                                 <p className="text-sm font-bold text-gray-900 line-clamp-1">{temuan.deskripsi}</p>

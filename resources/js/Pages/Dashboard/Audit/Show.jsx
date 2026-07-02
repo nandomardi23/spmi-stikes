@@ -3,6 +3,9 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Swal from 'sweetalert2';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import { formatDate } from '@/Utils/dateFormatter';
 
 const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
 const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
@@ -69,7 +72,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div><span className="text-gray-500">Siklus:</span><p className="font-medium text-gray-900">{audit.siklus_audit?.nama}</p></div>
                             <div><span className="text-gray-500">Auditor:</span><p className="font-medium text-gray-900">{audit.auditor?.name || 'Belum ditugaskan'}</p></div>
-                            <div><span className="text-gray-500">Tanggal:</span><p className="font-medium text-gray-900">{audit.tanggal_audit ? new Date(audit.tanggal_audit).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-'}</p></div>
+                            <div><span className="text-gray-500">Tanggal:</span><p className="font-medium text-gray-900">{audit.tanggal_audit ? formatDate(audit.tanggal_audit) : '-'}</p></div>
                             <div><span className="text-gray-500">Skor:</span><p className="font-medium text-gray-900 text-lg">{audit.skor || '-'}</p></div>
                         </div>
                         {audit.catatan && <div className="mt-4 pt-4 border-t border-gray-100"><span className="text-sm text-gray-500">Catatan:</span><p className="text-sm text-gray-700 mt-1">{audit.catatan}</p></div>}
@@ -133,7 +136,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                     <form onSubmit={handleEditSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Siklus Audit <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Siklus Audit" required />
                                 <select 
                                     value={data.siklus_audit_id} 
                                     onChange={e => setData('siklus_audit_id', e.target.value)} 
@@ -142,10 +145,10 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                                     <option value="">Pilih Siklus</option>
                                     {siklusAudit.map(s => <option key={s.id} value={s.id}>{s.nama}</option>)}
                                 </select>
-                                {errors.siklus_audit_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.siklus_audit_id}</p>}
+                                <InputError message={errors.siklus_audit_id} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Unit Kerja Auditee <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Unit Kerja Auditee" required />
                                 <select 
                                     value={data.unit_kerja_id} 
                                     onChange={e => setData('unit_kerja_id', e.target.value)} 
@@ -154,12 +157,12 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                                     <option value="">Pilih Unit</option>
                                     {unitKerja.map(u => <option key={u.id} value={u.id}>{u.nama}</option>)}
                                 </select>
-                                {errors.unit_kerja_id && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.unit_kerja_id}</p>}
+                                <InputError message={errors.unit_kerja_id} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Pilih Auditor</label>
+                            <InputLabel value="Pilih Auditor" />
                             <select 
                                 value={data.auditor_id} 
                                 onChange={e => setData('auditor_id', e.target.value)} 
@@ -172,7 +175,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Tanggal Pelaksanaan</label>
+                                <InputLabel value="Tanggal Pelaksanaan" />
                                 <input 
                                     type="date" 
                                     value={data.tanggal_audit} 
@@ -181,7 +184,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Status Audit</label>
+                                <InputLabel value="Status Audit" />
                                 <select 
                                     value={data.status} 
                                     onChange={e => setData('status', e.target.value)} 
@@ -218,7 +221,7 @@ function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
                                     className="w-full px-4 py-3 bg-white border border-indigo-200 rounded-xl text-lg focus:ring-2 focus:ring-indigo-500 outline-none font-extrabold text-indigo-700 placeholder:text-indigo-300 placeholder:font-normal placeholder:text-sm" 
                                     placeholder="Masukkan skor jika sudah selesai"
                                 />
-                                {errors.skor && <p className="mt-1.5 text-xs font-bold text-danger-500">{errors.skor}</p>}
+                                <InputError message={errors.skor} className="mt-1.5" />
                             </div>
                         </div>
 

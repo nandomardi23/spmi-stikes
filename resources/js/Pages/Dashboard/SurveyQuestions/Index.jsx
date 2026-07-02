@@ -6,6 +6,10 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import SelectInput from '@/Components/SelectInput';
+import TableActions from '@/Components/TableActions';
 
 const kategoriOptions = [
     { value: 'pengajaran', label: 'Pengajaran & Pembelajaran' },
@@ -149,14 +153,10 @@ function Index({ questions, totalResponses }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button onClick={() => openEditModal(item)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200" title="Edit">
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button onClick={() => handleDelete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" title="Hapus">
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions
+                                            onEdit={() => openEditModal(item)}
+                                            onDelete={() => handleDelete(item.id)}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -187,7 +187,7 @@ function Index({ questions, totalResponses }) {
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Pertanyaan <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Pertanyaan" required />
                             <textarea
                                 rows={3}
                                 value={data.pertanyaan}
@@ -195,25 +195,21 @@ function Index({ questions, totalResponses }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium"
                                 placeholder="e.g. Bagaimana kepuasan Anda terhadap kualitas pengajaran dosen?"
                             />
-                            {errors.pertanyaan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.pertanyaan}</p>}
+                            <InputError message={errors.pertanyaan} />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Kategori <span className="text-danger-500">*</span></label>
-                                <select
-                                    value={data.kategori}
-                                    onChange={(e) => setData('kategori', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold"
-                                >
-                                    {kategoriOptions.map((opt) => (
-                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                    ))}
-                                </select>
-                                {errors.kategori && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.kategori}</p>}
+                                <InputLabel value="Kategori" required />
+                                <SelectInput
+                                    value={data.kategori ? { value: data.kategori, label: kategoriOptions.find(o => o.value === data.kategori)?.label } : null}
+                                    onChange={(opt) => setData('kategori', opt ? opt.value : '')}
+                                    options={kategoriOptions}
+                                />
+                                <InputError message={errors.kategori} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Urutan</label>
+                                <InputLabel value="Urutan" />
                                 <input
                                     type="number"
                                     value={data.urutan}

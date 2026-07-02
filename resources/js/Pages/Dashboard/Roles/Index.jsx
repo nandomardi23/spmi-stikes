@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, UserGroupIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import TableActions from '@/Components/TableActions';
 
 function Index({ roles, permissions = [], filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -183,23 +186,10 @@ function Index({ roles, permissions = [], filters }) {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-center whitespace-nowrap">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openEditModal(r)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"
-                                                title="Edit"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(r)} 
-                                                disabled={r.name === 'super-admin'}
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200 disabled:opacity-30"
-                                                title="Hapus"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions
+                                            onEdit={() => openEditModal(r)}
+                                            onDelete={r.name !== 'super-admin' ? () => handleDelete(r) : undefined}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -237,7 +227,7 @@ function Index({ roles, permissions = [], filters }) {
                     
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Role <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Nama Role" required />
                             <input 
                                 type="text" 
                                 value={data.name} 
@@ -246,7 +236,7 @@ function Index({ roles, permissions = [], filters }) {
                                 placeholder="e.g. admin-mutu"
                                 disabled={editingData?.name === 'super-admin'}
                             />
-                            {errors.name && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.name}</p>}
+                            <InputError message={errors.name} />
                         </div>
 
                         <div className="border border-gray-100 rounded-2xl overflow-hidden">

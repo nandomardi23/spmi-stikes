@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, KeyIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import TableActions from '@/Components/TableActions';
 
 function Index({ permissions, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -136,22 +139,10 @@ function Index({ permissions, filters }) {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-center whitespace-nowrap">
-                                        <div className="flex items-center justify-center gap-1.5">
-                                            <button 
-                                                onClick={() => openEditModal(p)} 
-                                                className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"
-                                                title="Edit"
-                                            >
-                                                <PencilSquareIcon className="w-5 h-5" />
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(p)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200"
-                                                title="Hapus"
-                                            >
-                                                <TrashIcon className="w-5 h-5" />
-                                            </button>
-                                        </div>
+                                        <TableActions
+                                            onEdit={() => openEditModal(p)}
+                                            onDelete={() => handleDelete(p)}
+                                        />
                                     </td>
                                 </tr>
                             )) : (
@@ -189,7 +180,7 @@ function Index({ permissions, filters }) {
                     
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Nama Permission <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Nama Permission" required />
                             <input 
                                 type="text" 
                                 value={data.name} 
@@ -198,7 +189,7 @@ function Index({ permissions, filters }) {
                                 placeholder="e.g. user.create"
                             />
                             <p className="mt-1 text-[10px] text-gray-400">Gunakan format dot notation (misal: standar-mutu.view)</p>
-                            {errors.name && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.name}</p>}
+                            <InputError message={errors.name} />
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

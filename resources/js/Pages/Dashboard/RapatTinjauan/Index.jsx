@@ -5,6 +5,10 @@ import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
+import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/InputError";
+import SelectInput from "@/Components/SelectInput";
+import { formatShortDate } from "@/Utils/dateFormatter";
 import { PencilSquareIcon, TrashIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
 function Index({ items, siklus = [] }) {
@@ -129,7 +133,7 @@ function Index({ items, siklus = [] }) {
                                             )}
                                         </td>
                                         <td className="px-6 py-4 text-center text-xs text-gray-600 font-medium">
-                                            {item.tanggal ? new Date(item.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'}
+                                            {formatShortDate(item.tanggal)}
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             {item.siklus_audit ? (
@@ -185,7 +189,7 @@ function Index({ items, siklus = [] }) {
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Judul Rapat <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Judul Rapat" required />
                             <input
                                 type="text"
                                 value={data.judul}
@@ -193,37 +197,34 @@ function Index({ items, siklus = [] }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                 placeholder="e.g. RTM Semester Ganjil 2024/2025"
                             />
-                            {errors.judul && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.judul}</p>}
+                            <InputError message={errors.judul} />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Tanggal</label>
+                                <InputLabel value="Tanggal" />
                                 <input
                                     type="date"
                                     value={data.tanggal}
                                     onChange={(e) => setData("tanggal", e.target.value)}
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                 />
-                                {errors.tanggal && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.tanggal}</p>}
+                                <InputError message={errors.tanggal} />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Siklus Audit</label>
-                                <select
-                                    value={data.siklus_audit_id}
-                                    onChange={(e) => setData("siklus_audit_id", e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
-                                >
-                                    <option value="">Pilih Siklus (opsional)</option>
-                                    {siklus.map((s) => (
-                                        <option key={s.id} value={s.id}>{s.nama} ({s.tahun})</option>
-                                    ))}
-                                </select>
+                                <InputLabel value="Siklus Audit" />
+                                <SelectInput
+                                    value={data.siklus_audit_id ? { value: data.siklus_audit_id, label: siklus.find(s => s.id == data.siklus_audit_id)?.nama + ' (' + siklus.find(s => s.id == data.siklus_audit_id)?.tahun + ')' } : null}
+                                    onChange={(opt) => setData("siklus_audit_id", opt ? opt.value : "")}
+                                    options={siklus.map(s => ({ value: s.id, label: `${s.nama} (${s.tahun})` }))}
+                                    placeholder="Pilih Siklus (opsional)"
+                                    isClearable
+                                />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Notulen Rapat</label>
+                            <InputLabel value="Notulen Rapat" />
                             <textarea
                                 rows={4}
                                 value={data.notulen}
@@ -231,11 +232,11 @@ function Index({ items, siklus = [] }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                 placeholder="Catatan pembahasan dan notulen rapat..."
                             />
-                            {errors.notulen && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.notulen}</p>}
+                            <InputError message={errors.notulen} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Keputusan Rapat</label>
+                            <InputLabel value="Keputusan Rapat" />
                             <textarea
                                 rows={3}
                                 value={data.keputusan}
@@ -243,7 +244,7 @@ function Index({ items, siklus = [] }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                 placeholder="Hasil keputusan dan resolusi dari rapat..."
                             />
-                            {errors.keputusan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.keputusan}</p>}
+                            <InputError message={errors.keputusan} />
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import { formatDate, formatShortDate } from '@/Utils/dateFormatter';
 
 const kategoriLabels = {
     pengajaran: 'Pengajaran', fasilitas: 'Fasilitas', pelayanan: 'Pelayanan',
@@ -182,7 +183,7 @@ function Index({ questions, responses, statsByType, totalResponses }) {
                                         </td>
                                         <td className="px-6 py-4 text-center">
                                             <span className="text-xs text-gray-500">
-                                                {new Date(r.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                {formatShortDate(r.created_at)}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-center">
@@ -235,7 +236,7 @@ function Index({ questions, responses, statsByType, totalResponses }) {
                                 <p className="text-sm text-gray-500 mt-1">{viewingResponse.responden_type} · {viewingResponse.tahun_akademik}</p>
                             </div>
                             <span className="text-xs text-gray-400">
-                                {new Date(viewingResponse.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                {formatDate(viewingResponse.created_at, true)}
                             </span>
                         </div>
 

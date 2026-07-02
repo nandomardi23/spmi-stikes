@@ -5,6 +5,9 @@ import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
 import Swal from 'sweetalert2';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import { formatDate } from '@/Utils/dateFormatter';
 import { MagnifyingGlassIcon, PhotoIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 function Index({ galeris, filters }) {
@@ -207,7 +210,7 @@ function Index({ galeris, filters }) {
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{g.images?.length || 0} Foto</span>
                                             <span className="text-[10px] text-gray-300">•</span>
-                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{new Date(g.created_at).toLocaleDateString()}</span>
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{formatDate(g.created_at)}</span>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 text-gray-600 max-w-xs truncate hidden md:table-cell font-medium italic">
@@ -269,7 +272,7 @@ function Index({ galeris, filters }) {
                     
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Judul Kegiatan <span className="text-danger-500">*</span></label>
+                            <InputLabel value="Judul Kegiatan" required />
                             <input 
                                 type="text" 
                                 value={data.judul} 
@@ -278,11 +281,11 @@ function Index({ galeris, filters }) {
                                 placeholder="e.g. Workshop SPMI Tahun 2026"
                                 required
                             />
-                            {errors.judul && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.judul}</p>}
+                            <InputError message={errors.judul} />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Deskripsi Singkat</label>
+                            <InputLabel value="Deskripsi Singkat" />
                             <textarea 
                                 rows={3} 
                                 value={data.deskripsi} 
@@ -290,13 +293,13 @@ function Index({ galeris, filters }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium" 
                                 placeholder="Berikan deskripsi singkat tentang kegiatan ini..."
                             />
-                            {errors.deskripsi && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.deskripsi}</p>}
+                            <InputError message={errors.deskripsi} />
                         </div>
 
                         {/* Existing Photos Grid (Edit Mode Only) */}
                         {editingData && editingData.images?.length > 0 && (
                             <div className="pt-4 border-t border-gray-100">
-                                <label className="block text-sm font-bold text-gray-700 mb-3">Foto Tersimpan ({editingData.images.length})</label>
+                                <InputLabel value={`Foto Tersimpan (${editingData.images.length})`} />
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     {editingData.images.map(img => (
                                         <div key={img.id} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square">
@@ -319,9 +322,7 @@ function Index({ galeris, filters }) {
 
                         {/* Add New Photos */}
                         <div className="pt-4 border-t border-gray-100">
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">
-                                {editingData ? 'Tambah Foto Lagi (Opsional)' : 'Unggah Foto (Bisa Lebih dari Satu) *'}
-                            </label>
+                            <InputLabel value={editingData ? 'Tambah Foto Lagi (Opsional)' : 'Unggah Foto (Bisa Lebih dari Satu)'} required={!editingData} />
                             <div className="flex flex-col items-center justify-center w-full">
                                 <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-2xl cursor-pointer transition-all ${errors.files ? 'border-danger-300 bg-danger-50' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-primary-300'}`}>
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -337,7 +338,7 @@ function Index({ galeris, filters }) {
                                     />
                                 </label>
                             </div>
-                            {errors.files && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.files}</p>}
+                            <InputError message={errors.files} />
                             {Object.keys(errors).map(key => {
                                 if (key.startsWith('files.')) {
                                     return <p key={key} className="mt-1.5 text-[10px] font-bold text-danger-500">{errors[key]}</p>;
@@ -384,7 +385,7 @@ function Index({ galeris, filters }) {
                                 <label htmlFor="is_active" className="text-sm font-bold text-gray-700 cursor-pointer">Tampilkan di Halaman Galeri Publik</label>
                             </div>
                             <p className="ml-8 mt-1 text-[10px] text-gray-400 font-medium">Jika dicentang, seluruh foto di kegiatan ini akan langsung terbit.</p>
-                            {errors.is_active && <p className="mt-1.5 ml-8 text-[10px] font-bold text-danger-500">{errors.is_active}</p>}
+                            <InputError message={errors.is_active} className="ml-8" />
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

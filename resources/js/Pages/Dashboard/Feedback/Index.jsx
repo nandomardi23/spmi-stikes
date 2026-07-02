@@ -5,7 +5,10 @@ import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/InputError";
+import SelectInput from "@/Components/SelectInput";
+import TableActions from "@/Components/TableActions";
 
 function Index({ feedbacks }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -143,22 +146,10 @@ function Index({ feedbacks }) {
                                         </td>
                                         <td className="px-6 py-4 text-center text-gray-600 font-medium">{item.jumlah_responden} Orang</td>
                                         <td className="px-6 py-4 text-center">
-                                            <div className="flex items-center justify-center gap-1.5">
-                                                <button
-                                                    onClick={() => openEdit(item)}
-                                                    className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition duration-200"
-                                                    title="Edit"
-                                                >
-                                                    <PencilSquareIcon className="w-5 h-5" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200"
-                                                    title="Hapus"
-                                                >
-                                                    <TrashIcon className="w-5 h-5" />
-                                                </button>
-                                            </div>
+                                            <TableActions
+                                                onEdit={() => openEdit(item)}
+                                                onDelete={() => handleDelete(item.id)}
+                                            />
                                         </td>
                                     </tr>
                                 ))
@@ -199,7 +190,7 @@ function Index({ feedbacks }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Tahun Akademik <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Tahun Akademik" required />
                                 <input
                                     type="text"
                                     value={data.tahun_akademik}
@@ -207,30 +198,30 @@ function Index({ feedbacks }) {
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                     placeholder="e.g. 2024/2025"
                                 />
-                                {errors.tahun_akademik && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.tahun_akademik}</p>}
+                                <InputError message={errors.tahun_akademik} />
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Responden <span className="text-danger-500">*</span></label>
-                                <select
-                                    value={data.responden}
-                                    onChange={(e) => setData("responden", e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-bold text-gray-700"
-                                >
-                                    <option value="">Pilih Responden</option>
-                                    <option value="Mahasiswa">Mahasiswa</option>
-                                    <option value="Dosen">Dosen</option>
-                                    <option value="Tenaga Kependidikan">Tenaga Kependidikan</option>
-                                    <option value="Alumni">Alumni</option>
-                                    <option value="Pengguna Lulusan / Mitra">Pengguna Lulusan / Mitra</option>
-                                </select>
-                                {errors.responden && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.responden}</p>}
+                                <InputLabel value="Responden" required />
+                                <SelectInput
+                                    value={data.responden ? { value: data.responden, label: data.responden } : null}
+                                    onChange={(opt) => setData("responden", opt ? opt.value : "")}
+                                    options={[
+                                        { value: 'Mahasiswa', label: 'Mahasiswa' },
+                                        { value: 'Dosen', label: 'Dosen' },
+                                        { value: 'Tenaga Kependidikan', label: 'Tenaga Kependidikan' },
+                                        { value: 'Alumni', label: 'Alumni' },
+                                        { value: 'Pengguna Lulusan / Mitra', label: 'Pengguna Lulusan / Mitra' },
+                                    ]}
+                                    placeholder="Pilih Responden"
+                                />
+                                <InputError message={errors.responden} />
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Nilai Kepuasan (0-100) <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Nilai Kepuasan (0-100)" required />
                                 <div className="relative">
                                     <input
                                         type="number"
@@ -244,11 +235,11 @@ function Index({ feedbacks }) {
                                     />
                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                                 </div>
-                                {errors.nilai_kepuasan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.nilai_kepuasan}</p>}
+                                <InputError message={errors.nilai_kepuasan} />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5">Jumlah Responden <span className="text-danger-500">*</span></label>
+                                <InputLabel value="Jumlah Responden" required />
                                 <input
                                     type="number"
                                     min="1"
@@ -257,12 +248,12 @@ function Index({ feedbacks }) {
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                     placeholder="e.g. 150"
                                 />
-                                {errors.jumlah_responden && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.jumlah_responden}</p>}
+                                <InputError message={errors.jumlah_responden} />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1.5">Keterangan / Kesimpulan</label>
+                            <InputLabel value="Keterangan / Kesimpulan" />
                             <textarea
                                 rows={3}
                                 value={data.keterangan}
@@ -270,7 +261,7 @@ function Index({ feedbacks }) {
                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none font-medium text-gray-700"
                                 placeholder="Opsional: Tambahkan catatan atau kesimpulan hasil kuesioner..."
                             />
-                            {errors.keterangan && <p className="mt-1.5 text-[10px] font-bold text-danger-500">{errors.keterangan}</p>}
+                            <InputError message={errors.keterangan} />
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">

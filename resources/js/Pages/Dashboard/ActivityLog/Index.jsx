@@ -1,7 +1,9 @@
 import { memo } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { ClockIcon, MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { formatDate } from '@/Utils/dateFormatter';
+import SelectInput from '@/Components/SelectInput';
 
 const eventColors = {
     created: 'bg-green-100 text-green-700 border-green-200',
@@ -17,11 +19,11 @@ function ActivityLogIndex({ activities, filters }) {
         }, { preserveState: true, preserveScroll: true });
     };
 
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '-';
-        const d = new Date(dateStr);
-        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    };
+    const eventOptions = [
+        { value: 'created', label: 'Created' },
+        { value: 'updated', label: 'Updated' },
+        { value: 'deleted', label: 'Deleted' },
+    ];
 
     return (
         <>
@@ -48,16 +50,15 @@ function ActivityLogIndex({ activities, filters }) {
                             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition text-sm"
                         />
                     </div>
-                    <select
-                        value={filters?.event || ''}
-                        onChange={(e) => handleFilter('event', e.target.value)}
-                        className="px-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition text-sm bg-white"
-                    >
-                        <option value="">Semua Event</option>
-                        <option value="created">Created</option>
-                        <option value="updated">Updated</option>
-                        <option value="deleted">Deleted</option>
-                    </select>
+                    <div className="w-48">
+                        <SelectInput
+                            value={filters?.event ? { value: filters.event, label: eventOptions.find(o => o.value === filters.event)?.label } : null}
+                            onChange={(opt) => handleFilter('event', opt ? opt.value : '')}
+                            options={eventOptions}
+                            placeholder="Semua Event"
+                            isClearable
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -86,7 +87,7 @@ function ActivityLogIndex({ activities, filters }) {
                                         </span>
                                         <span className="text-[10px] text-gray-300">•</span>
                                         <span className="text-[10px] text-gray-400 font-medium italic">
-                                            {formatDate(activity.created_at)}
+                                            {formatDate(activity.created_at, true)}
                                         </span>
                                     </div>
                                     {activity.properties && Object.keys(activity.properties).length > 0 && (
