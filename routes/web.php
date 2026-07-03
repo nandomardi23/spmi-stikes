@@ -122,6 +122,7 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::get('export/surat-tugas/{audit}', [ExportPdfController::class, 'suratTugas'])->name('export.surat-tugas');
     Route::get('export/laporan-rtm/{rapatTinjauan}', [ExportPdfController::class, 'laporanRtm'])->name('export.laporan-rtm');
     Route::get('export/laporan-kinerja/{siklus}', [ExportPdfController::class, 'laporanKinerja'])->name('export.laporan-kinerja');
+    Route::get('export/laporan-rtl/{siklus}', [ExportPdfController::class, 'laporanRtl'])->name('export.laporan-rtl');
 });
 
 // ==========================================

@@ -15,9 +15,27 @@ const statusColors = {
     ditolak: "bg-red-50 text-red-700 border-red-200",
 };
 
-function Index({ items, temuan = [] }) {
+function Index({ items, temuan = [], siklusAudit = [], filters = {} }) {
     const [isOpen, setIsOpen] = useState(false);
     const [editing, setEditing] = useState(null);
+    const [search, setSearch] = useState(filters.search || "");
+    const [selectedSiklus, setSelectedSiklus] = useState(filters.siklus || "");
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        router.get('/dashboard/tindak-lanjut', { search, siklus: selectedSiklus }, { preserveState: true });
+    };
+
+    const handleSiklusChange = (val) => {
+        setSelectedSiklus(val);
+        router.get('/dashboard/tindak-lanjut', { search, siklus: val }, { preserveState: true });
+    };
+
+    const handleReset = () => {
+        setSearch("");
+        setSelectedSiklus("");
+        router.get('/dashboard/tindak-lanjut', {}, { preserveState: true });
+    };
 
     const initialData = {
         temuan_id: "",
@@ -110,6 +128,55 @@ function Index({ items, temuan = [] }) {
                 </button>
             </div>
 
+            {/* Filter & Export Bar */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                    <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Cari tindak lanjut..."
+                            className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none w-full sm:w-64 transition-all"
+                        />
+                        <button type="submit" className="px-5 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition shrink-0">
+                            Cari
+                        </button>
+                    </form>
+
+                    <div className="w-full sm:w-56 shrink-0">
+                        <SelectInput
+                            value={selectedSiklus}
+                            onChange={handleSiklusChange}
+                            options={siklusAudit.map((s) => ({ value: s.id, label: s.nama }))}
+                            placeholder="Semua Periode/Siklus"
+                        />
+                    </div>
+
+                    {(filters.search || filters.siklus) && (
+                        <button
+                            onClick={handleReset}
+                            className="text-danger-600 text-sm font-medium hover:underline shrink-0 px-2"
+                        >
+                            Reset Filter
+                        </button>
+                    )}
+                </div>
+
+                {selectedSiklus && (
+                    <a
+                        href={`/dashboard/export/laporan-rtl/${selectedSiklus}`}
+                        className="px-5 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition shadow-lg shadow-red-500/25 flex items-center justify-center gap-2 w-full md:w-auto"
+                        title="Ekspor PDF Rencana Tindak Lanjut"
+                    >
+                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export PDF
+                    </a>
+                )}
+            </div>
+
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -130,9 +197,21 @@ function Index({ items, temuan = [] }) {
                                             <p className="font-bold text-gray-900 line-clamp-2">
                                                 {item.temuan?.deskripsi || "-"}
                                             </p>
-                                            <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-                                                ID Temuan: #{item.temuan_id}
-                                            </p>
+                                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                                                {item.temuan?.audit?.unit_kerja?.nama && (
+                                                    <span className="px-1.5 py-0.5 text-[9px] font-bold text-primary-700 bg-primary-50 border border-primary-100 rounded-md">
+                                                        {item.temuan.audit.unit_kerja.nama}
+                                                    </span>
+                                                )}
+                                                {item.temuan?.audit?.siklus_audit?.nama && (
+                                                    <span className="px-1.5 py-0.5 text-[9px] font-bold text-gray-600 bg-gray-50 border border-gray-200 rounded-md">
+                                                        {item.temuan.audit.siklus_audit.nama}
+                                                    </span>
+                                                )}
+                                                <span className="text-[9px] text-gray-400 font-medium">
+                                                    ID: #{item.temuan_id}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 max-w-sm">
                                             <p className="text-gray-700 font-medium line-clamp-2">{item.deskripsi}</p>
@@ -170,7 +249,13 @@ function Index({ items, temuan = [] }) {
 
                 {items && items.data && items.data.length > 0 && (
                     <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-                        <Pagination links={items.links} meta={{ from: items.from, to: items.to, total: items.total, per_page: items.per_page }} />
+                        <Pagination 
+                            links={items.links} 
+                            meta={{ from: items.from, to: items.to, total: items.total, per_page: items.per_page }} 
+                            onPerPageChange={(per_page) => {
+                                router.get('/dashboard/tindak-lanjut', { ...filters, per_page }, { preserveState: true });
+                            }}
+                        />
                     </div>
                 )}
             </div>

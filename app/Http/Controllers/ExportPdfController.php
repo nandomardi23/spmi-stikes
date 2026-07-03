@@ -7,6 +7,7 @@ use App\Models\SiklusAudit;
 use App\Models\RapatTinjauan;
 use App\Models\Ppepp;
 use App\Models\Setting;
+use App\Models\TindakLanjut;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 
@@ -162,5 +163,30 @@ class ExportPdfController extends Controller
 
         $safeName = Str::slug($siklus->nama);
         return $pdf->download("Laporan-Kinerja-SPMI-{$safeName}.pdf");
+    }
+
+    /**
+     * Laporan Rencana Tindak Lanjut (RTL) per siklus audit
+     */
+    public function laporanRtl(SiklusAudit $siklus)
+    {
+        $tindakLanjuts = TindakLanjut::whereHas('temuan.audit', function ($q) use ($siklus) {
+            $q->where('siklus_audit_id', $siklus->id);
+        })->with([
+            'temuan.audit.unitKerja',
+            'temuan.standarMutu',
+            'user'
+        ])->get();
+
+        $pdf = Pdf::loadView('pdf.laporan-rtl', [
+            'siklus' => $siklus,
+            'institusi' => $this->getInstitusi(),
+            'tindakLanjuts' => $tindakLanjuts,
+        ]);
+
+        $pdf->setPaper('A4', 'landscape');
+
+        $safeName = Str::slug($siklus->nama);
+        return $pdf->download("Laporan-RTL-{$safeName}.pdf");
     }
 }
