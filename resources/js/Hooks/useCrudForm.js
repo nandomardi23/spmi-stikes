@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
  * @param {string} options.successCreateMessage - Message shown after create
  * @param {string} options.successUpdateMessage - Message shown after update
  * @param {boolean} options.autoOpenOnMount - If true, opens modal on mount
+ * @param {boolean} options.isUpload - If true, supports file uploads by sending POST + _method: 'put' on edits
  * @param {Object} options.submitOptions - Extra options for Inertia post/put
  */
 export default function useCrudForm({
@@ -21,12 +22,13 @@ export default function useCrudForm({
     successCreateMessage = 'Data baru telah ditambahkan.',
     successUpdateMessage = 'Data telah diperbarui.',
     autoOpenOnMount = false,
+    isUpload = false,
     submitOptions = {},
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
 
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
+    const { data, setData, post, put, transform, processing, errors, reset, clearErrors } = useForm(initialData);
 
     useEffect(() => {
         if (autoOpenOnMount) {
@@ -72,15 +74,39 @@ export default function useCrudForm({
         e.preventDefault();
         const mergedOptions = { ...submitOptions };
 
+        if (isUpload) {
+            mergedOptions.forceFormData = true;
+        }
+
         if (editingData) {
-            put(`${routePrefix}/${editingData.id}`, {
-                ...mergedOptions,
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', successUpdateMessage, 'success');
-                    mergedOptions.onSuccess?.();
-                },
-            });
+            if (isUpload) {
+                transform((currentData) => ({
+                    ...currentData,
+                    _method: 'put',
+                }));
+                post(`${routePrefix}/${editingData.id}`, {
+                    ...mergedOptions,
+                    onSuccess: () => {
+                        closeModal();
+                        Swal.fire('Berhasil!', successUpdateMessage, 'success');
+                        mergedOptions.onSuccess?.();
+                    },
+                    onFinish: () => {
+                        // Reset transform
+                        transform((d) => d);
+                        mergedOptions.onFinish?.();
+                    }
+                });
+            } else {
+                put(`${routePrefix}/${editingData.id}`, {
+                    ...mergedOptions,
+                    onSuccess: () => {
+                        closeModal();
+                        Swal.fire('Berhasil!', successUpdateMessage, 'success');
+                        mergedOptions.onSuccess?.();
+                    },
+                });
+            }
         } else {
             post(routePrefix, {
                 ...mergedOptions,

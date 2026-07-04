@@ -1,9 +1,8 @@
 import { Head, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
-import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
+import { createCrudService } from '@/Services/crudService';
 import { TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 import { formatDate, formatShortDate } from '@/Utils/dateFormatter';
@@ -26,22 +25,11 @@ const starDisplay = (val) => {
 function Index({ questions, responses, statsByType, totalResponses }) {
     const [viewingResponse, setViewingResponse] = useState(null);
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Respons?',
-            text: 'Data yang dihapus tidak dapat dikembalikan!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/survey-responses/${id}`);
-            }
-        });
-    };
+    const surveyResponseService = createCrudService({
+        routePrefix: '/dashboard/survey-responses',
+        entityName: 'Respons',
+        warningMessage: 'Data yang dihapus tidak dapat dikembalikan!',
+    });
 
     return (
         <>
@@ -195,11 +183,7 @@ function Index({ questions, responses, statsByType, totalResponses }) {
                                                 >
                                                     <EyeIcon className="w-5 h-5" />
                                                 </button>
-                                                <button
-                                                    onClick={() => handleDelete(r.id)}
-                                                    className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200"
-                                                    title="Hapus"
-                                                >
+                                                <button onClick={() => surveyResponseService.delete(r.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" title="Hapus">
                                                     <TrashIcon className="w-5 h-5" />
                                                 </button>
                                             </div>

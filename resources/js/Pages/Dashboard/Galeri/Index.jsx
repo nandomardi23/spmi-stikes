@@ -9,6 +9,7 @@ import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import { formatDate } from '@/Utils/dateFormatter';
 import { MagnifyingGlassIcon, PhotoIcon, PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ galeris, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -31,24 +32,11 @@ function Index({ galeris, filters }) {
         router.get('/dashboard/galeri', { search }, { preserveState: true });
     };
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Galeri?',
-            html: "Seluruh foto dan data kegiatan ini akan dihapus permanen!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Kegiatan ini tidak akan muncul lagi di halaman galeri publik.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/galeri/${id}`, {
-                    onSuccess: () => Swal.fire('Terhapus!', 'Galeri telah dihapus.', 'success')
-                });
-            }
-        });
-    };
+    const galeriService = createCrudService({
+        routePrefix: '/dashboard/galeri',
+        entityName: 'Galeri',
+        warningMessage: 'Peringatan: Kegiatan ini tidak akan muncul lagi di halaman galeri publik.',
+    });
 
     const handleDeleteImage = (imageId) => {
         Swal.fire({
@@ -225,11 +213,7 @@ function Index({ galeris, filters }) {
                                             >
                                                 <PencilSquareIcon className="w-5 h-5" />
                                             </button>
-                                            <button 
-                                                onClick={() => handleDelete(g.id)} 
-                                                className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
-                                                title="Hapus"
-                                            >
+                                            <button onClick={() => galeriService.delete(g.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition duration-200" title="Hapus">
                                                 <TrashIcon className="w-5 h-5" />
                                             </button>
                                         </div>

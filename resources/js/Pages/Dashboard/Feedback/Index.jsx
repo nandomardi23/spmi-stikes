@@ -1,7 +1,6 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState , memo} from "react";
-import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
@@ -9,90 +8,39 @@ import InputLabel from "@/Components/InputLabel";
 import InputError from "@/Components/InputError";
 import SelectInput from "@/Components/SelectInput";
 import TableActions from "@/Components/TableActions";
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ feedbacks }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [editing, setEditing] = useState(null);
+    const feedbackService = createCrudService({
+        routePrefix: '/dashboard/umpan-balik',
+        entityName: 'Data Umpan Balik',
+        warningMessage: 'Data Umpan Balik ini akan hilang secara permanen dari sistem.',
+    });
 
-    const initialData = {
-        tahun_akademik: "",
-        responden: "",
-        nilai_kepuasan: "",
-        jumlah_responden: "",
-        keterangan: "",
-    };
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
-
-    const openCreate = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditing(null);
-        setIsOpen(true);
-    };
-
-    const openEdit = (item) => {
-        clearErrors();
-        setEditing(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen: isOpen, editingData: editing,
+        openCreateModal: openCreate, openEditModal: openEdit, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/umpan-balik',
+        initialData: {
+            tahun_akademik: "",
+            responden: "",
+            nilai_kepuasan: "",
+            jumlah_responden: "",
+            keterangan: "",
+        },
+        mapEditData: (item) => ({
             tahun_akademik: item.tahun_akademik || "",
             responden: item.responden || "",
             nilai_kepuasan: item.nilai_kepuasan || "",
             jumlah_responden: item.jumlah_responden || "",
             keterangan: item.keterangan || "",
-        });
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditing(null);
-        }, 150);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(`/dashboard/umpan-balik/${editing.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Data umpan balik diperbarui", "success");
-                },
-            });
-        } else {
-            post(`/dashboard/umpan-balik`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Data umpan balik ditambahkan", "success");
-                },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Hapus data ini?",
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Umpan balik yang dihapus tidak dapat direstorasi dan akan memengaruhi diagram kepuasan.</span>",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/umpan-balik/${id}`, {
-                    onSuccess: () => {
-                        Swal.fire("Dihapus!", "Data umpan balik telah dihapus.", "success");
-                    }
-                });
-            }
-        });
-    };
+        }),
+        successCreateMessage: 'Data Umpan Balik berhasil ditambahkan.',
+        successUpdateMessage: 'Data Umpan Balik berhasil diperbarui.',
+    });
 
     return (
         <>
@@ -146,9 +94,9 @@ function Index({ feedbacks }) {
                                         </td>
                                         <td className="px-6 py-4 text-center text-gray-600 font-medium">{item.jumlah_responden} Orang</td>
                                         <td className="px-6 py-4 text-center">
-                                            <TableActions
+                                            <TableActions 
                                                 onEdit={() => openEdit(item)}
-                                                onDelete={() => handleDelete(item.id)}
+                                                onDelete={() => feedbackService.delete(item.id)}
                                             />
                                         </td>
                                     </tr>

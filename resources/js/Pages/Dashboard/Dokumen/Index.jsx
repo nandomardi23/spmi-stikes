@@ -12,18 +12,8 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import TextArea from '@/Components/TextArea';
 import InputError from '@/Components/InputError';
-
-const kategoriLabels = {
-    kebijakan: 'Kebijakan', manual: 'Manual', standar: 'Standar',
-    formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
-};
-
-const kategoriOptions = [
-    { value: 'kebijakan', label: 'Kebijakan' }, { value: 'manual', label: 'Manual' },
-    { value: 'standar', label: 'Standar' }, { value: 'formulir', label: 'Formulir' },
-    { value: 'sop', label: 'SOP' }, { value: 'laporan', label: 'Laporan' },
-    { value: 'bukti', label: 'Bukti' }, { value: 'lainnya', label: 'Lainnya' },
-];
+import { createCrudService } from '@/Services/crudService';
+import { KATEGORI_LABELS as kategoriLabels, KATEGORI_OPTIONS as kategoriOptions } from '@/Utils/constants';
 
 function Index({ dokumens, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -43,22 +33,11 @@ function Index({ dokumens, filters }) {
         router.get('/dashboard/dokumen', { search }, { preserveState: true });
     };
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Dokumen?',
-            html: "File dokumen juga akan dihapus permanen!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Jika dokumen ini dibagikan ke publik atau terkait aktivitas lain, tautannya akan terputus.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/dokumen/${id}`);
-            }
-        });
-    };
+    const dokumenService = createCrudService({
+        routePrefix: '/dashboard/dokumen',
+        entityName: 'Dokumen',
+        warningMessage: 'Jika dokumen ini dibagikan ke publik atau terkait aktivitas lain, tautannya akan terputus.',
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -203,7 +182,7 @@ function Index({ dokumens, filters }) {
                                             <TableActions 
                                                 onView={() => openDetailModal(d)}
                                                 onEdit={() => openEditModal(d)}
-                                                onDelete={() => handleDelete(d.id)}
+                                                onDelete={() => dokumenService.delete(d.id)}
                                             />
                                             <a 
                                                 href={`/dashboard/dokumen/${d.id}/download`} 

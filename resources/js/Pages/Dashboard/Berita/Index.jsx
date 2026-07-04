@@ -1,8 +1,7 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import Pagination from '@/Components/Pagination';
 import TableActions from '@/Components/TableActions';
@@ -12,98 +11,40 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ berita, filters }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
     const [search, setSearch] = useState(filters.search || '');
-
-    const initialData = {
-        judul: '', ringkasan: '', konten: '', gambar: null, status: 'draft'
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleSearch = e => { 
         e.preventDefault(); 
         router.get('/dashboard/berita', { search }, { preserveState: true }); 
     };
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Berita?',
-            html: "Berita yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Berita ini akan hilang secara permanen dari halaman landing page publik.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/berita/${id}`, {
-                    onSuccess: () => {
-                        Swal.fire('Terhapus!', 'Berita telah berhasil dihapus.', 'success');
-                    }
-                });
-            }
-        });
-    };
+    const beritaService = createCrudService({
+        routePrefix: '/dashboard/berita',
+        entityName: 'Berita',
+        warningMessage: 'Berita ini akan hilang secara permanen dari halaman landing page publik.',
+    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            // Use POST with _method PUT for file uploads in Laravel/Inertia
-            router.post(`/dashboard/berita/${editingData.id}`, {
-                _method: 'put',
-                ...data,
-                forceFormData: true,
-            }, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Berita telah diperbarui.', 'success');
-                }
-            });
-        } else {
-            post('/dashboard/berita', {
-                forceFormData: true,
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Berita telah diterbitkan.', 'success');
-                }
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
-            judul: item.judul,
-            ringkasan: item.ringkasan || '',
-            konten: item.konten,
-            gambar: null, // Reset gambar to null so we don't accidentally re-upload old one unless changed
-            status: item.status,
-        });
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/berita',
+        isUpload: true,
+        initialData: {
+            judul: '', ringkasan: '', konten: '', gambar: null, status: 'draft'
+        },
+        mapEditData: (item) => ({
+            judul: item.judul, ringkasan: item.ringkasan || '',
+            konten: item.konten || '', gambar: null, status: item.status
+        }),
+        successCreateMessage: 'Berita telah diterbitkan.',
+        successUpdateMessage: 'Berita telah diperbarui.',
+    });
 
     return (
         <>
@@ -176,7 +117,7 @@ function Index({ berita, filters }) {
                                     <td className="px-6 py-4 text-center whitespace-nowrap">
                                         <TableActions 
                                             onEdit={() => openEditModal(b)}
-                                            onDelete={() => handleDelete(b.id)}
+                                            onDelete={() => beritaService.delete(b.id)}
                                         />
                                     </td>
                                 </tr>

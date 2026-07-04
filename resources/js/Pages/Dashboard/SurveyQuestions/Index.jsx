@@ -1,11 +1,12 @@
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import SelectInput from '@/Components/SelectInput';
@@ -30,68 +31,33 @@ const kategoriColors = {
 };
 
 function Index({ questions, totalResponses }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
+    const surveyQuestionService = createCrudService({
+        routePrefix: '/dashboard/survey-questions',
+        entityName: 'Pertanyaan',
+        warningMessage: 'Data yang dihapus tidak dapat dikembalikan!',
+    });
 
-    const initialData = {
-        kategori: 'pengajaran',
-        pertanyaan: '',
-        urutan: 0,
-        is_active: true,
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/survey-questions/${editingData.id}`, {
-                onSuccess: () => { closeModal(); Swal.fire('Berhasil!', 'Pertanyaan berhasil diperbarui.', 'success'); },
-            });
-        } else {
-            post('/dashboard/survey-questions', {
-                onSuccess: () => { closeModal(); Swal.fire('Berhasil!', 'Pertanyaan berhasil ditambahkan.', 'success'); },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Pertanyaan?',
-            text: 'Data yang dihapus tidak dapat dikembalikan!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/survey-questions/${id}`);
-            }
-        });
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData); clearErrors(); setEditingData(null); setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors(); setEditingData(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/survey-questions',
+        initialData: {
+            kategori: 'pengajaran',
+            pertanyaan: '',
+            urutan: 0,
+            is_active: true,
+        },
+        mapEditData: (item) => ({
             kategori: item.kategori,
             pertanyaan: item.pertanyaan,
             urutan: item.urutan,
-            is_active: item.is_active,
-        });
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => { reset();
-        setData(initialData); clearErrors(); setEditingData(null); }, 150);
-    };
+            is_active: item.is_active ? true : false,
+        }),
+        successCreateMessage: 'Pertanyaan berhasil ditambahkan.',
+        successUpdateMessage: 'Pertanyaan berhasil diperbarui.',
+    });
 
     return (
         <>
@@ -155,7 +121,7 @@ function Index({ questions, totalResponses }) {
                                     <td className="px-6 py-4 text-center">
                                         <TableActions
                                             onEdit={() => openEditModal(item)}
-                                            onDelete={() => handleDelete(item.id)}
+                                            onDelete={() => surveyQuestionService.delete(item.id)}
                                         />
                                     </td>
                                 </tr>

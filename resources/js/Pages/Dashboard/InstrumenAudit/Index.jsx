@@ -1,11 +1,12 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState , memo} from "react";
-import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import Select from "react-select";
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 const customSelectStyles = {
     control: (provided, state) => ({
@@ -60,93 +61,42 @@ import TextArea from "@/Components/TextArea";
 import InputError from "@/Components/InputError";
 
 function Index({ instrumens, standars }) {
-    const [isOpen, setIsOpen] = useState(false);
-    
-    const standarOptions = standars.map(std => ({
-        value: std.id,
-        label: `${std.kode} - ${std.nama}`
-    }));
-    const [editing, setEditing] = useState(null);
+    const instrumenService = createCrudService({
+        routePrefix: '/dashboard/instrumen-audit',
+        entityName: 'Instrumen',
+        warningMessage: 'Data Instrumen ini akan terhapus secara permanen.',
+    });
 
-    const initialData = {
-        standar_mutu_id: "",
-        pertanyaan: "",
-        deskripsi: "",
-        bobot: "",
-        urutan: "",
-        is_active: true,
-    };
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
-
-    const openCreate = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditing(null);
-        setIsOpen(true);
-    };
-
-    const openEdit = (item) => {
-        clearErrors();
-        setEditing(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen: isOpen, editingData: editing,
+        openCreateModal: openCreate, openEditModal: openEdit, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/instrumen-audit',
+        initialData: {
+            standar_mutu_id: "",
+            pertanyaan: "",
+            deskripsi: "",
+            bobot: "",
+            urutan: "",
+            is_active: true,
+        },
+        mapEditData: (item) => ({
             standar_mutu_id: item.standar_mutu_id || "",
             pertanyaan: item.pertanyaan || "",
             deskripsi: item.deskripsi || "",
             bobot: item.bobot || "",
             urutan: item.urutan || "",
             is_active: item.is_active ?? true,
-        });
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditing(null);
-        }, 150);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(`/dashboard/instrumen-audit/${editing.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Instrumen audit diperbarui", "success");
-                },
-            });
-        } else {
-            post(`/dashboard/instrumen-audit`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Instrumen audit ditambahkan", "success");
-                },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Hapus instrumen ini?",
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Pertanyaan audit ini tidak akan muncul lagi di instrumen pengisian saat pelaksanaan audit.</span>",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/instrumen-audit/${id}`, {
-                    onSuccess: () => Swal.fire("Dihapus!", "Instrumen audit telah dihapus.", "success"),
-                });
-            }
-        });
-    };
+        }),
+        successCreateMessage: 'Data Instrumen berhasil ditambahkan.',
+        successUpdateMessage: 'Data Instrumen berhasil diperbarui.',
+    });
+    
+    const standarOptions = standars.map(std => ({
+        value: std.id,
+        label: `${std.kode} - ${std.nama}`
+    }));
 
     return (
         <>
@@ -195,7 +145,7 @@ function Index({ instrumens, standars }) {
                                         <td className="px-6 py-4 text-center">
                                             <TableActions 
                                                 onEdit={() => openEdit(item)}
-                                                onDelete={() => handleDelete(item.id)}
+                                                onDelete={() => instrumenService.delete(item.id)}
                                             />
                                         </td>
                                     </tr>
