@@ -67,7 +67,7 @@ class LandingController extends Controller
                 'search' => $request->input('search_dokumen', ''),
             ],
             'berita' => Berita::published()->latest()->paginate($request->input('per_page', 6))->withQueryString(),
-            'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->take(8)->get(),
+            'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->paginate($request->input('per_page_galeri', 8), ['*'], 'page_galeri')->withQueryString(),
             'kepuasanData' => $surveyData,
             'pengelolas' => $pengelolas,
         ]);

@@ -1,10 +1,24 @@
 import { useState, memo } from 'react';
+import { router } from '@inertiajs/react';
 import { EyeIcon, XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Modal from '@/Components/Modal';
 
 function GallerySection({ galeri }) {
     const [selectedGaleri, setSelectedGaleri] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // Support both paginated (object with .data) and plain array
+    const galeriItems = galeri?.data ?? galeri ?? [];
+    const hasPages = galeri?.last_page && galeri.last_page > 1;
+    const currentPage = galeri?.current_page ?? 1;
+    const lastPage = galeri?.last_page ?? 1;
+
+    const goToPage = (page) => {
+        router.get('/', { page_galeri: page }, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
 
     return (
         <section id="galeri" className="py-24 bg-gray-50 border-t border-gray-100">
@@ -15,45 +29,86 @@ function GallerySection({ galeri }) {
                     <p className="text-gray-500 mt-3 font-medium">Dokumentasi kegiatan terkait penjaminan mutu</p>
                 </div>
 
-                {galeri && galeri.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                        {galeri.map((g) => (
-                            <div 
-                                key={g.id} 
-                                className="group cursor-pointer"
-                                onClick={() => {
-                                    setSelectedGaleri(g);
-                                    setCurrentImageIndex(0);
-                                }}
-                            >
-                                <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200 border border-gray-100 shadow-sm">
-                                    <img 
-                                        src={g.images?.[0]?.file_path ? `/storage/${g.images[0].file_path.replace('galeri/', 'galeri/thumbnails/')}` : ''} 
-                                        alt={g.judul} 
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                                        onError={(e) => {
-                                            if (!e.target.dataset.retried) {
-                                                e.target.dataset.retried = 'true';
-                                                e.target.src = `/storage/${g.images?.[0]?.file_path}`;
-                                            } else {
-                                                e.target.onerror = null; 
-                                                e.target.src = `https://picsum.photos/seed/${g.id}/800/600`;
-                                            }
-                                        }}
-                                    />
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-5">
-                                        <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                            <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                                                <EyeIcon className="w-5 h-5" />
+                {galeriItems && galeriItems.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                            {galeriItems.map((g) => (
+                                <div 
+                                    key={g.id} 
+                                    className="group cursor-pointer"
+                                    onClick={() => {
+                                        setSelectedGaleri(g);
+                                        setCurrentImageIndex(0);
+                                    }}
+                                >
+                                    <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200 border border-gray-100 shadow-sm">
+                                        <img 
+                                            src={g.images?.[0]?.file_path ? `/storage/${g.images[0].file_path.replace('galeri/', 'galeri/thumbnails/')}` : ''} 
+                                            alt={g.judul} 
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                            onError={(e) => {
+                                                if (!e.target.dataset.retried) {
+                                                    e.target.dataset.retried = 'true';
+                                                    e.target.src = `/storage/${g.images?.[0]?.file_path}`;
+                                                } else {
+                                                    e.target.onerror = null; 
+                                                    e.target.src = `https://picsum.photos/seed/${g.id}/800/600`;
+                                                }
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-5">
+                                            <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                                <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white mb-3 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
+                                                    <EyeIcon className="w-5 h-5" />
+                                                </div>
+                                                <h3 className="text-white font-bold text-sm line-clamp-2 leading-tight">{g.judul}</h3>
+                                                {g.deskripsi && <p className="text-white/70 text-xs mt-1.5 line-clamp-1 font-medium">{g.deskripsi}</p>}
                                             </div>
-                                            <h3 className="text-white font-bold text-sm line-clamp-2 leading-tight">{g.judul}</h3>
-                                            {g.deskripsi && <p className="text-white/70 text-xs mt-1.5 line-clamp-1 font-medium">{g.deskripsi}</p>}
                                         </div>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+
+                        {/* Pagination */}
+                        {hasPages && (
+                            <div className="flex items-center justify-center gap-3 mt-10">
+                                <button
+                                    onClick={() => goToPage(currentPage - 1)}
+                                    disabled={currentPage <= 1}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                                >
+                                    <ChevronLeftIcon className="w-4 h-4" />
+                                    Sebelumnya
+                                </button>
+
+                                <div className="flex items-center gap-1.5">
+                                    {Array.from({ length: lastPage }, (_, i) => i + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => goToPage(page)}
+                                            className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
+                                                page === currentPage
+                                                    ? 'bg-primary-600 text-white shadow-md shadow-primary-500/30'
+                                                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => goToPage(currentPage + 1)}
+                                    disabled={currentPage >= lastPage}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm"
+                                >
+                                    Berikutnya
+                                    <ChevronRightIcon className="w-4 h-4" />
+                                </button>
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    </>
                 ) : (
                     <div className="text-center py-12 bg-white rounded-2xl">
                         <p className="text-gray-400 font-medium">Belum ada dokumentasi kegiatan.</p>
