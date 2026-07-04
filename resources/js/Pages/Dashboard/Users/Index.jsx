@@ -153,8 +153,8 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                     />
                     <div className="w-48">
                         <SelectInput 
-                            value={role ? { value: role, label: roles.find(r => r.name === role)?.name.replace('-', ' ').toUpperCase() } : null}
-                            onChange={(opt) => setRole(opt ? opt.value : '')}
+                            value={role}
+                            onChange={(val) => setRole(val)}
                             options={roles.map(r => ({ value: r.name, label: r.name.replace('-', ' ').toUpperCase() }))}
                             placeholder="Semua Role"
                             isClearable
@@ -349,8 +349,8 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                                 <InputLabel value="Penempatan Unit Kerja" required />
                                 <SelectInput 
-                                    value={data.unit_kerja_id ? { value: data.unit_kerja_id, label: unitKerja.find(u => u.id == data.unit_kerja_id)?.nama } : null}
-                                    onChange={(opt) => setData('unit_kerja_id', opt ? opt.value : '')}
+                                    value={data.unit_kerja_id}
+                                    onChange={(val) => setData('unit_kerja_id', val)}
                                     options={unitKerja.map(u => ({ value: u.id, label: u.nama }))}
                                     placeholder="Pilih Unit Kerja"
                                     isClearable

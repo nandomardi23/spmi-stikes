@@ -4,54 +4,10 @@ import { useState , memo} from "react";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
-import Select from "react-select";
+import SelectInput from "@/Components/SelectInput";
 import useCrudForm from '@/Hooks/useCrudForm';
 import { createCrudService } from '@/Services/crudService';
 
-const customSelectStyles = {
-    control: (provided, state) => ({
-        ...provided,
-        backgroundColor: '#f9fafb',
-        borderColor: state.isFocused ? '#3b82f6' : '#e5e7eb',
-        padding: '0.25rem 0',
-        borderRadius: '0.75rem',
-        boxShadow: state.isFocused ? '0 0 0 2px rgba(59, 130, 246, 0.25)' : 'none',
-        fontSize: '0.875rem',
-        fontWeight: '700',
-        color: '#374151',
-        '&:hover': {
-            borderColor: state.isFocused ? '#3b82f6' : '#d1d5db',
-        }
-    }),
-    option: (provided, state) => ({
-        ...provided,
-        fontSize: '0.875rem',
-        backgroundColor: state.isSelected ? '#eff6ff' : state.isFocused ? '#f3f4f6' : 'white',
-        color: state.isSelected ? '#1d4ed8' : '#374151',
-        fontWeight: state.isSelected ? '700' : '500',
-    }),
-    singleValue: (provided) => ({
-        ...provided,
-        color: '#374151',
-    }),
-    input: (provided) => ({
-        ...provided,
-        color: '#374151',
-    }),
-    placeholder: (provided) => ({
-        ...provided,
-        color: '#9ca3af',
-        fontWeight: '500',
-    }),
-    menu: (provided) => ({
-        ...provided,
-        borderRadius: '0.75rem',
-        overflow: 'hidden',
-        border: '1px solid #e5e7eb',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        zIndex: 50,
-    })
-};
 import PageHeader from "@/Components/PageHeader";
 import TableActions from "@/Components/TableActions";
 import StatusBadge from "@/Components/StatusBadge";
@@ -178,14 +134,11 @@ function Index({ instrumens, standars }) {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <InputLabel value="Standar Mutu" required />
-                            <Select 
+                            <SelectInput 
+                                value={data.standar_mutu_id}
+                                onChange={(val) => setData('standar_mutu_id', val)}
                                 options={standarOptions}
-                                value={standarOptions.find(option => option.value === data.standar_mutu_id) || null}
-                                onChange={(selectedOption) => setData("standar_mutu_id", selectedOption ? selectedOption.value : "")}
-                                styles={customSelectStyles}
-                                placeholder="Pilih atau cari standar mutu..."
-                                isClearable
-                                noOptionsMessage={() => "Standar mutu tidak ditemukan"}
+                                placeholder="Pilih Standar Mutu"
                             />
                             <InputError message={errors.standar_mutu_id} />
                         </div>

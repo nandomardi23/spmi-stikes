@@ -48,7 +48,7 @@ export default function Modal({ children, show = false, maxWidth = '2xl', closea
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
                             <Dialog.Panel
-                                className={`relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full ${maxWidthClass}`}
+                                className={`relative transform overflow-visible rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full ${maxWidthClass}`}
                             >
                                 {children}
                             </Dialog.Panel>

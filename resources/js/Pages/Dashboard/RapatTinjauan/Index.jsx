@@ -164,8 +164,8 @@ function Index({ items, siklus = [] }) {
                             <div>
                                 <InputLabel value="Siklus Audit" />
                                 <SelectInput
-                                    value={data.siklus_audit_id ? { value: data.siklus_audit_id, label: siklus.find(s => s.id == data.siklus_audit_id)?.nama + ' (' + siklus.find(s => s.id == data.siklus_audit_id)?.tahun + ')' } : null}
-                                    onChange={(opt) => setData("siklus_audit_id", opt ? opt.value : "")}
+                                    value={data.siklus_audit_id}
+                                    onChange={(val) => setData("siklus_audit_id", val)}
                                     options={siklus.map(s => ({ value: s.id, label: `${s.nama} (${s.tahun})` }))}
                                     placeholder="Pilih Siklus (opsional)"
                                     isClearable

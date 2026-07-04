@@ -168,8 +168,8 @@ function Index({ questions, totalResponses }) {
                             <div>
                                 <InputLabel value="Kategori" required />
                                 <SelectInput
-                                    value={data.kategori ? { value: data.kategori, label: kategoriOptions.find(o => o.value === data.kategori)?.label } : null}
-                                    onChange={(opt) => setData('kategori', opt ? opt.value : '')}
+                                    value={data.kategori}
+                                    onChange={(val) => setData('kategori', val)}
                                     options={kategoriOptions}
                                 />
                                 <InputError message={errors.kategori} />

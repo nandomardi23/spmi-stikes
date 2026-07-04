@@ -52,8 +52,8 @@ function ActivityLogIndex({ activities, filters }) {
                     </div>
                     <div className="w-48">
                         <SelectInput
-                            value={filters?.event ? { value: filters.event, label: eventOptions.find(o => o.value === filters.event)?.label } : null}
-                            onChange={(opt) => handleFilter('event', opt ? opt.value : '')}
+                            value={filters?.event || ''}
+                            onChange={(val) => handleFilter('event', val)}
                             options={eventOptions}
                             placeholder="Semua Event"
                             isClearable

@@ -152,8 +152,8 @@ function Index({ feedbacks }) {
                             <div>
                                 <InputLabel value="Responden" required />
                                 <SelectInput
-                                    value={data.responden ? { value: data.responden, label: data.responden } : null}
-                                    onChange={(opt) => setData("responden", opt ? opt.value : "")}
+                                    value={data.responden}
+                                    onChange={(val) => setData("responden", val)}
                                     options={[
                                         { value: 'Mahasiswa', label: 'Mahasiswa' },
                                         { value: 'Dosen', label: 'Dosen' },
