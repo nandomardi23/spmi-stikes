@@ -1,8 +1,7 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import Pagination from '@/Components/Pagination';
 import PageHeader from '@/Components/PageHeader';
@@ -12,102 +11,45 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import TextArea from '@/Components/TextArea';
 import InputError from '@/Components/InputError';
-
-const kategoriLabels = {
-    pendidikan: 'Pendidikan', penelitian: 'Penelitian', pengabdian: 'Pengabdian',
-    tata_kelola: 'Tata Kelola', kemahasiswaan: 'Kemahasiswaan', sdm: 'SDM',
-    keuangan: 'Keuangan', sarana_prasarana: 'Sarana & Prasarana',
-};
-
-const kategoriOptions = [
-    { value: 'pendidikan', label: 'Pendidikan' }, { value: 'penelitian', label: 'Penelitian' },
-    { value: 'pengabdian', label: 'Pengabdian' }, { value: 'tata_kelola', label: 'Tata Kelola' },
-    { value: 'kemahasiswaan', label: 'Kemahasiswaan' }, { value: 'sdm', label: 'SDM' },
-    { value: 'keuangan', label: 'Keuangan' }, { value: 'sarana_prasarana', label: 'Sarana & Prasarana' },
-];
+import { KATEGORI_LABELS as kategoriLabels, KATEGORI_OPTIONS as kategoriOptions } from '@/Utils/constants';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ standarMutu, filters }) {
     const [search, setSearch] = useState(filters.search || '');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const [viewingData, setViewingData] = useState(null);
-
-    const initialData = {
-        kode: '', nama: '', deskripsi: '', kategori: 'pendidikan',
-        indikator: '', target: '', is_active: true,
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
     const handleSearch = (e) => {
         e.preventDefault();
         router.get('/dashboard/standar-mutu', { search }, { preserveState: true });
     };
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Standar Mutu?',
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Standar Mutu yang dihapus akan memengaruhi Temuan dan Instrumen Audit yang menggunakannya.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/standar-mutu/${id}`);
-            }
-        });
-    };
+    const standarService = createCrudService({
+        routePrefix: '/dashboard/standar-mutu',
+        entityName: 'Standar Mutu',
+        warningMessage: 'Peringatan: Standar Mutu yang dihapus akan memengaruhi Temuan dan Instrumen Audit yang menggunakannya.',
+    });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/standar-mutu/${editingData.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Standar mutu telah diperbarui.', 'success');
-                },
-            });
-        } else {
-            post('/dashboard/standar-mutu', {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Standar mutu baru telah ditambahkan.', 'success');
-                }
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/standar-mutu',
+        initialData: {
+            kode: '', nama: '', deskripsi: '', kategori: 'pendidikan',
+            indikator: '', target: '', is_active: true,
+        },
+        mapEditData: (item) => ({
             kode: item.kode, nama: item.nama, deskripsi: item.deskripsi || '',
             kategori: item.kategori, indikator: item.indikator || '',
             target: item.target || '', is_active: item.is_active,
-        });
-        setIsModalOpen(true);
-    };
+        }),
+        successCreateMessage: 'Standar mutu baru telah ditambahkan.',
+        successUpdateMessage: 'Standar mutu telah diperbarui.',
+    });
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [viewingData, setViewingData] = useState(null);
 
     const openDetailModal = (item) => {
         setViewingData(item);
@@ -177,7 +119,7 @@ function Index({ standarMutu, filters }) {
                                         <TableActions 
                                             onView={() => openDetailModal(s)}
                                             onEdit={() => openEditModal(s)}
-                                            onDelete={() => handleDelete(s.id)}
+                                            onDelete={() => standarService.delete(s.id)}
                                         />
                                     </td>
                                 </tr>

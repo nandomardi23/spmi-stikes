@@ -1,8 +1,7 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import Pagination from '@/Components/Pagination';
 import PageHeader from '@/Components/PageHeader';
@@ -11,79 +10,33 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import TextArea from '@/Components/TextArea';
 import InputError from '@/Components/InputError';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ unitKerjas, users }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
+    const unitKerjaService = createCrudService({
+        routePrefix: '/dashboard/unit-kerja',
+        entityName: 'Unit Kerja',
+        warningMessage: 'Peringatan: Menghapus Unit Kerja ini akan memengaruhi Data Audit, User, dan Dokumen terkait (jika ada).',
+    });
+
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/unit-kerja',
+        initialData: {
+            nama: '', kepala_unit: '', jenis: 'prodi', deskripsi: '', kode: '',
+        },
+        mapEditData: (item) => ({
+            nama: item.nama, kepala_unit: item.kepala_unit || '',
+            jenis: item.jenis, deskripsi: item.deskripsi || '', kode: item.kode || '',
+        }),
+    });
+
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [viewingData, setViewingData] = useState(null);
-
-    const initialData = {
-        nama: '', kepala_unit: '', jenis: 'prodi', deskripsi: '', kode: ''
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Unit Kerja?',
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Menghapus Unit Kerja ini akan memengaruhi Data Audit, User, dan Dokumen terkait (jika ada).</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/unit-kerja/${id}`);
-            }
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/unit-kerja/${editingData.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                },
-            });
-        } else {
-            post('/dashboard/unit-kerja', {
-                onSuccess: () => {
-                    closeModal();
-                },
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
-            nama: item.nama, kepala_unit: item.kepala_unit || '', 
-            jenis: item.jenis, deskripsi: item.deskripsi || '', kode: item.kode || ''
-        });
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
 
     const openDetailModal = (item) => {
         setViewingData(item);
@@ -141,7 +94,7 @@ function Index({ unitKerjas, users }) {
                                         <TableActions 
                                             onView={() => openDetailModal(u)}
                                             onEdit={() => openEditModal(u)}
-                                            onDelete={() => handleDelete(u.id)}
+                                            onDelete={() => unitKerjaService.delete(u.id)}
                                         />
                                     </td>
                                 </tr>

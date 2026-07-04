@@ -5,26 +5,7 @@ import { Head, Link } from '@inertiajs/react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { formatShortDate } from '@/Utils/dateFormatter';
 
-const statusColors = {
-    dijadwalkan: 'bg-blue-100 text-blue-700',
-    berlangsung: 'bg-amber-100 text-amber-700',
-    selesai: 'bg-green-100 text-green-700',
-    dibatalkan: 'bg-red-100 text-red-700',
-    open: 'bg-red-100 text-red-700',
-    in_progress: 'bg-amber-100 text-amber-700',
-    closed: 'bg-green-100 text-green-700',
-    verified: 'bg-blue-100 text-blue-700',
-};
-
-const jenisColors = {
-    observasi: 'bg-blue-100 text-blue-700',
-    minor: 'bg-amber-100 text-amber-700',
-    mayor: 'bg-red-100 text-red-700',
-};
-
-const PIE_COLORS_JENIS = ['#ef4444', '#f59e0b', '#3b82f6'];
-const PIE_COLORS_STATUS = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6'];
-
+import { STATUS_COLORS as statusColors, JENIS_COLORS as jenisColors, PIE_COLORS_JENIS, PIE_COLORS_STATUS } from '@/Utils/constants';
 function Index({ stats, recentAudits, recentTemuan, temuanByJenis, temuanByStatus, temuanPerSiklus, tindakLanjutProgress, overdueTemuan, skorPerUnit }) {
     const statCards = [
         { label: 'Unit Kerja', value: stats.total_unit_kerja, icon: <BuildingOfficeIcon className="w-5 h-5" />, color: 'from-blue-500 to-blue-600', shadow: 'shadow-blue-500/20' },

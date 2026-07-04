@@ -1,7 +1,6 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState , memo} from "react";
-import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
@@ -10,88 +9,39 @@ import InputError from "@/Components/InputError";
 import SelectInput from "@/Components/SelectInput";
 import { formatShortDate } from "@/Utils/dateFormatter";
 import { PencilSquareIcon, TrashIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ items, siklus = [] }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [editing, setEditing] = useState(null);
+    const rapatTinjauanService = createCrudService({
+        routePrefix: '/dashboard/rapat-tinjauan',
+        entityName: 'Rapat Tinjauan Manajemen',
+        warningMessage: 'Data Rapat yang dihapus akan hilang secara permanen dari sistem.',
+    });
 
-    const initialData = {
-        judul: "",
-        tanggal: "",
-        notulen: "",
-        keputusan: "",
-        siklus_audit_id: "",
-    };
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
-
-    const openCreate = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditing(null);
-        setIsOpen(true);
-    };
-
-    const openEdit = (item) => {
-        clearErrors();
-        setEditing(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen: isOpen, editingData: editing,
+        openCreateModal: openCreate, openEditModal: openEdit, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/rapat-tinjauan',
+        initialData: {
+            judul: "",
+            tanggal: "",
+            notulen: "",
+            keputusan: "",
+            siklus_audit_id: "",
+        },
+        mapEditData: (item) => ({
             judul: item.judul || "",
             tanggal: item.tanggal ? item.tanggal.split("T")[0] : "",
             notulen: item.notulen || "",
             keputusan: item.keputusan || "",
             siklus_audit_id: item.siklus_audit_id || "",
-        });
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditing(null);
-        }, 150);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(`/dashboard/rapat-tinjauan/${editing.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Rapat tinjauan diperbarui", "success");
-                },
-            });
-        } else {
-            post(`/dashboard/rapat-tinjauan`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Rapat tinjauan ditambahkan", "success");
-                },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Hapus rapat ini?",
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Dokumen yang dilampirkan sebagai hasil rapat tinjauan juga akan terdampak.</span>",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/rapat-tinjauan/${id}`, {
-                    onSuccess: () => Swal.fire("Dihapus!", "Rapat tinjauan telah dihapus.", "success"),
-                });
-            }
-        });
-    };
+        }),
+        successCreateMessage: 'Jadwal RTM baru berhasil ditambahkan.',
+        successUpdateMessage: 'Jadwal RTM berhasil diperbarui.',
+    });
 
     return (
         <>
@@ -155,7 +105,7 @@ function Index({ items, siklus = [] }) {
                                                 <button onClick={() => openEdit(item)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition" title="Edit">
                                                     <PencilSquareIcon className="w-5 h-5" />
                                                 </button>
-                                                <button onClick={() => handleDelete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition" title="Hapus">
+                                                <button onClick={() => rapatTinjauanService.delete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition" title="Hapus">
                                                     <TrashIcon className="w-5 h-5" />
                                                 </button>
                                             </div>

@@ -1,13 +1,14 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState , memo} from "react";
-import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import { PencilSquareIcon, TrashIcon, DocumentArrowDownIcon, LinkIcon } from "@heroicons/react/24/outline";
 import SelectInput from "@/Components/SelectInput";
 import { formatDate } from "@/Utils/dateFormatter";
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 // Helper color for each stage
 const BadgeColors = {
@@ -19,88 +20,35 @@ const BadgeColors = {
 };
 
 function Index({ ppepps, standars }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [editing, setEditing] = useState(null);
+    const ppeppService = createCrudService({
+        routePrefix: '/dashboard/ppepp',
+        entityName: 'Tahapan PPEPP',
+        warningMessage: 'Data Tahapan PPEPP yang dihapus akan hilang secara permanen dari sistem.',
+    });
 
-    const initialData = {
-        standar_mutu_id: "",
-        tahapan: "",
-        deskripsi: "",
-        dokumen_link: "",
-        tanggal_pelaksanaan: "",
-    };
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
-
-    const openCreate = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditing(null);
-        setIsOpen(true);
-    };
-
-    const openEdit = (item) => {
-        clearErrors();
-        setEditing(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen: isOpen, editingData: editing,
+        openCreateModal: openCreate, openEditModal: openEdit, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/ppepp',
+        initialData: {
+            standar_mutu_id: "",
+            tahapan: "",
+            deskripsi: "",
+            dokumen_link: "",
+            tanggal_pelaksanaan: "",
+        },
+        mapEditData: (item) => ({
             standar_mutu_id: item.standar_mutu_id || "",
             tahapan: item.tahapan || "",
             deskripsi: item.deskripsi || "",
             dokumen_link: item.dokumen_link || "",
             tanggal_pelaksanaan: item.tanggal_pelaksanaan || "",
-        });
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditing(null);
-        }, 150);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(`/dashboard/ppepp/${editing.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Data Siklus PPEPP diperbarui", "success");
-                },
-            });
-        } else {
-            post(`/dashboard/ppepp`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Data Siklus PPEPP ditambahkan", "success");
-                },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Hapus data ini?",
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Dokumen pedoman atau panduan yang terkait dengan tahapan ini juga akan kehilangan referensinya.</span>",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/ppepp/${id}`, {
-                    onSuccess: () => {
-                        Swal.fire("Dihapus!", "Data PPEPP telah dihapus.", "success");
-                    }
-                });
-            }
-        });
-    };
+        }),
+        successCreateMessage: 'Tahapan PPEPP baru berhasil ditambahkan.',
+        successUpdateMessage: 'Tahapan PPEPP berhasil diperbarui.',
+    });
 
     return (
         <>
@@ -167,7 +115,7 @@ function Index({ ppepps, standars }) {
                                                     <PencilSquareIcon className="w-5 h-5" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(item.id)}
+                                                    onClick={() => ppeppService.delete(item.id)}
                                                     className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200"
                                                     title="Hapus"
                                                 >

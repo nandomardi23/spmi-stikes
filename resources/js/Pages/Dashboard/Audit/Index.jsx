@@ -1,91 +1,42 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
 import { formatDate } from '@/Utils/dateFormatter';
-
-const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
+import { STATUS_COLORS as statusColors } from '@/Utils/constants';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filters }) {
     const [status, setStatus] = useState(filters.status || '');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
+    const auditService = createCrudService({
+        routePrefix: '/dashboard/audit',
+        entityName: 'Audit',
+        warningMessage: 'Peringatan: Temuan dan Tindak Lanjut yang terhubung dengan Audit ini juga akan ikut terpengaruh.',
+    });
 
-    const initialData = {
-        siklus_audit_id: '', unit_kerja_id: '', auditor_id: '', tanggal_audit: '', status: 'dijadwalkan', catatan: '',
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
-
-    const handleFilter = (val) => { setStatus(val); router.get('/dashboard/audit', { status: val, siklus: filters.siklus }, { preserveState: true }); };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Audit?',
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Temuan dan Tindak Lanjut yang terhubung dengan Audit ini juga akan ikut terpengaruh.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/audit/${id}`);
-            }
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/audit/${editingData.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Data audit telah diperbarui.', 'success');
-                },
-            });
-        } else {
-            post('/dashboard/audit', {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Audit baru telah dijadwalkan.', 'success');
-                },
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/audit',
+        initialData: {
+            siklus_audit_id: '', unit_kerja_id: '', auditor_id: '', tanggal_audit: '', status: 'dijadwalkan', catatan: '',
+        },
+        mapEditData: (item) => ({
             siklus_audit_id: item.siklus_audit_id, unit_kerja_id: item.unit_kerja_id, auditor_id: item.auditor_id || '',
             tanggal_audit: item.tanggal_audit || '', status: item.status, catatan: item.catatan || '',
-        });
-        setIsModalOpen(true);
-    };
+        }),
+        successCreateMessage: 'Audit baru telah dijadwalkan.',
+        successUpdateMessage: 'Data audit telah diperbarui.',
+    });
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
+    const handleFilter = (val) => { setStatus(val); router.get('/dashboard/audit', { status: val, siklus: filters.siklus }, { preserveState: true }); };
 
     return (
         <>
@@ -179,7 +130,7 @@ function Index({ audits, siklusAudit = [], unitKerja = [], auditors = [], filter
                                                 <PencilSquareIcon className="w-5 h-5" />
                                             </button>
                                             <button 
-                                                onClick={() => handleDelete(a.id)} 
+                                                onClick={() => auditService.delete(a.id)} 
                                                 className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
                                                 title="Hapus"
                                             >

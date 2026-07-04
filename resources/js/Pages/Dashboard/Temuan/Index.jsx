@@ -1,98 +1,51 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import { useState, useEffect, memo } from 'react';
+import { memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
 import { formatDate } from '@/Utils/dateFormatter';
-
-const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
-const statusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
+import { STATUS_COLORS as statusColors, JENIS_COLORS as jenisColors } from '@/Utils/constants';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
+    const temuanService = createCrudService({
+        routePrefix: '/dashboard/temuan',
+        entityName: 'Temuan',
+        warningMessage: 'Peringatan: Tindak Lanjut yang terkait dengan temuan ini juga akan ikut terhapus permanen.',
+    });
 
-    const initialData = {
-        audit_id: audit_id || '', standar_mutu_id: '', jenis: 'observasi', deskripsi: '', rekomendasi: '', batas_waktu: '', status: 'open'
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
-
-    // Auto-open create modal when navigating from Audit detail page
-    useEffect(() => {
-        if (audit_id) {
-            setIsModalOpen(true);
-        }
-    }, []);
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Temuan?',
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Tindak Lanjut dan Bukti Pendukung yang diajukan untuk temuan ini juga akan terhapus.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/temuan/${id}`);
-            }
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/temuan/${editingData.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Temuan telah diperbarui.', 'success');
-                },
-            });
-        } else {
-            post('/dashboard/temuan', {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Temuan baru telah ditambahkan.', 'success');
-                },
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
-            audit_id: item.audit_id, standar_mutu_id: item.standar_mutu_id || '', 
-            jenis: item.jenis, deskripsi: item.deskripsi, 
-            rekomendasi: item.rekomendasi || '', batas_waktu: item.batas_waktu || '',
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit
+    } = useCrudForm({
+        routePrefix: '/dashboard/temuan',
+        autoOpenOnMount: !!audit_id,
+        initialData: {
+            audit_id: audit_id || '', 
+            standar_mutu_id: '', 
+            jenis: 'observasi', 
+            deskripsi: '', 
+            rekomendasi: '', 
+            batas_waktu: '', 
+            status: 'open'
+        },
+        mapEditData: (item) => ({
+            audit_id: item.audit_id, 
+            standar_mutu_id: item.standar_mutu_id || '', 
+            jenis: item.jenis, 
+            deskripsi: item.deskripsi, 
+            rekomendasi: item.rekomendasi || '', 
+            batas_waktu: item.batas_waktu || '',
             status: item.status
-        });
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
+        }),
+        successCreateMessage: 'Temuan audit baru telah ditambahkan.',
+        successUpdateMessage: 'Data temuan telah diperbarui.',
+    });
 
     return (
         <>
@@ -161,7 +114,7 @@ function Index({ temuans, audits = [], standarMutu = [], filters, audit_id }) {
                                                 <PencilSquareIcon className="w-5 h-5" />
                                             </button>
                                             <button 
-                                                onClick={() => handleDelete(t.id)} 
+                                                onClick={() => temuanService.delete(t.id)} 
                                                 className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
                                                 title="Hapus"
                                             >

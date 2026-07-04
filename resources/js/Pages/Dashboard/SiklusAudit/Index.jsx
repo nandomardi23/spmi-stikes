@@ -1,91 +1,44 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, EyeIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
 import SelectInput from '@/Components/SelectInput';
 import { formatDate, formatShortDate } from '@/Utils/dateFormatter';
+import { SIKLUS_STATUS_COLORS as statusColors } from '@/Utils/constants';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ siklusAudit }) {
-    const statusColors = { perencanaan: 'bg-blue-100 text-blue-700', pelaksanaan: 'bg-amber-100 text-amber-700', pelaporan: 'bg-purple-100 text-purple-700', selesai: 'bg-green-100 text-green-700' };
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingData, setEditingData] = useState(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const [viewingData, setViewingData] = useState(null);
+    const siklusService = createCrudService({
+        routePrefix: '/dashboard/siklus-audit',
+        entityName: 'Siklus Audit',
+        warningMessage: 'Peringatan: Seluruh Audit yang dijadwalkan pada siklus ini akan terkena dampaknya.',
+    });
 
-    const initialData = {
-        nama: '', tahun: new Date().getFullYear(), semester: 1,
-        tanggal_mulai: '', tanggal_selesai: '', status: 'perencanaan', deskripsi: '',
-    };
-    const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Siklus Audit?',
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Seluruh Audit yang dijadwalkan pada siklus ini akan terkena dampaknya.</span>",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/siklus-audit/${id}`);
-            }
-        });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editingData) {
-            put(`/dashboard/siklus-audit/${editingData.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Siklus audit telah diperbarui.', 'success');
-                },
-            });
-        } else {
-            post('/dashboard/siklus-audit', {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire('Berhasil!', 'Siklus audit baru telah ditambahkan.', 'success');
-                },
-            });
-        }
-    };
-
-    const openCreateModal = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditingData(null);
-        setIsModalOpen(true);
-    };
-
-    const openEditModal = (item) => {
-        clearErrors();
-        setEditingData(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen, editingData,
+        openCreateModal, openEditModal, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/siklus-audit',
+        initialData: {
+            nama: '', tahun: new Date().getFullYear(), semester: 1,
+            tanggal_mulai: '', tanggal_selesai: '', status: 'perencanaan', deskripsi: '',
+        },
+        mapEditData: (item) => ({
             nama: item.nama, tahun: item.tahun, semester: item.semester,
             tanggal_mulai: item.tanggal_mulai, tanggal_selesai: item.tanggal_selesai,
             status: item.status, deskripsi: item.deskripsi || '',
-        });
-        setIsModalOpen(true);
-    };
+        }),
+        successCreateMessage: 'Siklus audit baru telah ditambahkan.',
+        successUpdateMessage: 'Siklus audit telah diperbarui.',
+    });
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditingData(null);
-        }, 150);
-    };
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [viewingData, setViewingData] = useState(null);
 
     const openDetailModal = (item) => {
         setViewingData(item);
@@ -182,7 +135,7 @@ function Index({ siklusAudit }) {
                                                 <PencilSquareIcon className="w-5 h-5" />
                                             </button>
                                             <button 
-                                                onClick={() => handleDelete(s.id)} 
+                                                onClick={() => siklusService.delete(s.id)} 
                                                 className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200" 
                                                 title="Hapus"
                                             >

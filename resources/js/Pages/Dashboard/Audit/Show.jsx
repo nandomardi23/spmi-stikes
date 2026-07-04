@@ -7,9 +7,8 @@ import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import { formatDate } from '@/Utils/dateFormatter';
 
-const statusColors = { dijadwalkan: 'bg-blue-100 text-blue-700', berlangsung: 'bg-amber-100 text-amber-700', selesai: 'bg-green-100 text-green-700', dibatalkan: 'bg-red-100 text-red-700' };
-const jenisColors = { observasi: 'bg-blue-100 text-blue-700', minor: 'bg-amber-100 text-amber-700', mayor: 'bg-red-100 text-red-700' };
-const temuanStatusColors = { open: 'bg-red-100 text-red-700', in_progress: 'bg-amber-100 text-amber-700', closed: 'bg-green-100 text-green-700', verified: 'bg-blue-100 text-blue-700' };
+import { STATUS_COLORS as statusColors, JENIS_COLORS as jenisColors } from '@/Utils/constants';
+const temuanStatusColors = statusColors;
 
 function Show({ audit, siklusAudit = [], unitKerja = [], auditors = [] }) {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);

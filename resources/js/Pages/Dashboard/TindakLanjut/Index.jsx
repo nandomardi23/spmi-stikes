@@ -1,23 +1,17 @@
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Head, useForm, router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState , memo} from "react";
-import Swal from "sweetalert2";
 import Pagination from "@/Components/Pagination";
 import Modal from "@/Components/Modal";
 import EmptyState from "@/Components/EmptyState";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import SelectInput from "@/Components/SelectInput";
 import { formatDate } from "@/Utils/dateFormatter";
-
-const statusColors = {
-    diajukan: "bg-amber-50 text-amber-700 border-amber-200",
-    diterima: "bg-green-50 text-green-700 border-green-200",
-    ditolak: "bg-red-50 text-red-700 border-red-200",
-};
+import { TINDAK_LANJUT_STATUS_COLORS as statusColors } from '@/Utils/constants';
+import useCrudForm from '@/Hooks/useCrudForm';
+import { createCrudService } from '@/Services/crudService';
 
 function Index({ items, temuan = [], siklusAudit = [], filters = {} }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [editing, setEditing] = useState(null);
     const [search, setSearch] = useState(filters.search || "");
     const [selectedSiklus, setSelectedSiklus] = useState(filters.siklus || "");
 
@@ -37,79 +31,31 @@ function Index({ items, temuan = [], siklusAudit = [], filters = {} }) {
         router.get('/dashboard/tindak-lanjut', {}, { preserveState: true });
     };
 
-    const initialData = {
-        temuan_id: "",
-        deskripsi: "",
-        status: "diajukan",
-    };
-    const { data, setData, post, put, processing, reset, clearErrors, errors } = useForm(initialData);
+    const tindakLanjutService = createCrudService({
+        routePrefix: '/dashboard/tindak-lanjut',
+        entityName: 'Tindak Lanjut',
+        warningMessage: 'Peringatan: Berkas bukti dokumen yang dilampirkan juga akan ikut terhapus permanen dari server.',
+    });
 
-    const openCreate = () => {
-        reset();
-        setData(initialData);
-        clearErrors();
-        setEditing(null);
-        setIsOpen(true);
-    };
-
-    const openEdit = (item) => {
-        clearErrors();
-        setEditing(item);
-        setData({
+    const {
+        data, setData, processing, errors,
+        isModalOpen: isOpen, editingData: editing,
+        openCreateModal: openCreate, openEditModal: openEdit, closeModal, handleSubmit,
+    } = useCrudForm({
+        routePrefix: '/dashboard/tindak-lanjut',
+        initialData: {
+            temuan_id: "",
+            deskripsi: "",
+            status: "diajukan",
+        },
+        mapEditData: (item) => ({
             temuan_id: item.temuan_id || "",
             deskripsi: item.deskripsi || "",
             status: item.status || "diajukan",
-        });
-        setIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsOpen(false);
-        setTimeout(() => {
-            reset();
-        setData(initialData);
-            clearErrors();
-            setEditing(null);
-        }, 150);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(`/dashboard/tindak-lanjut/${editing.id}`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Tindak lanjut diperbarui", "success");
-                },
-            });
-        } else {
-            post(`/dashboard/tindak-lanjut`, {
-                onSuccess: () => {
-                    closeModal();
-                    Swal.fire("Berhasil", "Tindak lanjut ditambahkan", "success");
-                },
-            });
-        }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: "Hapus tindak lanjut?",
-            html: "Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Berkas bukti dokumen yang dilampirkan juga akan ikut terhapus permanen dari server.</span>",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#ef4444",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/tindak-lanjut/${id}`, {
-                    onSuccess: () => Swal.fire("Dihapus!", "Tindak lanjut telah dihapus.", "success"),
-                });
-            }
-        });
-    };
+        }),
+        successCreateMessage: 'Tindak lanjut ditambahkan.',
+        successUpdateMessage: 'Tindak lanjut diperbarui.',
+    });
 
     return (
         <>
@@ -229,7 +175,7 @@ function Index({ items, temuan = [], siklusAudit = [], filters = {} }) {
                                                 <button onClick={() => openEdit(item)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition" title="Edit">
                                                     <PencilSquareIcon className="w-5 h-5" />
                                                 </button>
-                                                <button onClick={() => handleDelete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition" title="Hapus">
+                                                <button onClick={() => tindakLanjutService.delete(item.id)} className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition" title="Hapus">
                                                     <TrashIcon className="w-5 h-5" />
                                                 </button>
                                             </div>
