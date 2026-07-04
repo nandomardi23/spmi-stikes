@@ -10,7 +10,22 @@ import TextArea from '@/Components/TextArea';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {
+    ClassicEditor,
+    Essentials,
+    Bold,
+    Italic,
+    Underline,
+    Strikethrough,
+    Paragraph,
+    Heading,
+    List,
+    Link as CKLink,
+    BlockQuote,
+    Table,
+    Undo
+} from 'ckeditor5';
+import 'ckeditor5/ckeditor5.css';
 import useCrudForm from '@/Hooks/useCrudForm';
 import { createCrudService } from '@/Services/crudService';
 
@@ -218,6 +233,10 @@ function Index({ berita, filters }) {
                                             setData('konten', data);
                                         }}
                                         config={{
+                                            licenseKey: 'GPL',
+                                            plugins: [
+                                                Essentials, Bold, Italic, Underline, Strikethrough, Paragraph, Heading, List, CKLink, BlockQuote, Table, Undo
+                                            ],
                                             placeholder: 'Tuliskan berita lengkap di sini...',
                                             toolbar: [
                                                 'heading', '|',

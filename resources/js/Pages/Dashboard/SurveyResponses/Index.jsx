@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import EmptyState from '@/Components/EmptyState';
+import Modal from '@/Components/Modal';
 import { createCrudService } from '@/Services/crudService';
 import { TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
