@@ -68,7 +68,7 @@ class GaleriController extends Controller
 
                     // Generate Thumbnail
                     $manager = new ImageManager(new Driver());
-                    $image = $manager->read(storage_path('app/public/' . $path));
+                    $image = $manager->decodePath(storage_path('app/public/' . $path));
                     $image->scaleDown(width: 600);
                     $image->save(storage_path('app/public/galeri/thumbnails/' . basename($path)), quality: 80);
 
@@ -125,7 +125,7 @@ class GaleriController extends Controller
 
                 // Generate Thumbnail
                 $manager = new ImageManager(new Driver());
-                $image = $manager->read(storage_path('app/public/' . $path));
+                $image = $manager->decodePath(storage_path('app/public/' . $path));
                 $image->scaleDown(width: 600);
                 $image->save(storage_path('app/public/galeri/thumbnails/' . basename($path)), quality: 80);
 
