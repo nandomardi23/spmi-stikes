@@ -18,9 +18,21 @@ import { createCrudService } from '@/Services/crudService';
 function Index({ standarMutu, filters }) {
     const [search, setSearch] = useState(filters.search || '');
 
+    const applyFilters = (newFilters) => {
+        const queryParams = { 
+            search, 
+            kategori: filters.kategori || '', 
+            status: filters.status || '', 
+            ...newFilters 
+        };
+        
+        const activeParams = Object.fromEntries(Object.entries(queryParams).filter(([_, v]) => v !== ''));
+        router.get('/dashboard/standar-mutu', activeParams, { preserveState: true });
+    };
+
     const handleSearch = (e) => {
         e.preventDefault();
-        router.get('/dashboard/standar-mutu', { search }, { preserveState: true });
+        applyFilters({ search });
     };
 
     const standarService = createCrudService({
@@ -65,8 +77,8 @@ function Index({ standarMutu, filters }) {
         <>
             <Head title="Standar Mutu" />
             
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <form onSubmit={handleSearch} className="flex gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+                <form onSubmit={handleSearch} className="flex flex-wrap gap-2 items-center">
                     <input 
                         type="text" 
                         value={search} 
@@ -74,14 +86,36 @@ function Index({ standarMutu, filters }) {
                         placeholder="Cari standar mutu..." 
                         className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none w-64 transition-all" 
                     />
+
+                    <select
+                        value={filters.kategori || ''}
+                        onChange={(e) => applyFilters({ kategori: e.target.value })}
+                        className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all cursor-pointer"
+                    >
+                        <option value="">Semua Kategori</option>
+                        {kategoriOptions.map(o => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                        ))}
+                    </select>
+
+                    <select
+                        value={filters.status || ''}
+                        onChange={(e) => applyFilters({ status: e.target.value })}
+                        className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-all cursor-pointer"
+                    >
+                        <option value="">Semua Status</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="non-aktif">Non-Aktif</option>
+                    </select>
+
                     <button type="submit" className="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition">Cari</button>
-                    {filters.search && (
+                    {(filters.search || filters.kategori || filters.status) && (
                         <Link href="/dashboard/standar-mutu" className="px-4 py-2.5 text-danger-600 text-sm font-medium hover:underline">Reset</Link>
                     )}
                 </form>
                 <button 
                     onClick={openCreateModal} 
-                    className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25"
+                    className="px-5 py-2.5 bg-linear-to-br from-primary-600 to-primary-700 text-white rounded-xl text-sm font-semibold hover:from-primary-700 hover:to-primary-800 transition shadow-lg shadow-primary-500/25 shrink-0"
                 >
                     + Tambah Standar
                 </button>

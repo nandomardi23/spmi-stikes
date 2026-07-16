@@ -31,9 +31,13 @@ class StandarMutuController extends Controller
             $query->where('kategori', $request->kategori);
         }
 
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'aktif');
+        }
+
         return Inertia::render('Dashboard/StandarMutu/Index', [
             'standarMutu' => $query->latest()->paginate($request->input('per_page', 10))->withQueryString(),
-            'filters' => $request->only(['search', 'kategori']),
+            'filters' => $request->only(['search', 'kategori', 'status']),
         ]);
     }
 
