@@ -42,6 +42,12 @@ class LandingController extends Controller
 
         $pengelolas = \App\Models\Pengelola::orderBy('tingkat')->orderBy('urutan')->get();
 
+        // Calculate PPEPP stats
+        $ppeppStats = \App\Models\Ppepp::select('tahapan', DB::raw('count(*) as total'))
+            ->groupBy('tahapan')
+            ->pluck('total', 'tahapan')
+            ->toArray();
+
         return Inertia::render('Landing/Index', [
             'visi' => $visi,
             'misi' => empty($misi) ? [
@@ -70,6 +76,7 @@ class LandingController extends Controller
             'galeri' => \App\Models\Galeri::with('images')->where('is_active', true)->latest()->paginate($request->input('per_page_galeri', 8), ['*'], 'page_galeri')->withQueryString(),
             'kepuasanData' => $surveyData,
             'pengelolas' => $pengelolas,
+            'ppeppStats' => $ppeppStats,
         ]);
     }
 

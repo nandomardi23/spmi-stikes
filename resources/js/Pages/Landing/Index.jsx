@@ -31,7 +31,7 @@ const dokumenKategoriLabels = {
     formulir: 'Formulir', sop: 'SOP', laporan: 'Laporan', bukti: 'Bukti', lainnya: 'Lainnya',
 };
 
-function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri, visi, misi, kepuasanData = [], pengelolas = [] }) {
+function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri, visi, misi, kepuasanData = [], pengelolas = [], ppeppStats = {} }) {
     const [searchDokumen, setSearchDokumen] = useState(dokumenFilters.search || '');
 
     const handleSearchDokumen = useCallback((e) => {
@@ -269,18 +269,25 @@ function Index({ standarMutu, dokumenPublik, dokumenFilters = {}, berita, galeri
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                         {[
-                            { step: 'P', title: 'Penetapan', desc: 'Menetapkan standar mutu yang harus dicapai', color: 'from-blue-500 to-blue-600', icon: '📋' },
-                            { step: 'P', title: 'Pelaksanaan', desc: 'Melaksanakan standar mutu yang telah ditetapkan', color: 'from-green-500 to-green-600', icon: '⚙️' },
-                            { step: 'E', title: 'Evaluasi', desc: 'Mengevaluasi pelaksanaan standar mutu', color: 'from-amber-500 to-amber-600', icon: '📊' },
-                            { step: 'P', title: 'Pengendalian', desc: 'Mengendalikan pelaksanaan agar sesuai standar', color: 'from-purple-500 to-purple-600', icon: '🔍' },
-                            { step: 'P', title: 'Peningkatan', desc: 'Meningkatkan standar mutu secara berkelanjutan', color: 'from-rose-500 to-rose-600', icon: '🚀' },
+                            { step: 'P', title: 'Penetapan', desc: 'Menetapkan standar mutu yang harus dicapai', color: 'from-blue-500 to-blue-600', icon: '📋', count: ppeppStats?.Penetapan || 0 },
+                            { step: 'P', title: 'Pelaksanaan', desc: 'Melaksanakan standar mutu yang telah ditetapkan', color: 'from-green-500 to-green-600', icon: '⚙️', count: ppeppStats?.Pelaksanaan || 0 },
+                            { step: 'E', title: 'Evaluasi', desc: 'Mengevaluasi pelaksanaan standar mutu', color: 'from-amber-500 to-amber-600', icon: '📊', count: ppeppStats?.Evaluasi || 0 },
+                            { step: 'P', title: 'Pengendalian', desc: 'Mengendalikan pelaksanaan agar sesuai standar', color: 'from-purple-500 to-purple-600', icon: '🔍', count: ppeppStats?.Pengendalian || 0 },
+                            { step: 'P', title: 'Peningkatan', desc: 'Meningkatkan standar mutu secara berkelanjutan', color: 'from-rose-500 to-rose-600', icon: '🚀', count: ppeppStats?.Peningkatan || 0 },
                         ].map((item, i) => (
-                            <div key={i} className="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center">
-                                <div className={`w-16 h-16 bg-linear-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                            <div key={i} className="bg-gray-50 rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center relative overflow-hidden group flex flex-col h-full">
+                                <div className={`w-16 h-16 bg-linear-to-br ${item.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300 shrink-0`}>
                                     <span className="text-2xl">{item.icon}</span>
                                 </div>
                                 <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                                <p className="text-sm text-gray-500 leading-relaxed mb-6">{item.desc}</p>
+                                
+                                <div className="mt-auto pt-4 border-t border-gray-200/60 w-full">
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-bold text-gray-700 shadow-sm w-fit mx-auto">
+                                        <span className="w-2 h-2 rounded-full bg-primary-500"></span>
+                                        {item.count} Aktivitas
+                                    </span>
+                                </div>
                             </div>
                         ))}
                     </div>
