@@ -19,14 +19,14 @@ export default defineConfig({
         },
     },
     build: {
-        chunkSizeWarningLimit: 1500, // Increase warning limit from 500kB to 1.5MB
+        chunkSizeWarningLimit: 1500,
         rollupOptions: {
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
-                        if (id.includes('recharts')) return 'vendor-recharts';
-                        if (id.includes('@ckeditor')) return 'vendor-ckeditor';
-                        return 'vendor';
+                        if (id.includes('recharts') || id.includes('d3-')) return 'vendor-recharts';
+                        // CKEditor + all its deps stay together to avoid circular chunks
+                        if (id.includes('@ckeditor') || id.includes('ckeditor5')) return 'vendor-ckeditor';
                     }
                 }
             }
