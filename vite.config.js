@@ -18,4 +18,18 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        chunkSizeWarningLimit: 1500, // Increase warning limit from 500kB to 1.5MB
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('recharts')) return 'vendor-recharts';
+                        if (id.includes('@ckeditor')) return 'vendor-ckeditor';
+                        return 'vendor';
+                    }
+                }
+            }
+        }
+    },
 });
