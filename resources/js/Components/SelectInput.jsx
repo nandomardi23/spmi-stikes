@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronUpDownIcon, CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
@@ -51,7 +52,7 @@ export default function SelectInput({
 
                         <Transition
                             show={open}
-                            as={React.Fragment}
+                            as={Fragment}
                             leave="transition ease-in duration-100"
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
