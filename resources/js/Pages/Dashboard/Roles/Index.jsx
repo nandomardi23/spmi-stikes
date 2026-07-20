@@ -2,18 +2,22 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
-import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, UserGroupIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { createCrudService } from '@/Services/crudService';
 import Pagination from '@/Components/Pagination';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import TableActions from '@/Components/TableActions';
+import { UserGroupIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 function Index({ roles, permissions = [], filters }) {
     const [search, setSearch] = useState(filters.search || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingData, setEditingData] = useState(null);
+
+    const roleService = createCrudService({
+        routePrefix: '/dashboard/roles',
+        entityName: 'Role',
+    });
 
     const initialData = {
         name: '',
@@ -27,27 +31,9 @@ function Index({ roles, permissions = [], filters }) {
     };
 
     const handleDelete = (role) => {
-        if (role.name === 'super-admin') {
-            Swal.fire('Gagal!', 'Role super-admin tidak dapat dihapus.', 'error');
-            return;
-        }
-
-        Swal.fire({
-            title: 'Hapus Role?',
-            html: `Hapus peran ${role.name}? Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: User yang memiliki Role ini akan kehilangan semua hak akses yang berhubungan.</span>`,
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/roles/${role.id}`, {
-                    onSuccess: () => {
-                        Swal.fire('Terhapus!', 'Role telah berhasil dihapus.', 'success');
-                    }
-                });
-            }
+        roleService.delete(role.id, {
+            check: role.name === 'super-admin',
+            message: 'Role super-admin tidak dapat dihapus.'
         });
     };
 
@@ -57,14 +43,12 @@ function Index({ roles, permissions = [], filters }) {
             put(`/dashboard/roles/${editingData.id}`, {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Role telah diperbarui.', 'success');
                 },
             });
         } else {
             post('/dashboard/roles', {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Role baru telah ditambahkan.', 'success');
                 }
             });
         }
@@ -101,7 +85,7 @@ function Index({ roles, permissions = [], filters }) {
         setIsModalOpen(false);
         setTimeout(() => {
             reset();
-        setData(initialData);
+            setData(initialData);
             clearErrors();
             setEditingData(null);
         }, 150);

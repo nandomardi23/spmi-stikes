@@ -3,7 +3,7 @@ import { Head, useForm, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import Pagination from '@/Components/Pagination';
-import Swal from 'sweetalert2';
+import { createCrudService } from '@/Services/crudService';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import EmptyState from '@/Components/EmptyState';
@@ -21,7 +21,12 @@ export default function Index({ pengelolas }) {
         urutan: '0',
         foto: null,
     };
-    const { data, setData, post, put, delete: destroy, processing, errors, reset, clearErrors } = useForm(initialData);
+    const { data, setData, post, put, reset, clearErrors, processing, errors } = useForm(initialData);
+
+    const pengelolaService = createCrudService({
+        routePrefix: '/dashboard/pengelola',
+        entityName: 'Anggota Tim',
+    });
 
     const openModal = (pengelola = null) => {
         clearErrors();
@@ -38,7 +43,7 @@ export default function Index({ pengelolas }) {
         } else {
             setEditingId(null);
             reset();
-        setData(initialData);
+            setData(initialData);
             setImagePreview(null);
         }
         setIsModalOpen(true);
@@ -64,7 +69,6 @@ export default function Index({ pengelolas }) {
         e.preventDefault();
         
         if (editingId) {
-            // Need to use POST with _method=PUT for file uploads in Laravel
             router.post(`/dashboard/pengelola/${editingId}`, {
                 _method: 'PUT',
                 ...data,
@@ -78,26 +82,6 @@ export default function Index({ pengelolas }) {
                 onSuccess: () => closeModal(),
             });
         }
-    };
-
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Hapus Anggota Tim?',
-            text: 'Data anggota tim pengelola ini akan dihapus permanen dari struktur organisasi.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                destroy(`/dashboard/pengelola/${id}`, {
-                    preserveScroll: true,
-                    onSuccess: () => Swal.fire('Terhapus!', 'Anggota tim telah dihapus.', 'success')
-                });
-            }
-        });
     };
 
     const tingkatLabel = (tingkat) => {

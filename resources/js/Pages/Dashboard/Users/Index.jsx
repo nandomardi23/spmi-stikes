@@ -2,10 +2,9 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
-import EmptyState from '@/Components/EmptyState';
-import { PencilSquareIcon, TrashIcon, UserCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { createCrudService } from '@/Services/crudService';
 import Pagination from '@/Components/Pagination';
+import { PencilSquareIcon, TrashIcon, UserCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import SelectInput from '@/Components/SelectInput';
@@ -21,60 +20,22 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
     };
     const { data, setData, post, put, processing, errors, reset, clearErrors } = useForm(initialData);
 
+    const userService = createCrudService({
+        routePrefix: '/dashboard/users',
+        entityName: 'Pengguna',
+    });
+
     const handleFilter = (e) => {
         e.preventDefault();
         router.get('/dashboard/users', { search, role }, { preserveState: true });
     };
 
-    const handleDelete = (user) => {
-        if (user.id === auth.user.id) {
-            Swal.fire({
-                title: 'Gagal!',
-                text: 'Anda tidak dapat menghapus akun Anda sendiri.',
-                icon: 'error',
-                confirmButtonColor: '#ef4444'
-            });
-            return;
-        }
-
-        Swal.fire({
-            title: 'Hapus Pengguna?',
-            html: `Hapus pengguna ${user.name}? Data yang dihapus tidak dapat dikembalikan!<br><br><span class='text-sm text-red-500 font-bold'>Peringatan: Semua peran dan Audit yang ditugaskan kepada user ini akan terpengaruh.</span>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/users/${user.id}`, {
-                    onSuccess: () => {
-                        Swal.fire('Terhapus!', 'Pengguna telah berhasil dihapus.', 'success');
-                    }
-                });
-            }
-        });
-    };
-
     const handleResetPassword = (user) => {
-        Swal.fire({
+        userService.confirmAction({
             title: 'Reset Password?',
-            html: `Password <b>${user.name}</b> akan direset ke:<br><br><code style="background:#f3f4f6;padding:4px 12px;border-radius:8px;font-size:14px;font-weight:bold">${user.email}</code>`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#f59e0b',
-            cancelButtonColor: '#6b7280',
+            html: `Password <b>${user.name}</b> akan direset ke email pengguna.`,
             confirmButtonText: 'Ya, Reset!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.put(`/dashboard/users/${user.id}/reset-password`, {}, {
-                    onSuccess: () => {
-                        Swal.fire('Berhasil!', `Password telah direset ke email pengguna.`, 'success');
-                    }
-                });
-            }
+            onConfirm: () => router.put(`/dashboard/users/${user.id}/reset-password`)
         });
     };
 
@@ -84,14 +45,12 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
             put(`/dashboard/users/${editingData.id}`, {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Data pengguna telah diperbarui.', 'success');
                 },
             });
         } else {
             post('/dashboard/users', {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Pengguna baru telah ditambahkan.', 'success');
                 }
             });
         }
@@ -226,7 +185,7 @@ function Index({ users, roles = [], unitKerja = [], filters, auth }) {
                                                 <ArrowPathIcon className="w-5 h-5" />
                                             </button>
                                             <button 
-                                                onClick={() => handleDelete(u)} 
+                                                onClick={() => userService.delete(u.id)} 
                                                 disabled={u.id === auth.user.id}
                                                 className="p-2 text-danger-500 hover:bg-danger-50 rounded-xl transition duration-200 disabled:opacity-30"
                                                 title="Hapus"

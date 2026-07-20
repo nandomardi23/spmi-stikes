@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { Head } from "@inertiajs/react";
-import React from "react";
+import LandingLayout from '@/Layouts/LandingLayout';
 
 function ProfilSPMI({ profil }) {
     return (
-        <div>
+        <LandingLayout>
             <Head title="Profil SPMI" />
             <section className="p-8 max-w-3xl mx-auto">
                 <h1 className="text-3xl font-bold mb-4">Profil SPMI</h1>
@@ -15,7 +15,7 @@ function ProfilSPMI({ profil }) {
                     <p>{profil.misi || "Belum ada misi terpasang."}</p>
                 </div>
             </section>
-        </div>
+        </LandingLayout>
     );
 }
 

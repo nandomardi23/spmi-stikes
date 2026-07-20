@@ -1,10 +1,9 @@
-import { scan } from 'react-scan';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
-if (typeof window !== 'undefined') {
-    scan({ enabled: import.meta.env.DEV });
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+    import('react-scan').then(({ scan }) => scan({ enabled: true }));
 }
 
 import Swal from 'sweetalert2';

@@ -2,7 +2,7 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import { useState , memo } from 'react';
 import Modal from '@/Components/Modal';
-import Swal from 'sweetalert2';
+import { createCrudService } from '@/Services/crudService';
 import EmptyState from '@/Components/EmptyState';
 import { PencilSquareIcon, TrashIcon, KeyIcon } from '@heroicons/react/24/outline';
 import Pagination from '@/Components/Pagination';
@@ -25,26 +25,10 @@ function Index({ permissions, filters }) {
         router.get('/dashboard/permissions', { search }, { preserveState: true });
     };
 
-    const handleDelete = (permission) => {
-        Swal.fire({
-            title: 'Hapus Permission?',
-            text: `Hapus permission ${permission.name}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.delete(`/dashboard/permissions/${permission.id}`, {
-                    onSuccess: () => {
-                        Swal.fire('Terhapus!', 'Permission telah berhasil dihapus.', 'success');
-                    }
-                });
-            }
-        });
-    };
+    const permissionService = createCrudService({
+        routePrefix: '/dashboard/permissions',
+        entityName: 'Permission',
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -52,14 +36,12 @@ function Index({ permissions, filters }) {
             put(`/dashboard/permissions/${editingData.id}`, {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Permission telah diperbarui.', 'success');
                 },
             });
         } else {
             post('/dashboard/permissions', {
                 onSuccess: () => {
                     closeModal();
-                    Swal.fire('Berhasil!', 'Permission baru telah ditambahkan.', 'success');
                 }
             });
         }
@@ -141,7 +123,7 @@ function Index({ permissions, filters }) {
                                     <td className="px-6 py-4 text-center whitespace-nowrap">
                                         <TableActions
                                             onEdit={() => openEditModal(p)}
-                                            onDelete={() => handleDelete(p)}
+                                            onDelete={() => permissionService.delete(p.id)}
                                         />
                                     </td>
                                 </tr>
