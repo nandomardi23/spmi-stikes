@@ -19,12 +19,19 @@ const BadgeColors = {
     Peningkatan: "bg-green-100 text-green-700 border-green-200",
 };
 
-function Index({ ppepps, standars }) {
+function Index({ ppepps, standars, filters }) {
     const ppeppService = createCrudService({
         routePrefix: '/dashboard/ppepp',
         entityName: 'Tahapan PPEPP',
         warningMessage: 'Data Tahapan PPEPP yang dihapus akan hilang secara permanen dari sistem.',
     });
+
+    const currentTab = filters?.tahapan || 'Semua';
+    const tabs = ['Semua', 'Penetapan', 'Pelaksanaan', 'Evaluasi', 'Pengendalian', 'Peningkatan'];
+
+    const handleTabChange = (tab) => {
+        router.get('/dashboard/ppepp', { tahapan: tab }, { preserveState: true, preserveScroll: true });
+    };
 
     const {
         data, setData, processing, errors,
@@ -65,6 +72,26 @@ function Index({ ppepps, standars }) {
                 >
                     + Tambah Tahapan
                 </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="mb-6 border-b border-gray-200">
+                <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => handleTabChange(tab)}
+                            className={`
+                                whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors
+                                ${currentTab === tab 
+                                    ? 'border-primary-600 text-primary-600' 
+                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'}
+                            `}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </nav>
             </div>
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

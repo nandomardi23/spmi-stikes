@@ -18,14 +18,21 @@ class PpeppController extends Controller
         $this->middleware('permission:ppepp.delete')->only(['destroy']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $ppepps = Ppepp::with('standarMutu')->latest('tanggal_pelaksanaan')->paginate(10);
+        $query = Ppepp::with('standarMutu');
+
+        if ($request->has('tahapan') && $request->tahapan !== 'Semua') {
+            $query->where('tahapan', $request->tahapan);
+        }
+
+        $ppepps = $query->latest('tanggal_pelaksanaan')->paginate(10)->withQueryString();
         $standars = StandarMutu::all();
 
         return Inertia::render('Dashboard/Ppepp/Index', [
             'ppepps' => $ppepps,
             'standars' => $standars,
+            'filters' => $request->only(['tahapan']),
         ]);
     }
 
