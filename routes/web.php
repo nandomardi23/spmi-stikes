@@ -85,8 +85,6 @@ Route::middleware(['auth', 'role:super-admin|admin-mutu|auditor'])->prefix('dash
     Route::get('pengaturan', [\App\Http\Controllers\SettingController::class, 'index'])->name('pengaturan.index');
     Route::put('pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('pengaturan.update');
 
-    Route::get('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'index'])->name('profil-spmi.index');
-    Route::post('profil-spmi', [\App\Http\Controllers\ProfilSpmiController::class, 'update'])->name('profil-spmi.update');
     
     // Pengelola (Struktur Organisasi)
     Route::resource('pengelola', \App\Http\Controllers\PengelolaController::class)->except(['show', 'create', 'edit']);
