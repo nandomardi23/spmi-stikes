@@ -21,6 +21,10 @@ class SettingController extends Controller
             'site_name' => Setting::getValue('site_name', 'SPMI STIKES Hang Tuah'),
             'site_description' => Setting::getValue('site_description', 'Sistem Penjaminan Mutu Internal'),
             'site_logo' => Setting::getValue('site_logo') ? asset('storage/' . Setting::getValue('site_logo')) : null,
+            'visi' => Setting::getValue('visi', ''),
+            'misi' => Setting::getValue('misi', ''),
+            'spmi_tujuan' => Setting::getValue('spmi_tujuan', ''),
+            'spmi_struktur' => Setting::getValue('spmi_struktur', ''),
         ]);
     }
 
@@ -30,6 +34,10 @@ class SettingController extends Controller
             'site_name' => 'nullable|string|max:255',
             'site_description' => 'nullable|string|max:255',
             'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'visi' => 'nullable|string',
+            'misi' => 'nullable|string',
+            'spmi_tujuan' => 'nullable|string',
+            'spmi_struktur' => 'nullable|string',
         ]);
 
         if ($request->hasFile('site_logo')) {
@@ -40,7 +48,7 @@ class SettingController extends Controller
             );
         }
 
-        $keys = ['site_name', 'site_description'];
+        $keys = ['site_name', 'site_description', 'visi', 'misi', 'spmi_tujuan', 'spmi_struktur'];
         foreach ($keys as $key) {
             if ($request->has($key)) {
                 Setting::updateOrCreate(
